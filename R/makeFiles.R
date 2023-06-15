@@ -121,7 +121,7 @@ makeExample <- function(fileName, savePath = here::here(), open = TRUE) {
   )
 
 
-  template_contents <- usethis:::render_template("ExampleScript.R",
+  template_contents <- render_template("ExampleScript.R",
                                                  data = data,
                                                  package = "picard")
 
