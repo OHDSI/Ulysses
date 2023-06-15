@@ -1,5 +1,6 @@
 # A. Meta Info -----------------------
 
+# Study: {{{ Study }}}
 # Name: {{{ Name }}}
 # Author: {{{ Author }}}
 # Date: {{{ Date }}}

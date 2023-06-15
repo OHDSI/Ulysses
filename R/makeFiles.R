@@ -152,6 +152,7 @@ makeAnalysisScript <- function(scriptName,
   }
 
   data <- rlang::list2(
+    'Study' = getStudyDetails("StudyTitle", projectPath = projectPath),
     'Name' = snakecase::to_title_case(scriptName),
     'Author' = getStudyDetails("StudyLead", projectPath = projectPath),
     'Date' = lubridate::today(),
