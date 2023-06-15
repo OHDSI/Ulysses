@@ -1,0 +1,26 @@
+---
+title: Meeting Minutes for {{{ Study }}} 
+author: {{{ Author }}}
+date: {{{ Date }}}
+format:
+  html:
+    number-sections: true
+    embed-resources: true
+---
+
+
+**Topic:** 
+
+<!-----Provide the key topic of discussion ------>
+
+# Attendance
+
+<!-----Add meeting participants ------>
+
+# Minutes
+
+<!-----Add minutes ------>
+
+# Action Items
+
+<!-----List action items ------>

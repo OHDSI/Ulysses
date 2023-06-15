@@ -1,0 +1,111 @@
+---
+title: SAP for {{{ Study }}}
+author: {{{ Author }}}
+date: {{{ Date }}}
+format:
+  html:
+    toc: true
+    number-sections: true
+    embed-resources: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+# Research Questions
+
+*Include the study research questions*
+
+
+# Objectives
+
+*Add the study objectives, delete section that are unused*
+
+## Primary Objectives
+
+## Secondary Objectives
+
+## Exploratory Objectives
+
+
+# Study Design
+
+## Study Population
+
+*Provide information on the study population used in the analysis*
+
+## Exposure Definition
+
+*Provide information on the exposure definition used in the analysis*
+
+## Outcome Definition
+
+*Provide information on the outcome definition used in the analysis*
+
+
+# Data Sources
+
+<!-- Add data sources -->
+
+*Example table for data sources*
+
+```{r}
+#| label: tbl-data_sources
+#| echo: false
+#| tbl-cap: Data Sources used in study
+
+dataSources <- tibble::tribble(
+  ~Name, ~Country, ~Type, ~Size, ~Availability, ~Description,
+  "Synpuf", "US", "claims", "110K", "2008-2010", "Synthetic data source based on US Medicare data"
+)
+
+flextable::flextable(dataSources)
+
+```
+
+# Analysis Plan
+
+*Provide information on how the analysis will be done*
+
+
+## Covariates
+
+*Example of covariate table*
+
+```{r}
+#| label: tbl-cov
+#| tbl-cap: Covariates used for study
+
+cov <- tibble::tribble(
+  ~`Domain`, ~`Covariate`, ~`Time`, ~`Stat`,
+  "Demographics", "age 5yr", "at index", "count (%)",
+  "Demographics", "age continuous", "at index", "median (25th-75th)",
+  "Demographics", "gender", "at index", "count (%)",
+  "Demographics", "healthcare plan", "at index", "count (%)",
+  "Demographics", "time in cohort", "at index", "median (25th-75th)",
+  "Conditions", "Diabetes Mellitus", "365d prior", "count (%)",
+  "Conditions", "Hypertension", "365d prior", "count (%)",
+  "Conditions", "Heart Failure", "365d prior", "count (%)",
+  "Conditions", "Systolic Heart Failure", "365d prior", "count (%)",
+  "Conditions", "Diastolic Heart Failure", "365d prior", "count (%)",
+  "Conditions", "Chronic Kidney Disease", "365d prior", "count (%)",
+  "Conditions", "Myocardial Infarction", "365d prior", "count (%)",
+  "Conditions", "Stroke", "365d prior", "count (%)",
+  "Conditions", "ICD10 Chapters", "365d prior", "count (%)",
+  "Drugs", "ATC2", "365d prior", "count (%)",
+  "Drugs", "Anticoagulants", "365d prior", "count (%)",
+)
+
+flextable::flextable(cov)
+```
+
+## Stratafication
+
+
+## Data Analysis
+
+
+

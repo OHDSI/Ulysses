@@ -1,0 +1,31 @@
+---
+title: {{{ Title }}}
+author: {{{ Author }}}
+date: {{{ Date }}}
+format:
+  html:
+    toc: true
+    number-sections: true
+    embed-resources: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Introduction
+
+*Add an introduction to the study*
+
+# Methods
+
+*Copy over methods from protocol. REMEMBER TO CHANGE TO PAST TENSE*
+
+# Results
+
+*Add in study results*
+
+# Discussion 
+
+*Add a discussion about the results*

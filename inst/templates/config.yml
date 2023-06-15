@@ -1,0 +1,20 @@
+# Config File for {{{ Project }}}
+
+default:
+  projectName: {{{ Project }}}
+
+# Config block for {{{ Block }}}
+
+{{{ Block }}}:
+  databaseName: {{{ Database }}}
+  dbms: !expr keyring::key_get('{{{ Block }}}_dbms')
+  user: !expr keyring::key_get('{{{ Block }}}_user')
+  password: !expr keyring::key_get('{{{ Block }}}_password')
+  connectionString: !expr keyring::key_get('{{{ Block }}}_connectionString')
+  cdmDatabase: !expr keyring::key_get('{{{ Block }}}_cdmDatabase')
+  cdmSchema: !expr keyring::key_get('{{{ Block }}}_cdmSchema')
+  vocabSchema: !expr keyring::key_get('{{{ Block }}}_vocabSchema')
+  workDatabase: !expr keyring::key_get('{{{ Block }}}_workDatabase')
+  workSchema: !expr keyring::key_get('{{{ Block }}}_workSchema')
+  role: !expr keyring::key_get('{{{ Block }}}_role')
+  cohortTable: {{{ Cohort }}}
