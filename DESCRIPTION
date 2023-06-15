@@ -9,3 +9,16 @@ License: Apache License (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Imports: 
+    cli,
+    fs,
+    glue,
+    lifecycle,
+    magrittr,
+    rlang,
+    rstudioapi,
+    snakecase,
+    usethis,
+    whisker,
+    withr,
+    yaml
