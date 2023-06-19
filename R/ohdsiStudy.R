@@ -1,25 +1,22 @@
 #' Function that initializes a new ohdsi study project environment
-#' @param projectName the name of the project
+#' @param path the path where the project sits
 #' @param author the name of the study lead
 #' @param type the type of study either Characterization, PLP or PLE
-#' @param directory the directory to create the project
 #' @param openProject should the project be opened if created
 #' @import rlang usethis fs
 #' @export
-newOhdsiStudy <- function(projectName,
+newOhdsiStudy <- function(path,
                           author,
                           type,
-                          directory = here::here(),
                           openProject = TRUE) {
 
   # Step 1: create project directory
   cli::cat_bullet("Step 1: Creating R Project",
                   bullet_col = "yellow", bullet = "info")
-  path <- fs::path_expand(directory)
+  path <- fs::path_expand(path)
 
   ## Create the directory
-  dir_path <- fs::path(path, projectName) %>%
-    fs::dir_create()
+  dir_path <- fs::dir_create(path)
   #cli::cat_line("\t- Creating ", crayon::cyan(dir_path))
 
   ## Make local project
