@@ -19,9 +19,11 @@ test_that("Check new study is built", {
     c("analysis", "cohortsToCreate", "documentation", "extras", "logs", "results")
   )
 
+  projFile <- basename(tmpDir) %>%
+    fs::path(ext = "Rproj")
   expect_equal(
     allFiles,
-    c("test.Rproj", "_study.yml")
+    c(projFile, "_study.yml")
   )
 
 })

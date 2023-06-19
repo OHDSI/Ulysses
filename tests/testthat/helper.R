@@ -35,6 +35,7 @@ create_local_study <- function(dir = fs::file_temp(pattern = "testproj"),
 
   usethis::ui_silence(
     newOhdsiStudy(path = dir,
+                  projectName = "test",
                   author = "Ulysses",
                   type = "Characterization",
                   openProject = FALSE)
