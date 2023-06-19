@@ -4,22 +4,14 @@
 \alias{newOhdsiStudy}
 \title{Function that initializes a new ohdsi study project environment}
 \usage{
-newOhdsiStudy(
-  projectName,
-  author,
-  type,
-  directory = here::here(),
-  openProject = TRUE
-)
+newOhdsiStudy(path, author, type, openProject = TRUE)
 }
 \arguments{
-\item{projectName}{the name of the project}
+\item{path}{the path where the project sits}
 
 \item{author}{the name of the study lead}
 
 \item{type}{the type of study either Characterization, PLP or PLE}
-
-\item{directory}{the directory to create the project}
 
 \item{openProject}{should the project be opened if created}
 }

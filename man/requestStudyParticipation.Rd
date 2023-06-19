@@ -14,7 +14,7 @@ requestStudyParticipation(
 \arguments{
 \item{senderName}{the name of the person sending the email}
 
-\item{projectPath}{the path to the picard project}
+\item{projectPath}{the path to the Ulysses project}
 
 \item{recipientName}{the name of the person receiving the email}
 
