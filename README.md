@@ -1,4 +1,4 @@
-# Ulysses
+# Ulysses <img src="man/figures/logo.png" align="right" height="75" />
 
 <!-- badges: start -->
 
