@@ -24,7 +24,7 @@ makeReadMe <- function(projectPath = here::here(), open = TRUE) {
     template = "README.md",
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
@@ -44,7 +44,7 @@ makeNews <- function(projectPath = here::here(), open = TRUE) {
     template = "NEWS.md",
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
@@ -72,7 +72,7 @@ makeConfig <- function(block, database, projectPath = here::here(), open = TRUE)
     template = "config.yml",
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   usethis::use_git_ignore(ignores = "config.yml")
 
@@ -98,7 +98,7 @@ makeCohortDetails <- function(projectPath = here::here(), open = TRUE) {
     save_as = fs::path("cohortsToCreate", "cohortDetails.md"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
@@ -123,7 +123,7 @@ makeExample <- function(fileName, savePath = here::here(), open = TRUE) {
 
   template_contents <- render_template("ExampleScript.R",
                                                  data = data,
-                                                 package = "picard")
+                                                 package = "Ulysses")
 
   save_as <- fs::path(savePath, fileName, ext = "R")
   new <- write_utf8(save_as, template_contents)
@@ -165,7 +165,7 @@ makeAnalysisScript <- function(scriptName,
     save_as = fs::path("analysis/studyTasks", scriptFileName, ext = "R"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
@@ -199,7 +199,7 @@ makeAnalysisScript <- function(scriptName,
 #     save_as = fs::path("analysis", taskFileName, ext = "Rmd"),
 #     data = data,
 #     open = open,
-#     package = "picard")
+#     package = "Ulysses")
 #
 #   invisible(data)
 # }
@@ -229,7 +229,7 @@ makeInternals <- function(internalsName, projectPath = here::here(), open = TRUE
     save_as = fs::path("analysis/private", intFileName, ext = "R"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
@@ -257,7 +257,7 @@ makeStudySAP <- function(projectPath = here::here(), open = TRUE) {
     save_as = fs::path("documentation", "StudySAP.qmd"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
@@ -295,7 +295,7 @@ makeHowToRun <- function(org = NULL, repo = NULL,
     save_as = fs::path("documentation", "HowToRun.md"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
@@ -324,10 +324,10 @@ makeStudyProtocol <- function(projectPath = here::here(),
     save_as = fs::path(dir_path, fileName, ext = "Rmd"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   #get Protocol Components and move to folder
-  fs::path_package("picard", "templates/Protocol-Components") %>%
+  fs::path_package("Ulysses", "templates/Protocol-Components") %>%
     fs::dir_copy(new_path = dir_path, overwrite = TRUE)
 
 
@@ -352,7 +352,7 @@ makeContribution <- function(projectPath = here::here(),
     save_as = fs::path("documentation", "ContributionGuidelines.md"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
@@ -377,7 +377,7 @@ makeResultsReport <- function(projectPath = here::here(),
     save_as = fs::path("documentation", "ResultsReport.qmd"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
@@ -409,7 +409,7 @@ makeKeyringSetup <- function(projectPath = here::here(), open = TRUE, secret = N
     save_as = fs::path("extras", "KeyringSetup.R"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   usethis::use_git_ignore(ignores = "extras/KeyringSetup.R")
 
@@ -421,7 +421,7 @@ makeKeyringSetup <- function(projectPath = here::here(), open = TRUE, secret = N
 
 #' Email asking to initialize an ohdsi-studies repo
 #' @param senderName the name of the person sending the email
-#' @param projectPath the path to the picard project
+#' @param projectPath the path to the Ulysses project
 #' @param recipientName the name of the person receiving the email
 #' @param open toggle on whether the file should be opened
 #' @export
@@ -446,7 +446,7 @@ requestStudyRepo <- function(senderName, projectPath = here::here(), recipientNa
     save_as = fs::path("extras", "RepoRequestEmail.txt"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
 
   usethis::use_git_ignore(ignores = "extras/StudyRepoRequestEmail.txt")
@@ -458,7 +458,7 @@ requestStudyRepo <- function(senderName, projectPath = here::here(), recipientNa
 
 #' Email asking to participant in an ohdsi study
 #' @param senderName the name of the person sending the email
-#' @param projectPath the path to the picard project
+#' @param projectPath the path to the Ulysses project
 #' @param recipientName the name of the person receiving the email
 #' @param open toggle on whether the file should be opened
 #' @export
@@ -483,7 +483,7 @@ requestStudyParticipation <- function(senderName, projectPath = here::here(), re
     save_as = fs::path("extras", "ParticipationRequestEmail.txt"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
 
   usethis::use_git_ignore(ignores = "extras/ParticipationRequestEmail.txt")
@@ -513,7 +513,7 @@ makeMeetingMinutes <- function(projectPath = here::here(), open = TRUE) {
     save_as = fs::path("extras/minutes", saveName, ext = "qmd"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
