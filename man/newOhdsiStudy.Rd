@@ -4,10 +4,18 @@
 \alias{newOhdsiStudy}
 \title{Function that initializes a new ohdsi study project environment}
 \usage{
-newOhdsiStudy(path, author, type, openProject = TRUE)
+newOhdsiStudy(
+  path,
+  projectName = basename(path),
+  author,
+  type,
+  openProject = TRUE
+)
 }
 \arguments{
 \item{path}{the path where the project sits}
+
+\item{projectName}{the name of the project}
 
 \item{author}{the name of the study lead}
 

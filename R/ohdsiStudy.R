@@ -1,11 +1,13 @@
 #' Function that initializes a new ohdsi study project environment
 #' @param path the path where the project sits
+#' @param projectName the name of the project
 #' @param author the name of the study lead
 #' @param type the type of study either Characterization, PLP or PLE
 #' @param openProject should the project be opened if created
 #' @import rlang usethis fs
 #' @export
 newOhdsiStudy <- function(path,
+                          projectName = basename(path),
                           author,
                           type,
                           openProject = TRUE) {
@@ -29,7 +31,8 @@ newOhdsiStudy <- function(path,
   addDefaultFolders(projectPath = dir_path)
 
   # Step 4: create _picard.yml file
-  addStudyMeta(author = author,
+  addStudyMeta(projectName = projectName,
+               author = author,
                type = type,
                projectPath = dir_path)
 
@@ -104,7 +107,8 @@ addDefaultFolders <- function(projectPath) {
   invisible(pp)
 }
 
-addStudyMeta <- function(author,
+addStudyMeta <- function(projectName,
+                         author,
                          type = c("Characterization", "Population-Level Estimation", "Patient-Level Prediction"),
                          projectPath){
 
@@ -112,12 +116,12 @@ addStudyMeta <- function(author,
                   bullet_col = "yellow", bullet = "info")
 
 
-  projName <- basename(projectPath) %>%
-    snakecase::to_title_case()
+  # projName <- basename(projectPath) %>%
+  #   snakecase::to_title_case()
   date <- lubridate::today()
 
   data <- rlang::list2(
-    'Title' = projName,
+    'Title' = projectName,
     'Author' = author,
     'Type' = type,
     'Date' = date
