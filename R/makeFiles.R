@@ -58,8 +58,7 @@ makeNews <- function(projectPath = here::here(), open = TRUE) {
 #' @export
 makeConfig <- function(block, database, projectPath = here::here(), open = TRUE) {
 
-  projName <- getStudyDetails("StudyTitle", projectPath = projectPath) %>%
-    snakecase::to_lower_camel_case()
+  projName <- basename(projectPath)
 
   data <- rlang::list2(
     'Project' = projName,
@@ -388,19 +387,36 @@ makeResultsReport <- function(projectPath = here::here(),
 
 
 #' Function to create a config.yml file
+#' @param database the name of the database for the project, can be NULL
+#' @param configBlock the name of the configBlock to use, can be NULL
+#' @param secret a keyword to use as the keyring password to access credentials, if NULL password is ulysses
 #' @param projectPath the path to the project
 #' @param open toggle on whether the file should be opened
-#' @param secret a keyword to use as the keyring password to access credentials
 #' @export
-makeKeyringSetup <- function(projectPath = here::here(), open = TRUE, secret = NULL) {
+makeKeyringSetup <- function(database = NULL,
+                             configBlock = NULL,
+                             secret = NULL,
+                             projectPath = here::here(),
+                             open = TRUE) {
 
-  keyringName <- snakecase::to_snake_case(getStudyDetails("StudyTitle", projectPath = projectPath))
+  keyringName <- basename(projectPath)
+
+  if (is.null(database)) {
+    database <- "[Add database]"
+  }
+
+  if (is.null(configBlock)) {
+    configBlock <- "[Add config block]"
+  }
+
   if (is.null(secret)) {
-    keyringPassword <- keyringName
+    keyringPassword <- "ulysses"
   }
 
   data <- rlang::list2(
-    'Name' = keyringName,
+    'Block' = configBlock,
+    'Database' = database,
+    'Study' = keyringName,
     'Secret'= keyringPassword
   )
 
@@ -411,7 +427,6 @@ makeKeyringSetup <- function(projectPath = here::here(), open = TRUE, secret = N
     open = open,
     package = "Ulysses")
 
-  usethis::use_git_ignore(ignores = "extras/KeyringSetup.R")
 
   invisible(data)
 
