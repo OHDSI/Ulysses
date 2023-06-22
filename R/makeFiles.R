@@ -339,7 +339,7 @@ makeStudyProtocol <- function(projectPath = here::here(),
 #' @param projectPath the path to the project
 #' @param open toggle on whether the file should be opened
 #' @export
-makeContribution <- function(projectPath = here::here(),
+makeContributionGuidelines <- function(projectPath = here::here(),
                              open = TRUE) {
 
   data <- rlang::list2(
