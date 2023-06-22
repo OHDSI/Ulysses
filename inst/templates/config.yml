@@ -7,6 +7,7 @@ default:
 
 {{{ Block }}}:
   databaseName: {{{ Database }}}
+  cohortTable: {{{ Cohort }}}
   dbms: !expr keyring::key_get('{{{ Block }}}_dbms', keyring = '{{{ Project }}}')
   user: !expr keyring::key_get('{{{ Block }}}_user', keyring = '{{{ Project }}}')
   password: !expr keyring::key_get('{{{ Block }}}_password', keyring = '{{{ Project }}}')
@@ -14,5 +15,4 @@ default:
   cdmDatabaseSchema: !expr keyring::key_get('{{{ Block }}}_cdmDatabaseSchema', keyring = '{{{ Project }}}')
   vocabDatabaseSchema: !expr keyring::key_get('{{{ Block }}}_vocabDatabaseSchema', keyring = '{{{ Project }}}')
   workDatabaseSchema: !expr keyring::key_get('{{{ Block }}}_workDatabaseSchema', keyring = '{{{ Project }}}')
-  role: !expr keyring::key_get('{{{ Block }}}_role', keyring = '{{{ Project }}}')
-  cohortTable: {{{ Cohort }}}
+
