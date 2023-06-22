@@ -89,12 +89,14 @@ makeCohortDetails <- function(projectPath = here::here(), open = TRUE) {
 
 
   data <- rlang::list2(
-    'Study' = getStudyDetails("StudyTitle", projectPath = projectPath)
+    'Study' = getStudyDetails("StudyTitle", projectPath = projectPath),
+    'Date' = lubridate::today(),
+    'Author' = getStudyDetails("Lead", projectPath = projectPath)
   )
 
   usethis::use_template(
     template = "CohortDetails.md",
-    save_as = fs::path("cohortsToCreate", "cohortDetails.md"),
+    save_as = fs::path("cohortsToCreate", "CohortDetails.md"),
     data = data,
     open = open,
     package = "Ulysses")
