@@ -1,4 +1,4 @@
-test_that("makeCohortDetails works", {
+test_that("makeContributionGuidelines works", {
 
   dir <- fs::file_temp(pattern = "testproj")
 

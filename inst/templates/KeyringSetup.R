@@ -1,7 +1,8 @@
 # Setup Credentials -------------
 # This file setups the credential library for your study. The function establishes
 # a config.yml file and creates a keyring for the study. Input your credentials
-# into the keyring.
+# into the keyring. Keep your database credentials handy before running this script.
+# Ask your database administrator if you are unsure of your credentials.
 
 ## A) Depedendencies ------------
 
@@ -20,10 +21,10 @@ keyringName <- "{{{ Study }}}" # the name of the keyring
 keyringPassword <- "{{{ Secret }}}" # password for keyring
 # This password is simply to avoid a prompt when creating the keyring
 
-## c) Create Config File------------------------
+## c) Check or create Config File------------------------
 
-# create the config.yml file
-makeConfig(block = configBlock, database = database)
+# check if config.yml file exists, make it if it does not exist
+checkConfig()
 
 ## D) Setup Keyring -----------------
 

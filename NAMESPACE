@@ -2,7 +2,9 @@
 
 export("%>%")
 export(addCohortFolder)
+export(addConfig)
 export(addScratchFolder)
+export(checkConfig)
 export(isOhdsiStudy)
 export(makeAnalysisScript)
 export(makeCohortDetails)

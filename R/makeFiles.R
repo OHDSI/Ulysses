@@ -52,11 +52,11 @@ makeNews <- function(projectPath = here::here(), open = TRUE) {
 
 #' Function to create a config.yml file
 #' @param block the name of the config block
-#' @param database the name of the database for the block
+#' @param database the name of the database for the block, default to block name
 #' @param projectPath the path to the project
 #' @param open toggle on whether the file should be opened
 #' @export
-makeConfig <- function(block, database, projectPath = here::here(), open = TRUE) {
+makeConfig <- function(block, database = block, projectPath = here::here(), open = TRUE) {
 
   projName <- basename(projectPath)
 
