@@ -20,18 +20,17 @@ library(Ulysses)
 
 # Introduction
 
-Running an OHDSI study contains lots of organizational complexity in terms of organizing code and proper documentation to communicate the code. While examples for constructing OHDSI studies have been presented, for example the SOS challenge, there is no clear workflow towards developing an OHDSI study as a piece of software available in a github repository. The OHDSI community would benefit from a workflow tool that will help standardize the development of network studies and improve its organization. This gap led to the development of a new R package called `Ulysses` (Useful Learning Yielded Structuring and Setting Epidemiology Studies) dedicated towards assisting in the development of an OHDSI study. 
+Running an OHDSI study contains lots of organizational complexity in terms of organizing code and proper documentation to communicate the code. While examples for constructing OHDSI studies have been presented, for example the SOS challenge, there is no clear workflow towards developing an OHDSI study as a piece of software available in a github repository. The OHDSI community would benefit from a workflow tool that will help standardize the development of network studies and improve its organization. This gap led to the development of a new R package called `Ulysses` (Useful Learning Yielded Structuring and Setting Epidemiology Studies) dedicated towards assisting in the development of an OHDSI study.
 
-Ulysses draws inspiration from the R package [`usethis`](https://usethis.r-lib.org/), which is a workflow tool used for the development of R packages. Similar to OHDSI studies, there are several administrative steps and procedures required to develop a stable and transparent R package. `usethis` helps R programmers navigate R package development by supplying functions that automate simple tasks or other useful steps needed to meet this goal. Ulysses can provide a similar solution for OHDSI studies, improving the organization, communication and development of OHDSI studies by supplying simple functions to guide developers towards a study that is transparent, robust and reproducible. The OHDSI community would benefit from a tool that enforces standards and organization in OHDSI studies because it makes it easier for study nodes to execute network studies from a recognizable structure and provide guidance to new researchers seeking to build an OHDSI study if they follow a common workflow. In this software demo, we will showcase an example of how Ulysses can be used to start a new OHDSI study and help initiate necessary tasks for organizing and communicating the study to the OHDSI data network. 
+Ulysses draws inspiration from the R package [`usethis`](https://usethis.r-lib.org/), which is a workflow tool used for the development of R packages. Similar to OHDSI studies, there are several administrative steps and procedures required to develop a stable and transparent R package. `usethis` helps R programmers navigate R package development by supplying functions that automate simple tasks or other useful steps needed to meet this goal. Ulysses can provide a similar solution for OHDSI studies, improving the organization, communication and development of OHDSI studies by supplying simple functions to guide developers towards a study that is transparent, robust and reproducible. The OHDSI community would benefit from a tool that enforces standards and organization in OHDSI studies because it makes it easier for study nodes to execute network studies from a recognizable structure and provide guidance to new researchers seeking to build an OHDSI study if they follow a common workflow. In this software demo, we will showcase an example of how Ulysses can be used to start a new OHDSI study and help initiate necessary tasks for organizing and communicating the study to the OHDSI data network.
 
 In this vignette we walk-through how to build an OHDSI study using the `Ulysses` package. We review:
 
-- Initializing a study in R
-- Adding repo documentation
-- Handling database credentials
-- Adding R scripts
-- Providing documentation about the study
-
+-   Initializing a study in R
+-   Adding repo documentation
+-   Handling database credentials
+-   Adding R scripts
+-   Providing documentation about the study
 
 # Initializing an OHDSI study in R
 
@@ -86,42 +85,52 @@ Another common file in software repositories is the NEWS file. The purpose of th
 Ulysses::makeNews()
 ```
 
-
 # Handling database credentials
 
+An important aspect of running an OHDSI study is handling credentials to connect to the Database Management System (DBMS) that hosts the OMOP data. Security of these credentials is very important. `Ulysses` offers support on handling these credentials. Credentials needed to run a study are as follows:
 
+-   **dbms**: the name of the dbms used to host the OMOP data
+-   **user**: your user name needed to access the data in the dbms
+-   **password**: your password needed to access the data in the dbms
+-   **connectionString**: this string sets the connection to the database. It will typically look something like: `jdbc:<dbms>://<server url>:<dbms port>/<database>`. This string will vary from site to site. Contact your system administrator to get the information you need for this credential
+-   **cdmDatabaseSchema**: a name that defines where the cdm tables sit for a particular database in the dbms. `Database` defines the name of the database where the omop data sits and the `Schema` defines where the cdm is within that database. In databases like sql server or snowflake this variable is often separated by a "." i.e. \`<database>.<schema>
+-   **vocabDatabaseSchema**: a name that defines where the vocabulary tables sit for a particular database in the dbms. The vocabDatabaseSchema is typically the same as the cdmDatabaseSchema, although same sites split the vocabulary into a different area.
+-   **workDatabaseSchema**: a name that defines where the work tables sit for a particular database in the dbms. The work section (referred to synonymously with scratch or write) is an area where the user is given read and write access in the database. The cdmDatabaseSchema is typically only a read-only schema, so users do not corrupt information. The workDatabaseSchema is a dedicated area where researchers can build cohort tables or other intermediary tables needed for studies. Contact your database administrator to ensure you have a dedicated workDatabaseSchema. Note this should be separate from the database schema dedicated to ATLAS.
 
-## The *config.yml* file
+Often times sites require additional credentials such as database roles or other parameters used to define tempEmulationSchemas, for example. You can add these parameters manually in the `Ulysses` workflow, shown later. Be sure to contact your database administrator to have all these credentials handy before running a study.
 
-One of the most important inputs for an OHDSI study is the connection details to the Database Management System (DBMS) that hosts the OMOP data. These credentials need to be supplied in order to access the data within the study node, to build cohorts and run the study on the CDM. Keeping credentials secure and accessible is a difficult challenge. From experience, we have found success maintaining credentials via the [`config` package](https://github.com/rstudio/config). This package stores configurations to an analysis in a yml where each set of credentials is differentiated with a block name. This structure is particularly helpful in institutions that have access to multiple OMOP assets and wish to iterate between connections efficiently. Below is an example of a `config.yml` file:
-
-```
-# Config File for example
-
-default:
-  projectName: example
-
-# Config block for example
-
-example:
-  databaseName: synpuf_110k
-  dbms: !expr keyring::key_get('example_dbms')
-  user: !expr keyring::key_get('example_user')
-  password: !expr keyring::key_get('example_password')
-  connectionString: !expr keyring::key_get('example_connectionString')
-  cdmDatabase: !expr keyring::key_get('example_cdmDatabase')
-  cdmSchema: !expr keyring::key_get('example_cdmSchema')
-  vocabSchema: !expr keyring::key_get('example_vocabSchema')
-  workDatabase: !expr keyring::key_get('example_workDatabase')
-  workSchema: !expr keyring::key_get('example_workSchema')
-  role: !expr keyring::key_get('example_role')
-  cohortTable: example_synpuf_110k
-```
-
-We can efficiently access credentials that are hidden behind the [`keyring`](https://github.com/r-lib/keyring) API. The `config.yml` file works very similarly to the `.Renviron` file. The advantage of using the `config.yml` file instead of the `.Renviron` is that can handle multiple credentials and is more portable than the `.Renviron` file which is set to an environment. With `Ulysses` we provide a function that initializes this file:
+Now that you have collected your credentials we need to store them somewhere secure to be accessed continuely within the study. `Ulysses` does this using a *config.yml* file. [Yaml](https://yaml.org/) is a simple, readable data-serialization language used to provide settings or configurations for applications. For those familiar with R, the *config.yml* file works similarly to an `.Renviron` file. But wait, there is more to the *config.yml* file! The credentials are further protected via [`keyring`](https://github.com/r-lib/keyring) API. `keyring` stores your credentials behind a password. We use `keyring` and `config` together to ensure that users do not accidentally expose passwords when working on a study. `Ulysses` provides a function that initializes the *config.yml* file:
 
 ```{r configSetup, echo=TRUE, eval=FALSE}
 Ulysses::makeConfig(block = "example", database = "synpuf_110k")
 ```
 
-When a user creates a new `config.yml` file it is added to `.gitignore` to ensure it is not committed to a github repository. 
+When a user creates a new `config.yml` file it is added to `.gitignore` to ensure it is not committed to a github repository. The config file shows each credential connected to the block name.
+
+```         
+# Config File for my_ohdsi_study
+
+default:
+  projectName: my_ohdsi_study
+
+# Config block for example
+
+example:
+  databaseName: example
+  cohortTable: my_ohdsi_study_example
+  dbms: !expr keyring::key_get('example_dbms', keyring = 'my_ohdsi_study')
+  user: !expr keyring::key_get('example_user', keyring = 'my_ohdsi_study')
+  password: !expr keyring::key_get('example_password', keyring = 'my_ohdsi_study')
+  connectionString: !expr keyring::key_get('example_connectionString', keyring = 'my_ohdsi_study')
+  cdmDatabaseSchema: !expr keyring::key_get('example_cdmDatabaseSchema', keyring = 'my_ohdsi_study')
+  vocabDatabaseSchema: !expr keyring::key_get('example_vocabDatabaseSchema', keyring = 'my_ohdsi_study')
+  workDatabaseSchema: !expr keyring::key_get('example_workDatabaseSchema', keyring = 'my_ohdsi_study')
+```
+
+If we wanted to add another credential in this block we can add new line beneath `workDatabaseSchema`. Be sure to keep the indentation and add an extra space after.  To set up the keyrings, `Ulysses` also supplies a helper script to set this up. Follow the script to set up the keyring credentials so that the *config.yml* can be properly used. 
+
+```{r keyringSetup, echo=TRUE, eval=FALSE}
+Ulysses::makeKeyringSetup(configBlock = "example", database = "synpuf_110k")
+```
+
+# Adding R scripts
