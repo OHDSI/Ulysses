@@ -50,6 +50,7 @@ if (keyringName %in% allKeyrings$keyring) {
 keyring::keyring_create(keyring = keyringName, password = keyringPassword)
 
 ## E) Set Credentials -----------------------
+#add additional credentials to this list if necessary
 creds <- c(
   "dbms", # the database dialect
   "user", # the user name for the db
@@ -57,15 +58,15 @@ creds <- c(
   "connectionString", # the connection string to access the db
   "cdmDatabaseSchema", # the database + schema (or just schema) hosting the cdm
   "vocabDatabaseSchema", # the database + schema (or just schema) hosting the vocabulary, usually same as cdm
-  "workDatabaseSchema", # the database + schema (or just schema) hosting the work or scratch
-  "role" # the role id for your user in the db
+  "workDatabaseSchema" # the database + schema (or just schema) hosting the work or scratch
 )
 
-cred_block <- paste(configBlock, creds, sep = "_")
+cred_block <- paste(configBlock, creds, sep = "_") %>% as.list()
+names(cred_block) <- creds
 
 # set a new keyring for study
 # this will lead to a dialog box enter the credentials
-purrr::walk2(cred_block, creds, ~keyring::key_set(service = .x, keyring = keyringName, prompt = .y))
+purrr::walk2(cred_block, names(cred_block), ~keyring::key_set(service = .x, keyring = keyringName, prompt = .y))
 
 
 ## F) Check (Optional) -----------------------
@@ -73,16 +74,18 @@ purrr::walk2(cred_block, creds, ~keyring::key_set(service = .x, keyring = keyrin
 
 ### Review that the credentials are correct
 
-blurCreds <- function(item, configBlock, keyringName) {
-  credential <- paste(configBlock, item, sep = "_")
-  cred <- keyring::key_get(service = credential, keyring = keyringName)
+blurCreds <- function(item,  keyringName) {
+  cred <- keyring::key_get(service = item, keyring = keyringName)
   txt <- glue::glue(item, ": ", crayon::blurred(cred))
   cli::cat_bullet(txt, bullet = "info", bullet_col = "blue")
-  invisible(credential)
+  invisible(item)
 }
 
-purrr::walk(creds, ~blurCreds(item = .x, configBlock = configBlock, keyringName = keyringName))
+purrr::walk(cred_block, ~blurCreds(item = .x,  keyringName = keyringName))
 
+# If a single credential is incorrect, change it
+# keyring::key_set(service = cred_block$dbms, keyring = keyringName)
+# blurCreds(item = cred_block$dbms, keyring = keyringName)
 
 ### Test connection details
 connectionDetails <- DatabaseConnector::createConnectionDetails(
