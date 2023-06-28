@@ -5,4 +5,5 @@ scratch/
 _pkgdown.ym
 compare_versions
 deploy.sh
-extras/
+^extras/
+^.github/
