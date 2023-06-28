@@ -2,6 +2,7 @@
 
 <!-- badges: start -->
 
+[![codecov.io](https://codecov.io/github/OHDSI/Ulysses/coverage.svg?branch=main)](https://app.codecov.io/gh/OHDSI/Ulysses?branch=main) [![Build Status](https://github.com/OHDSI/Ulysses/workflows/R-CMD-check/badge.svg)](https://github.com/OHDSI/Ulysses/actions?query=workflow%3AR-CMD-check)
 
 <!-- badges: end -->
 
