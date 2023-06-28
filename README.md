@@ -30,8 +30,13 @@ Requires R (version 4.1 or higher)
 
 # User Documentation
 
-Documentation can be found on the package website (ADD).
+Documentation can be found on the [package website](https://ohdsi.github.io/Ulysses/).
 
+PDF versions of the documentation are available:
+
+- Vignette: [Ulysses Intro](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/pdf_vignette/start_study.pdf)
+- Vignette: [Ulysses Directory](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/pdf_vignette/ulysses_directory.pdf)
+- [Package manual](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/Ulysses.pdf)
 
 # Support
 
