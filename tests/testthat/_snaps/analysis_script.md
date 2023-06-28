@@ -30,7 +30,7 @@
       # C. Connection ----------------------
       
       # set connection Block
-      configBlock <- "test"
+      configBlock <- "[Add config block]"
       
       # provide connection details
       connectionDetails <- DatabaseConnector::createConnectionDetails(

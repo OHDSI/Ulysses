@@ -4,7 +4,7 @@ test_that("make analysis Script works", {
 
   create_local_study(dir = dir)
 
-  makeAnalysisScript(scriptName = "buildCohorts", configBlock = "test", projectPath = dir, open = FALSE)
+  makeAnalysisScript(scriptName = "buildCohorts", projectPath = dir, open = FALSE)
 
   expect_proj_file("analysis/studyTasks/01_buildCohorts.R")
   expect_snapshot(writeLines(read_utf8(proj_path("analysis/studyTasks/01_buildCohorts.R"))),

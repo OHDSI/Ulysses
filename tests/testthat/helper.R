@@ -38,6 +38,7 @@ create_local_study <- function(dir = fs::file_temp(pattern = "testproj"),
                   projectName = "test",
                   author = "Ulysses",
                   type = "Characterization",
+                  verbose = FALSE,
                   openProject = FALSE)
   )
 
