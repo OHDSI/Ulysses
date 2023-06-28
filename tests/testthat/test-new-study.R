@@ -7,10 +7,10 @@ test_that("Check new study is built", {
   dirPath <- newOhdsiStudy(path = tmpDir,
                 author = "Ulysses",
                 type = "Characterization",
-                open = FALSE)
+                open = FALSE,
+                verbose = FALSE)
 
-  allFiles <- fs::dir_ls(dirPath, type = "file") %>%
-    basename()
+# check folders correct
   allFolders <- fs::dir_ls(dirPath, type = "directory") %>%
     basename()
 
@@ -18,12 +18,25 @@ test_that("Check new study is built", {
     allFolders,
     c("analysis", "cohortsToCreate", "documentation", "extras", "logs", "results")
   )
+  # check study yml created
+  ymlFile <- fs::dir_ls(dirPath, type = "file", glob = "*.yml") %>%
+    basename()
+
+  expect_equal(
+    ymlFile,
+    "_study.yml"
+  )
+  # check rproj created
+  RProjFile <- fs::dir_ls(dirPath, type = "file", glob = "*.Rproj") %>%
+    basename()
 
   projFile <- basename(tmpDir) %>%
-    fs::path(ext = "Rproj")
+    fs::path(ext = "Rproj") %>%
+    as.character()
+
   expect_equal(
-    allFiles,
-    c(projFile, "_study.yml")
+    RProjFile,
+    projFile
   )
 
 })
