@@ -3,19 +3,29 @@
     Code
       writeLines(read_utf8(proj_path("analysis/studyTasks/01_buildCohorts.R")))
     Output
-      # A. Meta Info -----------------------
+      # 01_buildCohorts.R
+      
+      # A. File Info -----------------------
       
       # Study: test
       # Name: Build Cohorts
       # Author: Ulysses
-      # Date: 2023-06-19
-      # Description: The purpose of 01_buildCohorts.R is to.....
+      # Date: [Add Date]
+      # Description: The purpose of this script is to.....
       
       # B. Dependencies ----------------------
       
+      ## include R libraries
       library(tidyverse, quietly = TRUE)
       library(DatabaseConnector)
       library(config)
+      
+      ## set options
+      #### Ex. options(connectionObserver = NULL)
+      
+      ## set source files
+      #source("my_file.R")
+      
       
       # C. Connection ----------------------
       
@@ -32,17 +42,20 @@
       
       #connect to database
       con <- DatabaseConnector::connect(connectionDetails)
-      on.exit(DatabaseConnector::disconnect(con)) #close on exit
+      withr::defer(
+        expr = DatabaseConnector::disconnect(con),
+        envir = parent.frame()
+      ) #close on exit
       
       
-      # D. Study Variables -----------------------
+      # D. Variables -----------------------
       
       ### Administrative Variables
       executionSettings <- config::get(config = configBlock) %>%
         purrr::discard_at( c("dbms", "user", "password", "connectionString"))
       
-      outputFolder <- here::here("results/01_buildCohorts") %>%
-        fs::path(executionSettings$databaseName) %>%
+      outputFolder <- here::here("results") %>%
+        fs::path(executionSettings$databaseName, "01_buildCohorts") %>%
         fs::dir_create()
       
       ### Add study variables or load from settings
@@ -55,4 +68,5 @@
       
       sessioninfo::session_info()
       rm(list=ls())
+      withr::deferred_run()
 

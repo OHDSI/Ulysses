@@ -156,7 +156,6 @@ makeAnalysisScript <- function(scriptName,
     'Study' = getStudyDetails("StudyTitle", projectPath = projectPath),
     'Name' = snakecase::to_title_case(scriptName),
     'Author' = getStudyDetails("StudyLead", projectPath = projectPath),
-    'Date' = lubridate::today(),
     'FileName' = scriptFileName,
     'Block' = configBlock
   )
@@ -302,11 +301,11 @@ makeHowToRun <- function(org = NULL, repo = NULL,
 
 }
 
-#' R Markdown file to make the study protocol
+#' R Markdown file to make the ohdsi protocol
 #' @param projectPath the path to the project
 #' @param open toggle on whether the file should be opened
 #' @export
-makeStudyProtocol <- function(projectPath = here::here(),
+makeOhdsiProtocol <- function(projectPath = here::here(),
                               open = TRUE) {
 
   data <- rlang::list2(
@@ -321,7 +320,7 @@ makeStudyProtocol <- function(projectPath = here::here(),
     fs::dir_create()
 
   usethis::use_template(
-    template = "StudyProtocol.Rmd",
+    template = "OhdsiProtocol.Rmd",
     save_as = fs::path(dir_path, fileName, ext = "Rmd"),
     data = data,
     open = open,
@@ -331,6 +330,36 @@ makeStudyProtocol <- function(projectPath = here::here(),
   fs::path_package("Ulysses", "templates/Protocol-Components") %>%
     fs::dir_copy(new_path = dir_path, overwrite = TRUE)
 
+
+  invisible(data)
+}
+
+
+#' R Markdown file to make the pass protocol
+#' @param projectPath the path to the project
+#' @param open toggle on whether the file should be opened
+#' @export
+makePassProtocol <- function(projectPath = here::here(),
+                              open = TRUE) {
+
+  data <- rlang::list2(
+    'Study' =  getStudyDetails(item = "StudyTitle", projectPath = projectPath),
+    'Author' = getStudyDetails(item = 'StudyLead', projectPath = projectPath),
+    'Date' = lubridate::today()
+  )
+
+  fileName <- snakecase::to_upper_camel_case(getStudyDetails(item = "StudyTitle", projectPath = projectPath)) %>%
+    paste0("Protocol")
+
+  dir_path <- fs::path("documentation", "Protocol") %>%
+    fs::dir_create()
+
+  usethis::use_template(
+    template = "PassProtocol.Rmd",
+    save_as = fs::path(dir_path, fileName, ext = "Rmd"),
+    data = data,
+    open = open,
+    package = "Ulysses")
 
   invisible(data)
 }
