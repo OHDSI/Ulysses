@@ -90,7 +90,6 @@ makeCohortDetails <- function(projectPath = here::here(), open = TRUE) {
 
   data <- rlang::list2(
     'Study' = getStudyDetails("StudyTitle", projectPath = projectPath),
-    'Date' = lubridate::today(),
     'Author' = getStudyDetails("Lead", projectPath = projectPath)
   )
 
@@ -136,6 +135,7 @@ makeExample <- function(fileName, savePath = here::here(), open = TRUE) {
 #' Function to create a pipeline task as a Rmd file
 #' @param scriptName The name of the analysis script
 #' @param configBlock the name of the config block to use for the script
+#' @param projectPath the path to the project
 #' @param open toggle on whether the file should be opened
 #' @export
 makeAnalysisScript <- function(scriptName,

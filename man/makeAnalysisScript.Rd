@@ -16,6 +16,8 @@ makeAnalysisScript(
 
 \item{configBlock}{the name of the config block to use for the script}
 
+\item{projectPath}{the path to the project}
+
 \item{open}{toggle on whether the file should be opened}
 }
 \description{

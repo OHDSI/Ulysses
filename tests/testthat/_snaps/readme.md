@@ -27,7 +27,7 @@
       
         - **Study Lead**: Ulysses
         - **Analytics Use Case**: Characterization
-        - **Study Start Date**: 2023-06-22
+        - **Study Start Date**: 2023-06-28
         - **Study End Date**: 2099-12-31
         - **Study Tags**: None
         - **Protocol**: Unavailable

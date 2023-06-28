@@ -30,6 +30,6 @@ This cohort is meant to serve as the target population for the study. It identif
 
 #### Log
 
-** Version 1: {{{ Date }}} **
+**Version 1: [ Enter Date ]**
 
 - Initial cohort design developed using [ATLAS or Capr]

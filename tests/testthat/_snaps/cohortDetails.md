@@ -35,7 +35,7 @@
       
       #### Log
       
-      ** Version 1: 2023-06-22 **
+      **Version 1: [ Enter Date ]**
       
       - Initial cohort design developed using [ATLAS or Capr]
 
