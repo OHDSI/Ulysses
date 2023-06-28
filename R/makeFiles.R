@@ -90,7 +90,7 @@ makeCohortDetails <- function(projectPath = here::here(), open = TRUE) {
 
   data <- rlang::list2(
     'Study' = getStudyDetails("StudyTitle", projectPath = projectPath),
-    'Author' = getStudyDetails("Lead", projectPath = projectPath)
+    'Author' = getStudyDetails("StudyLead", projectPath = projectPath)
   )
 
   usethis::use_template(

@@ -9,6 +9,7 @@ newOhdsiStudy(
   projectName = basename(path),
   author,
   type,
+  verbose = TRUE,
   openProject = TRUE
 )
 }
@@ -20,6 +21,8 @@ newOhdsiStudy(
 \item{author}{the name of the study lead}
 
 \item{type}{the type of study either Characterization, PLP or PLE}
+
+\item{verbose}{whether the function should provide steps, default TRUE}
 
 \item{openProject}{should the project be opened if created}
 }

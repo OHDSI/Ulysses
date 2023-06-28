@@ -3,6 +3,7 @@
 #' @param projectName the name of the project
 #' @param author the name of the study lead
 #' @param type the type of study either Characterization, PLP or PLE
+#' @param verbose whether the function should provide steps, default TRUE
 #' @param openProject should the project be opened if created
 #' @import rlang usethis fs
 #' @export
@@ -10,11 +11,14 @@ newOhdsiStudy <- function(path,
                           projectName = basename(path),
                           author,
                           type,
+                          verbose = TRUE,
                           openProject = TRUE) {
 
   # Step 1: create project directory
-  cli::cat_bullet("Step 1: Creating R Project",
-                  bullet_col = "yellow", bullet = "info")
+  if (verbose) {
+    cli::cat_bullet("Step 1: Creating R Project",
+                    bullet_col = "yellow", bullet = "info")
+  }
   path <- fs::path_expand(path)
 
   ## Create the directory
@@ -27,19 +31,23 @@ newOhdsiStudy <- function(path,
   #cli::cat_line("\t- Adding .Rproj")
 
 
-  # Step 3: add picard directory structure folders
-  addDefaultFolders(projectPath = dir_path)
+  # Step 2: add picard directory structure folders
+  addDefaultFolders(projectPath = dir_path, verbose = verbose)
 
-  # Step 4: create _picard.yml file
+  # Step 3: create _picard.yml file
   addStudyMeta(projectName = projectName,
                author = author,
                type = type,
-               projectPath = dir_path)
+               projectPath = dir_path,
+               verbose = verbose)
 
 
-  # Step 5: create gitignore
-  cli::cat_bullet("Step 4: Add to .gitignore file",
-                  bullet_col = "yellow", bullet = "info")
+  # Step 4: create gitignore
+  if (verbose) {
+    cli::cat_bullet("Step 4: Add to .gitignore file",
+                    bullet_col = "yellow", bullet = "info")
+  }
+
   ignores <- c("results/","logs/", "_study.yml")
   usethis::write_union(fs::path(dir_path, ".gitignore"), ignores)
 
@@ -87,9 +95,11 @@ isOhdsiStudy <- function(basePath) {
 }
 
 
-addDefaultFolders <- function(projectPath) {
-  cli::cat_bullet("Step 2: Adding OHDSI Study Project Folders",
-                  bullet_col = "yellow", bullet = "info")
+addDefaultFolders <- function(projectPath, verbose = TRUE) {
+  if (verbose) {
+    cli::cat_bullet("Step 2: Adding OHDSI Study Project Folders",
+                    bullet_col = "yellow", bullet = "info")
+  }
 
   cohortFolders <- c('01_target')
   analysisFolders <- c("settings", "studyTasks", "private")
@@ -110,10 +120,14 @@ addDefaultFolders <- function(projectPath) {
 addStudyMeta <- function(projectName,
                          author,
                          type = c("Characterization", "Population-Level Estimation", "Patient-Level Prediction"),
-                         projectPath){
+                         projectPath,
+                         verbose = TRUE){
 
-  cli::cat_bullet("Step 3: Adding _study.yml file",
-                  bullet_col = "yellow", bullet = "info")
+  if (verbose) {
+    cli::cat_bullet("Step 3: Adding _study.yml file",
+                    bullet_col = "yellow", bullet = "info")
+  }
+
 
 
   # projName <- basename(projectPath) %>%
