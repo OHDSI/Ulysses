@@ -7,3 +7,5 @@ compare_versions
 deploy.sh
 ^extras/
 ^.github/
+pkgdown/
+docs/
