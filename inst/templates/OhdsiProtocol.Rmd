@@ -1,0 +1,228 @@
+---
+title: "| RESEARCH PROTOCOL\n| \n| {{{ Study }}} \n"
+fontsize: 12pt
+geometry: margin=1in
+output:
+  bookdown::html_document2:
+    df_print: paged
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+    number_sections: yes
+    number_tables: yes
+    css: style.css
+  word_document:
+    reference_docx: ohdsi-protocol-style.docx
+  bookdown::pdf_document2:
+    keep_tex: yes
+    latex_engine: xelatex
+    md_extensions: +raw_attribute
+    number_sections: yes
+    includes:
+      before_body: title.tex
+header-includes:
+- \usepackage[numbers,sort&compress]{natbib}
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
+- \usepackage{threeparttablex}
+- \usepackage[normalem]{ulem}
+- \usepackage{makecell}
+- \usepackage{caption}
+- \usepackage{rotating}
+- \usepackage{multirow}
+- \usepackage{mwe,tikz}
+- \usepackage[percent]{overpic}
+- \usepackage{enumitem}
+- \usepackage{hyperref}
+- \newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+- \newcommand{\footerDate}{`r params$date`}
+- \input{header.tex}
+longtable: yes
+mainfont: Arial
+bibliography: Protocol.bib
+params:
+  date: {{{ Date }}}
+  version: 0.0.1
+subtitle: 'Version: `r params$version`'
+link-citations: yes
+csl: bmj.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE)
+options(kableExtra.latex.load_packages = FALSE)
+library(kableExtra)
+library(dplyr)
+options(knitr.kable.NA = "")
+options(knitr.table.format = function() {
+  if (knitr::is_latex_output()) {
+    "latex"
+  } else if (knitr::is_html_output()) {
+    "html"
+  } else {
+    "pipe"
+  }
+})
+
+latex_table_font_size <- 8
+```
+
+# List of Abbreviations
+
+```{r abbreviations, echo=FALSE}
+abbreviations <- tibble::tribble(
+  ~Abbreviation, ~Description,
+  "CDM", "Common Data Model"
+)
+
+tab <- kable(abbreviations, col.names = NULL, linesep = "", booktabs = TRUE)
+
+if (knitr::is_latex_output()) {
+  tab %>% kable_styling(latex_options = c("striped", "hold_position"), 
+                        font_size = latex_table_font_size)
+} else {
+  tab %>% kable_styling(bootstrap_options = "striped")
+}
+```
+
+\clearpage
+
+# Responsible Parties
+
+## Investigators
+
+```{r parties, echo=FALSE}
+
+parties <- tibble::tribble(
+  ~Investigator, ~Affiliation,
+  "Joe Bruin*", "Department of Biostatistics, University of California, Los Angeles"
+)
+
+tab <- kable(parties, booktabs = TRUE, linesep = "") %>%
+  column_spec(1, width = "10em") %>%
+  column_spec(2, width = "35em") %>%
+  footnote(general = "* Principal Investigator", general_title = "")
+
+if (knitr::is_latex_output()) {
+  tab %>% kable_styling(latex_options = c("striped", "hold_position"),
+                        font_size = latex_table_font_size)
+} else {
+  tab %>% kable_styling(bootstrap_options = "striped")
+}
+```
+
+## Disclosures
+
+This study is undertaken within Observational Health Data Sciences and Informatics (OHDSI), an open collaboration.
+
+\clearpage
+
+# Abstract
+
+**Background and Significance**: 
+
+**Study Aims**: 
+
+**Study Description**: 
+
+* **Population**: 
+
+* **Comparators**:
+  
+* **Outcomes**:
+  
+* **Design**: 
+
+* **Timeframe**: 
+
+\clearpage
+
+# Amendments and Updates
+
+```{r amendments, echo=FALSE}
+amendments <- tibble::tribble(
+  ~Number, ~Date, ~Section, ~`Amendment or Update`, ~Reason,
+  "0", "04-10-2023", "Study Objectives", "Amendment", "Added new objective"
+)
+
+tab <- kable(amendments, booktabs = TRUE, linesep = "")
+
+if (knitr::is_latex_output()) {
+  tab %>% kable_styling(latex_options = c("striped", "hold_position"), font_size = latex_table_font_size)
+} else {
+  tab %>% kable_styling(bootstrap_options = "striped")
+}
+```
+
+# Milestones
+
+```{r dates, echo=FALSE}
+dates <- tibble::tribble(
+  ~Milestone, ~Planned, ~Actual,
+  "Start Analysis", "04-10-2023", "04-10-2023"
+)
+
+tab <- kable(dates, booktabs = TRUE, linesep = "")
+
+if (knitr::is_latex_output()) {
+  tab %>% kable_styling(latex_options = c("striped", "hold_position"), font_size = latex_table_font_size)
+} else {
+  tab %>% kable_styling(bootstrap_options = "striped")
+}
+```
+
+# Rationale and Background
+
+# Study Objectives
+
+# Research Methods
+
+## Study Design
+
+This study uses `CohortMethod` [@Schuemie2020-fa].
+
+## Data Sources
+
+## Study Population
+
+## Exposure Comparators
+
+## Outcomes {#outcomes}
+
+## Analysis
+
+# Sample Size and Study Power {#sample-size}
+
+# Strengths and Limitations {#strengths-limitations}
+
+# Protection of Human Subjects
+
+# Management and Reporting of Adverse Events and Adverse Reactions
+
+# Plans for Disseminating and Communicating Study Results
+
+\clearpage
+
+# References {-}
+
+<div id="refs"></div>
+
+\clearpage
+
+\centerline{\Huge Appendix}
+
+# (APPENDIX) Appendix {-}
+
+# Exposure Cohort Definitions
+
+# Outcome Cohort Definitions
+
+# Negative Control Concepts {#negative-controls}
