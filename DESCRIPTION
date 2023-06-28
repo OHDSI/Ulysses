@@ -11,12 +11,15 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports: 
     cli,
+    crayon,
     fs,
     glue,
     lifecycle,
+    lubridate,
     magrittr,
     rlang,
     rstudioapi,
+    scales,
     snakecase,
     usethis,
     whisker,
