@@ -50,11 +50,11 @@ OHDSI studies revolve around generated cohort definitions used to enumerate pers
 
 An OHDSI study consists of lots of documentation that effectively communicate what the study is, how to run it and how to participate. There are three key files stored in this folder:
 
--   **Study Protocol**: the protocol offers guidance on the scientific methods used to conduct the study and justification for why scientific decisions were made. `Ulysses` auto-generates a skeleton file via `makeStudyProtocol`.
+-   **Study Protocol**: the protocol offers guidance on the scientific methods used to conduct the study and justification for why scientific decisions were made. `Ulysses` auto-generates a skeleton file via `makeOhdisProtocol` or `makePassProtocol`. 
 -   **How To Run**: a file is needed that provides all technical specifications and instructions needed to run the study at a site. This file provides information on how to download the OHDSI study, prepare the environment for running the study, executing the study and how to dissiminate the results to the study host. `Ulysses` auto-generates a skeleton file via `makeHowToRun`
 -   **Contribution Guidelines**: a file is required to communicate how others can contribute to the study. Contributions can range from simply running the study to providing significant development. OHDSI studies require transparency to nodes on what are the rules and expectations for meaningful contribution to the study. `Ulysses` auto-generates a skeleton file via `makeContribution`
 
-There exist scenarios when a full-fledged protocol is not required for a study. While a study protocol is not required by the institution running the study, it is still good practice to provide guidance on the scientific decision making for the study. `Ulysses` offers a skeleton file called the *Study Synopsis*, implemented via `makeStudySynopsis`, that gives structure to the methods and rationale for the study while not being as formal as a study protocol.
+There exist scenarios when a full-fledged protocol is not required for a study. While a study protocol is not required by the institution running the study, it is still good practice to provide guidance on the scientific decision making for the study. `Ulysses` offers a skeleton file called the *Study SAP*, implemented via `makeStudySAP`, that gives structure to the methods and rationale for the study while not being as formal as a study protocol.
 
 The documentation folder may also contain other files that are essential for communicating important aspects of the study.
 

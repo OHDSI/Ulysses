@@ -134,3 +134,59 @@ Ulysses::makeKeyringSetup(configBlock = "example", database = "synpuf_110k")
 ```
 
 # Adding R scripts
+
+One way we can add analytical scripts to `Ulysses` is by using the line below
+
+```{r analysisScript, echo=TRUE, eval=FALSE}
+Ulysses::makeAnalysisScript(scriptName = "buildCohorts")
+```
+
+This function will create a new R script written to the folder `analysis/studyTasks`. The R script will have a prefix of a number indicating the order in which the script should be executed. The first script for example will follow the syntax **01_<taskName>**. `Ulysses` will automatically open this file to begin editing. 
+
+Each analytical task is formatted with the following sections:
+
+A) File Info -> includes information about the file
+B) Dependencies -> a list of libraries, options and source files required to run script
+C) Connection -> set up connection to dbms
+D) Variables -> set variables (parameters) needed for the script
+E) Script -> the script to run
+F) Session Info -> a summary of the session info and clean up
+
+To complement the analysis scripts, we can also create internal files. These are R files that contain functions or other code that needs to be sourced in the analysis. These files are saved in the `analysis/private` folder. Making an internal function can be done by the following:
+
+```{r internalScript, echo=TRUE, eval=FALSE}
+Ulysses::makeInternals(internalsName = "buildCohorts")
+```
+
+The R package [`Strategus`](https://github.com/OHDSI/Strategus) helps execute OHDSI analytics. Analytical modules are executed via `Strategus`. This paradigm to OHDSI studies can also be handled by `Ulysses`. More support for using `Strategus` with `Ulysses` will be explored in future releases. 
+
+# Adding Documenation
+
+An important part of a study repository is communicating its contents to study nodes. A study node in a network study must understand the scientific components of the study, how to run the study locally and how to contribute towards the study. `Ulysses` provides functions to help develop documentation to communicate the study to participants in the OHDSI network. 
+
+## Analysis Specification
+
+A study requires a protocol or a study analysis plan (SAP), specifying the scientific components of the study. These documents specify the study design, definition of the target, exposure and outcome cohorts and how the data analysis is conducted. This documentation is important because it provides guidance and rationale for the study. Many study nodes also require submission of documentation to an institutional review board to justify execution of the study. `Ulysses` provides templates for an OHDSI protocol, PASS protocols and a suggested format for a SAP. Below are examples of building these templates:
+
+```{r doc1, echo=TRUE, eval=FALSE}
+Ulysses::makeOhdsiProtocol()
+Ulysses::makePassProtocol()
+Ulysses::makeStudySAP()
+```
+
+## How to Run
+
+Next, a repository needs to communicate how to run the study. This document informs study nodes on technical requirements needed to run the study, provides instructions on installations, and the process of running the study. OHDSI studies are designed in several different ways, so it is important that the developer explains how this study should be run. Below is an example of how to create the `howToRun.md` file:
+
+```{r doc2, echo=TRUE, eval=FALSE}
+Ulysses::makeHowToRun(org = "Ohdsi", repo = "my_ohdsi_study")
+```
+
+
+## Contributing
+
+Finally, the repository needs to communicate how study nodes can contribute to the study. This include information on posting results, asking for help and code of conduct. Contribution guidelines are standard documentation of software and would be helpful additions to OHDSI studies. To create a template contribution guideline follow the example below:
+
+```{r doc3, echo=TRUE, eval=FALSE}
+Ulysses::makeContributionGuidelines()
+```
