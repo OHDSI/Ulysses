@@ -16,16 +16,16 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Introduction
 
-*Add an introduction to the study*
+<!----Add an introduction to the study----->
 
 # Methods
 
-*Copy over methods from protocol. REMEMBER TO CHANGE TO PAST TENSE*
+<!----Copy over methods from protocol. REMEMBER TO CHANGE TO PAST TENSE*----->
 
 # Results
 
-*Add in study results*
+<!----Add in study results*----->
 
 # Discussion 
 
-*Add a discussion about the results*
+<!----Add a discussion about the results*----->

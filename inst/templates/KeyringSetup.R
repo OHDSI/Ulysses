@@ -1,30 +1,32 @@
-# Install keyring - one time operation ---------
-install.packages("keyring")
+# Setup Credentials -------------
+# This file setups the credential library for your study. The function establishes
+# a config.yml file and creates a keyring for the study. Input your credentials
+# into the keyring. Keep your database credentials handy before running this script.
+# Ask your database administrator if you are unsure of your credentials.
 
-if (Sys.getenv("STRATEGUS_KEYRING_PASSWORD") == "") {
-  # set keyring password by adding STRATEGUS_KEYRING_PASSWORD='sos' to renviron
-  usethis::edit_r_environ()
-  # then add STRATEGUS_KEYRING_PASSWORD='sos', save and close
-  # Restart your R Session to confirm it worked
-  stop("Please add STRATEGUS_KEYRING_PASSWORD='sos' to your .Renviron file
-       via usethis::edit_r_environ() as instructed, save and then restart R session")
-}
+## A) Depedendencies ------------
 
-# Provide your environment specific values ------
-# For example...
-#dbms <- "redshift"
-#connectionString <- "jdbc:redshift://your.server.goes.here:5439/your_cdm_database"
-#username <- "username-goes-here"
-#password = "password-goes-here"
+library(tidyverse, quietly = TRUE)
+library(Ulysses)
+library(keyring)
 
+## B) Set Parameters ------------
 
+configBlock <- "{{{ Block }}}" # name of config block
 
-# Run the rest to setup keyring ----------
-##################################
-# DO NOT MODIFY BELOW THIS POINT
-##################################
-keyringName <- "{{{ Name }}}"
-keyringPassword <- "{{{ Secret }}" # This password is simply to avoid a prompt when creating the keyring
+database <- "{{{ Database }}}" # the name of the database in the config block
+
+keyringName <- "{{{ Study }}}" # the name of the keyring
+
+keyringPassword <- "{{{ Secret }}}" # password for keyring
+# This password is simply to avoid a prompt when creating the keyring
+
+## c) Check or create Config File------------------------
+
+# check if config.yml file exists, make it if it does not exist
+checkConfig()
+
+## D) Setup Keyring -----------------
 
 # Create the keyring if it does not exist.
 # If it exists, clear it out so we can re-load the keys
@@ -44,19 +46,58 @@ if (keyringName %in% allKeyrings$keyring) {
   }
   keyring::keyring_delete(keyring = keyringName)
 }
+# set a new keyring for study
 keyring::keyring_create(keyring = keyringName, password = keyringPassword)
 
-# Store the the user-specific configuration -----
-keyring::key_set_with_value("dbms", password = dbms, keyring = keyringName)
-keyring::key_set_with_value("connectionString", password = connectionString, keyring = keyringName)
-keyring::key_set_with_value("username", password = username, keyring = keyringName)
-keyring::key_set_with_value("password", password = password, keyring = keyringName)
+## E) Set Credentials -----------------------
+#add additional credentials to this list if necessary
+creds <- c(
+  "dbms", # the database dialect
+  "user", # the user name for the db
+  "password", # the password for the db
+  "connectionString", # the connection string to access the db
+  "cdmDatabaseSchema", # the database + schema (or just schema) hosting the cdm
+  "vocabDatabaseSchema", # the database + schema (or just schema) hosting the vocabulary, usually same as cdm
+  "workDatabaseSchema" # the database + schema (or just schema) hosting the work or scratch
+)
 
-# Print the values to confirm the configuration
-cli::cat_bullet("Keyring Values for ", crayon::green(keyringName),
-                bullet = "info", bullet_col = "blue")
-keys <- c("dbms", "connectionString", "username", "password")
-for (i in seq_along(keys)) {
+cred_block <- paste(configBlock, creds, sep = "_") %>% as.list()
+names(cred_block) <- creds
 
-  cli::cat_line("\t-",  crayon::cyan(keys[i]), ": ", keyring::key_get(keys[i], keyring = keyringName))
+# set a new keyring for study
+# this will lead to a dialog box enter the credentials
+purrr::walk2(cred_block, names(cred_block), ~keyring::key_set(service = .x, keyring = keyringName, prompt = .y))
+
+
+## F) Check (Optional) -----------------------
+
+
+### Review that the credentials are correct
+
+blurCreds <- function(item,  keyringName) {
+  cred <- keyring::key_get(service = item, keyring = keyringName)
+  txt <- glue::glue(item, ": ", crayon::blurred(cred))
+  cli::cat_bullet(txt, bullet = "info", bullet_col = "blue")
+  invisible(item)
 }
+
+purrr::walk(cred_block, ~blurCreds(item = .x,  keyringName = keyringName))
+
+# If a single credential is incorrect, change it
+# keyring::key_set(service = cred_block$dbms, keyring = keyringName)
+# blurCreds(item = cred_block$dbms, keyring = keyringName)
+
+### Test connection details
+connectionDetails <- DatabaseConnector::createConnectionDetails(
+  dbms = config::get("dbms", config = configBlock),
+  user = config::get("user", config = configBlock),
+  password = config::get("user", config = configBlock),
+  connectionString = config::get("connectionString", config = configBlock)
+)
+connectionDetails$dbms
+
+
+# G) Session Info ------------------------
+
+sessioninfo::session_info()
+rm(list=ls())

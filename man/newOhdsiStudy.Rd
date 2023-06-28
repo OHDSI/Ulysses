@@ -5,21 +5,24 @@
 \title{Function that initializes a new ohdsi study project environment}
 \usage{
 newOhdsiStudy(
-  projectName,
+  path,
+  projectName = basename(path),
   author,
   type,
-  directory = here::here(),
+  verbose = TRUE,
   openProject = TRUE
 )
 }
 \arguments{
+\item{path}{the path where the project sits}
+
 \item{projectName}{the name of the project}
 
 \item{author}{the name of the study lead}
 
 \item{type}{the type of study either Characterization, PLP or PLE}
 
-\item{directory}{the directory to create the project}
+\item{verbose}{whether the function should provide steps, default TRUE}
 
 \item{openProject}{should the project be opened if created}
 }

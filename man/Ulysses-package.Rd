@@ -6,6 +6,8 @@
 \alias{Ulysses-package}
 \title{Ulysses: Automate OHDSI Study Setup}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Automates setup of OHDSI study and provides functions to assist on improving organization and communication of a study.
 }
 \author{

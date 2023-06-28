@@ -14,43 +14,47 @@ format:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+# Background
 
+<!-------Add background on the study------>
 # Research Questions
 
-*Include the study research questions*
+<!-------Include the study research questions------>
 
 
 # Objectives
 
-*Add the study objectives, delete section that are unused*
+
+<!-------Add the study objective------>
 
 ## Primary Objectives
 
 ## Secondary Objectives
 
-## Exploratory Objectives
+<!----Delete if not used------>
 
+## Exploratory Objectives
+<!----Delete if not used------>
 
 # Study Design
 
-## Study Population
+## Study Population (Target Cohort)
 
-*Provide information on the study population used in the analysis*
+<!---Provide information on the study population used in the analysis--->
 
 ## Exposure Definition
 
-*Provide information on the exposure definition used in the analysis*
+<!---Provide information on the exposure definition used in the analysis--->
 
 ## Outcome Definition
 
-*Provide information on the outcome definition used in the analysis*
+<!---Provide information on the outcome definition used in the analysis--->
 
 
 # Data Sources
 
-<!-- Add data sources -->
+<!-- Add data sources, Example table for data sources -->
 
-*Example table for data sources*
 
 ```{r}
 #| label: tbl-data_sources
@@ -68,44 +72,33 @@ flextable::flextable(dataSources)
 
 # Analysis Plan
 
-*Provide information on how the analysis will be done*
+<!----Provide information on how the analysis will be done*---->
 
 
-## Covariates
+<!----Delete text that doesnt fit------->
 
-*Example of covariate table*
+## Cohort Diagnostics
 
-```{r}
-#| label: tbl-cov
-#| tbl-cap: Covariates used for study
+Prior to running any specific analysis, we will evaluate the HMB cohort using the OHDSI R package `CohortDiagnostics`. This package produces metrics such as cohort counts in the database, incidence rates (by calendar year, age and gender), time distributions, cohort attrition and breakdown of index events. Evaluation of these metrics helps ensure that the clinical cohort is indeed reliable in capturing HMB in the OMOP database. 
 
-cov <- tibble::tribble(
-  ~`Domain`, ~`Covariate`, ~`Time`, ~`Stat`,
-  "Demographics", "age 5yr", "at index", "count (%)",
-  "Demographics", "age continuous", "at index", "median (25th-75th)",
-  "Demographics", "gender", "at index", "count (%)",
-  "Demographics", "healthcare plan", "at index", "count (%)",
-  "Demographics", "time in cohort", "at index", "median (25th-75th)",
-  "Conditions", "Diabetes Mellitus", "365d prior", "count (%)",
-  "Conditions", "Hypertension", "365d prior", "count (%)",
-  "Conditions", "Heart Failure", "365d prior", "count (%)",
-  "Conditions", "Systolic Heart Failure", "365d prior", "count (%)",
-  "Conditions", "Diastolic Heart Failure", "365d prior", "count (%)",
-  "Conditions", "Chronic Kidney Disease", "365d prior", "count (%)",
-  "Conditions", "Myocardial Infarction", "365d prior", "count (%)",
-  "Conditions", "Stroke", "365d prior", "count (%)",
-  "Conditions", "ICD10 Chapters", "365d prior", "count (%)",
-  "Drugs", "ATC2", "365d prior", "count (%)",
-  "Drugs", "Anticoagulants", "365d prior", "count (%)",
-)
+## Baseline Characteristics
 
-flextable::flextable(cov)
-```
+
+We assess baseline characteristics based on a observation window of 365 to 0 days prior to the index date. Categorical covariates are reported using the count and percentage. Continuous covariates are reported using the median, 25th and 75th percentile. Table xxx provides the set of covariates to be assessed in the study. 
+
+**Demographics**
+
+* Age as 5-year categories
+* Age as continuous
+* Race (if available)
+* Ethnicity (if available)
+* Year of Diagnosis (per calendar year)
+
+<!----Add more sections for the analysis--------------------->
 
 ## Stratafication
 
 
-## Data Analysis
-
+<!----Add stratifications -------------->
 
 

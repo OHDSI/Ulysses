@@ -1,8 +1,8 @@
 ---
-title: "Introduction to Ulysses"
+title: "Introduction to Ulysses Directory"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction to Ulysses}
+  %\VignetteIndexEntry{Introduction to Ulysses Directory}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -29,10 +29,7 @@ Running an OHDSI study is exciting effort that can lead to meaningful new eviden
 
 The first step towards assisting OHDSI studies is to introduce a consistent directory structure that contains also necessary components towards executing a study and is easy to follow. Below is a proposed directory structure, offered by the `Ulysses` package for OHDSI studies.
 
-```{r dirSructure}
-pp <- fs::path_package(package = "Ulysses", "vignette/ulyssesDirectory")
-fs::dir_tree(pp)
-```
+![Ulysses Style OHDSI Study Directory](images/ulysses_directory.png)
 
 
 ### Analysis Folder
@@ -53,11 +50,11 @@ OHDSI studies revolve around generated cohort definitions used to enumerate pers
 
 An OHDSI study consists of lots of documentation that effectively communicate what the study is, how to run it and how to participate. There are three key files stored in this folder:
 
--   **Study Protocol**: the protocol offers guidance on the scientific methods used to conduct the study and justification for why scientific decisions were made. `Ulysses` auto-generates a skeleton file via `makeStudyProtocol`.
+-   **Study Protocol**: the protocol offers guidance on the scientific methods used to conduct the study and justification for why scientific decisions were made. `Ulysses` auto-generates a skeleton file via `makeOhdisProtocol` or `makePassProtocol`. 
 -   **How To Run**: a file is needed that provides all technical specifications and instructions needed to run the study at a site. This file provides information on how to download the OHDSI study, prepare the environment for running the study, executing the study and how to dissiminate the results to the study host. `Ulysses` auto-generates a skeleton file via `makeHowToRun`
 -   **Contribution Guidelines**: a file is required to communicate how others can contribute to the study. Contributions can range from simply running the study to providing significant development. OHDSI studies require transparency to nodes on what are the rules and expectations for meaningful contribution to the study. `Ulysses` auto-generates a skeleton file via `makeContribution`
 
-There exist scenarios when a full-fledged protocol is not required for a study. While a study protocol is not required by the institution running the study, it is still good practice to provide guidance on the scientific decision making for the study. `Ulysses` offers a skeleton file called the *Study Synopsis*, implemented via `makeStudySynopsis`, that gives structure to the methods and rationale for the study while not being as formal as a study protocol.
+There exist scenarios when a full-fledged protocol is not required for a study. While a study protocol is not required by the institution running the study, it is still good practice to provide guidance on the scientific decision making for the study. `Ulysses` offers a skeleton file called the *Study SAP*, implemented via `makeStudySAP`, that gives structure to the methods and rationale for the study while not being as formal as a study protocol.
 
 The documentation folder may also contain other files that are essential for communicating important aspects of the study.
 
@@ -78,83 +75,5 @@ OHDSI studies sometimes contain files that are important to a study but do not h
 The final file initiated by `Ulysses` is the `_study.yml` file. This is a meta file that provides an overview of the study. It contains information about who is the study lead, the date the study started and the full name of the study. We plan to expand upon this meta file as we feel quality meta data for a study is useful for 1) automating start-up tasks and 2) providing records to users.
 
 
-# Initializing an OHDSI study
 
-Once you have downloaded the `Ulysses` package, you can begin creating an OHDSI study. To do this, you can run code as shown in the block below:
-
-```{r initStudy, echo=TRUE, eval=FALSE}
-Ulysses::newOhdsiStudy(
-  projectName = "my_ohdsi_study",
-  author = "Ulysses S. Grant",
-  type = "Characterization",
-  directory = "my_directory",
-  open = TRUE
-)
-```
-
-By running this function, `Ulysses` will initiate the described directory structure and open an R project in a new session. Notice that the details provided in the function will be rendered in the `_study.yml` file. With the study initiated we can begin developing our OHDSI study.
-
-## The *README* file
-
-For those familiar with code development, the README file is a standard file used to introduce a describe the the project. Think of the README as your cover page. It is the first file users see when they navigate to the github page. All OHDSI projects require a README file, thus `Ulysses` provides a function (`makeReadMe`) that initializes it.
-
-```{r readMeStart, echo=TRUE, eval=FALSE}
-Ulysses::makeReadMe()
-```
-
-The readme file is initailized using information in the `_study.yml` file. A typical OHDSI study readme has a section of meta information as seen below:
-
--   **Study Lead**: Ulysses S. Grant
--   **Analytics Use Case**: Characterization
--   **Study Start Date**: 04-27-1822
--   **Study End Date**: 07-23-1885
--   **Study Tags**: None
--   **Protocol**: Unavailable
--   **Publications**: Unavailable
--   **Results Explorer**: Unavailable
-
-This provides all the basic information about the OHDSI study. A future feature will be to provide linkage to the OHDSI Forums post introducing the study to the community.
-
-Next, the user will be asked to provide a description of the study and databases used in the study. Finally, the README provides links to important study information including the protocol, how to run and contributions files. Users can add as much as they please to the README file, `Ulysses` offers suggested guidance for starting it.
-
-Another feature offered by `Ulysses` is support for svg badges. These simple badges appear at the top of the README and provide useful information about the study. Badges seen in OHDSI studies include a study status badge and badges versioning the CDM and OMOP vocabulary. `Ulysses` will provide more support and documentation for badges in the future.
-
-## The *NEWS* file
-
-Another common file in software repositories is the NEWS file. The purpose of the NEWS file is to track changes to the software over time. Of course, version control software such as github keeps a record of the iterations of the study as it is developed, however it is helpful to have a "plain english" file that explains what has happened as the study has developed over time. NEWS files are often maintained via a [semantic versioning](https://semver.org/) system. OHDSI studies are not entirely software, however it is important to maintain order over the development of the technical pieces of the study. `Ulysses` offers a simple function that initiates this file, `makeNews`.
-
-## The *config.yml* file
-
-One of the most important inputs for an OHDSI study is the connection details to the Database Management System (DBMS) that hosts the OMOP data. These credentials need to be supplied in order to access the data within the study node, to build cohorts and run the study on the CDM. Keeping credentials secure and accessible is a difficult challenge. From experience, we have found success maintaining credentials via the [`config` package](https://github.com/rstudio/config). This package stores configurations to an analysis in a yml where each set of credentials is differentiated with a block name. This structure is particularly helpful in institutions that have access to multiple OMOP assets and wish to iterate between connections efficiently. Below is an example of a `config.yml` file:
-
-```
-# Config File for example
-
-default:
-  projectName: example
-
-# Config block for example
-
-example:
-  databaseName: synpuf_110k
-  dbms: !expr keyring::key_get('example_dbms')
-  user: !expr keyring::key_get('example_user')
-  password: !expr keyring::key_get('example_password')
-  connectionString: !expr keyring::key_get('example_connectionString')
-  cdmDatabase: !expr keyring::key_get('example_cdmDatabase')
-  cdmSchema: !expr keyring::key_get('example_cdmSchema')
-  vocabSchema: !expr keyring::key_get('example_vocabSchema')
-  workDatabase: !expr keyring::key_get('example_workDatabase')
-  workSchema: !expr keyring::key_get('example_workSchema')
-  role: !expr keyring::key_get('example_role')
-  cohortTable: example_synpuf_110k
-```
-
-We can efficiently access credentials that are hidden behind the [`keyring`](https://github.com/r-lib/keyring) API. The `config.yml` file works very similarly to the `.Renviron` file. The advantage of using the `config.yml` file instead of the `.Renviron` is that can handle multiple credentials and is more portable than the `.Renviron` file which is set to an environment. With `Ulysses` we provide a function that initializes this file:
-
-```{r configSetup, echo=TRUE, eval=FALSE}
-Ulysses::makeConfig(block = "example", database = "synpuf_110k")
-```
-
-When a user creates a new `config.yml` file it is added to `.gitignore` to ensure it is not committed to a github repository. 
 

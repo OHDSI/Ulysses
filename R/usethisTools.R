@@ -1,7 +1,7 @@
 # These functions come directly from usethis
 
 # template -----------------
-find_template <- function(template_name, package = "picard") {
+find_template <- function(template_name, package = "Ulysses") {
   rlang::check_installed(package)
   path <- tryCatch(
     fs::path_package(
@@ -15,7 +15,7 @@ find_template <- function(template_name, package = "picard") {
   path
 }
 
-render_template <- function(template, data = list(), package = "picard") {
+render_template <- function(template, data = list(), package = "Ulysses") {
   template_path <- find_template(template, package = package)
   strsplit(whisker::whisker.render(read_utf8(template_path),
                                    data), "\n")[[1]]
@@ -32,7 +32,7 @@ write_utf8 <- function(path, lines, append = FALSE, line_ending = NULL) {
   con <- file(path, open = file_mode, encoding = "utf-8")
   withr::defer(close(con))
 
-  line_ending <- platform_line_ending()
+  line_ending <- ifelse(.Platform$OS.type == "windows", "\r\n", "\n")
 
   # convert embedded newlines
   lines <- gsub("\r?\n", line_ending, lines)

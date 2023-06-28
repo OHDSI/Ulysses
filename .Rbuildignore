@@ -1,3 +1,11 @@
 ^Ulysses\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
+scratch/
+_pkgdown.ym
+compare_versions
+deploy.sh
+^extras/
+^.github/
+pkgdown/
+docs/

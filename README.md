@@ -2,6 +2,7 @@
 
 <!-- badges: start -->
 
+[![codecov.io](https://codecov.io/github/OHDSI/Ulysses/coverage.svg?branch=main)](https://app.codecov.io/gh/OHDSI/Ulysses?branch=main) [![Build Status](https://github.com/OHDSI/Ulysses/workflows/R-CMD-check/badge.svg)](https://github.com/OHDSI/Ulysses/actions?query=workflow%3AR-CMD-check)
 
 <!-- badges: end -->
 
@@ -30,8 +31,13 @@ Requires R (version 4.1 or higher)
 
 # User Documentation
 
-Documentation can be found on the package website (ADD).
+Documentation can be found on the [package website](https://ohdsi.github.io/Ulysses/).
 
+PDF versions of the documentation are available:
+
+- Vignette: [Ulysses Intro](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/pdf_vignette/start_study.pdf)
+- Vignette: [Ulysses Directory](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/pdf_vignette/ulysses_directory.pdf)
+- [Package manual](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/Ulysses.pdf)
 
 # Support
 

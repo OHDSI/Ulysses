@@ -13,14 +13,13 @@ library(CohortGenerator)
 
 # B. Connection ----------------------
 
-#create connection details
-connectionDetails <- DatabaseConnector::createConnectionDetails(
-  dbms = "<dbms>",
-  user = "<user>",
-  password = "<password>",
-  connectionString = "<connectionString>"
-)
-#set database schemas
+# create connection details
+connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "<dbms>",
+                                                                user = "<user>",
+                                                                password = "<password>",
+
+  connectionString = "<connectionString>")
+# set database schemas
 vocabularyDatabaseSchema <- "<vocabularyDatabaseSchema>"
 cdmDatabaseSchema <- "<cdmDatabaseSchema>"
 workDatabasSchema <- "<workDatabaseSchema>"
@@ -41,4 +40,4 @@ on.exit(DatabaseConnector::disconnect(connection))
 # E. Session Info ------------------------
 
 sessioninfo::session_info()
-rm(list=ls())
+rm(list = ls())

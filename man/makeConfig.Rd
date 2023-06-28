@@ -4,12 +4,12 @@
 \alias{makeConfig}
 \title{Function to create a config.yml file}
 \usage{
-makeConfig(block, database, projectPath = here::here(), open = TRUE)
+makeConfig(block, database = block, projectPath = here::here(), open = TRUE)
 }
 \arguments{
 \item{block}{the name of the config block}
 
-\item{database}{the name of the database for the block}
+\item{database}{the name of the database for the block, default to block name}
 
 \item{projectPath}{the path to the project}
 

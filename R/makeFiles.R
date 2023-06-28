@@ -24,7 +24,7 @@ makeReadMe <- function(projectPath = here::here(), open = TRUE) {
     template = "README.md",
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
@@ -44,7 +44,7 @@ makeNews <- function(projectPath = here::here(), open = TRUE) {
     template = "NEWS.md",
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
@@ -52,14 +52,13 @@ makeNews <- function(projectPath = here::here(), open = TRUE) {
 
 #' Function to create a config.yml file
 #' @param block the name of the config block
-#' @param database the name of the database for the block
+#' @param database the name of the database for the block, default to block name
 #' @param projectPath the path to the project
 #' @param open toggle on whether the file should be opened
 #' @export
-makeConfig <- function(block, database, projectPath = here::here(), open = TRUE) {
+makeConfig <- function(block, database = block, projectPath = here::here(), open = TRUE) {
 
-  projName <- getStudyDetails("StudyTitle", projectPath = projectPath) %>%
-    snakecase::to_lower_camel_case()
+  projName <- basename(projectPath)
 
   data <- rlang::list2(
     'Project' = projName,
@@ -72,7 +71,7 @@ makeConfig <- function(block, database, projectPath = here::here(), open = TRUE)
     template = "config.yml",
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   usethis::use_git_ignore(ignores = "config.yml")
 
@@ -90,15 +89,16 @@ makeCohortDetails <- function(projectPath = here::here(), open = TRUE) {
 
 
   data <- rlang::list2(
-    'Study' = getStudyDetails("StudyTitle", projectPath = projectPath)
+    'Study' = getStudyDetails("StudyTitle", projectPath = projectPath),
+    'Author' = getStudyDetails("StudyLead", projectPath = projectPath)
   )
 
   usethis::use_template(
     template = "CohortDetails.md",
-    save_as = fs::path("cohortsToCreate", "cohortDetails.md"),
+    save_as = fs::path("cohortsToCreate", "CohortDetails.md"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
@@ -123,7 +123,7 @@ makeExample <- function(fileName, savePath = here::here(), open = TRUE) {
 
   template_contents <- render_template("ExampleScript.R",
                                                  data = data,
-                                                 package = "picard")
+                                                 package = "Ulysses")
 
   save_as <- fs::path(savePath, fileName, ext = "R")
   new <- write_utf8(save_as, template_contents)
@@ -135,6 +135,7 @@ makeExample <- function(fileName, savePath = here::here(), open = TRUE) {
 #' Function to create a pipeline task as a Rmd file
 #' @param scriptName The name of the analysis script
 #' @param configBlock the name of the config block to use for the script
+#' @param projectPath the path to the project
 #' @param open toggle on whether the file should be opened
 #' @export
 makeAnalysisScript <- function(scriptName,
@@ -155,7 +156,6 @@ makeAnalysisScript <- function(scriptName,
     'Study' = getStudyDetails("StudyTitle", projectPath = projectPath),
     'Name' = snakecase::to_title_case(scriptName),
     'Author' = getStudyDetails("StudyLead", projectPath = projectPath),
-    'Date' = lubridate::today(),
     'FileName' = scriptFileName,
     'Block' = configBlock
   )
@@ -165,7 +165,7 @@ makeAnalysisScript <- function(scriptName,
     save_as = fs::path("analysis/studyTasks", scriptFileName, ext = "R"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
@@ -199,7 +199,7 @@ makeAnalysisScript <- function(scriptName,
 #     save_as = fs::path("analysis", taskFileName, ext = "Rmd"),
 #     data = data,
 #     open = open,
-#     package = "picard")
+#     package = "Ulysses")
 #
 #   invisible(data)
 # }
@@ -229,7 +229,7 @@ makeInternals <- function(internalsName, projectPath = here::here(), open = TRUE
     save_as = fs::path("analysis/private", intFileName, ext = "R"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
@@ -257,7 +257,7 @@ makeStudySAP <- function(projectPath = here::here(), open = TRUE) {
     save_as = fs::path("documentation", "StudySAP.qmd"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
@@ -295,17 +295,17 @@ makeHowToRun <- function(org = NULL, repo = NULL,
     save_as = fs::path("documentation", "HowToRun.md"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
 }
 
-#' R Markdown file to make the study protocol
+#' R Markdown file to make the ohdsi protocol
 #' @param projectPath the path to the project
 #' @param open toggle on whether the file should be opened
 #' @export
-makeStudyProtocol <- function(projectPath = here::here(),
+makeOhdsiProtocol <- function(projectPath = here::here(),
                               open = TRUE) {
 
   data <- rlang::list2(
@@ -320,16 +320,46 @@ makeStudyProtocol <- function(projectPath = here::here(),
     fs::dir_create()
 
   usethis::use_template(
-    template = "StudyProtocol.Rmd",
+    template = "OhdsiProtocol.Rmd",
     save_as = fs::path(dir_path, fileName, ext = "Rmd"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   #get Protocol Components and move to folder
-  fs::path_package("picard", "templates/Protocol-Components") %>%
+  fs::path_package("Ulysses", "templates/Protocol-Components") %>%
     fs::dir_copy(new_path = dir_path, overwrite = TRUE)
 
+
+  invisible(data)
+}
+
+
+#' R Markdown file to make the pass protocol
+#' @param projectPath the path to the project
+#' @param open toggle on whether the file should be opened
+#' @export
+makePassProtocol <- function(projectPath = here::here(),
+                              open = TRUE) {
+
+  data <- rlang::list2(
+    'Study' =  getStudyDetails(item = "StudyTitle", projectPath = projectPath),
+    'Author' = getStudyDetails(item = 'StudyLead', projectPath = projectPath),
+    'Date' = lubridate::today()
+  )
+
+  fileName <- snakecase::to_upper_camel_case(getStudyDetails(item = "StudyTitle", projectPath = projectPath)) %>%
+    paste0("Protocol")
+
+  dir_path <- fs::path("documentation", "Protocol") %>%
+    fs::dir_create()
+
+  usethis::use_template(
+    template = "PassProtocol.Rmd",
+    save_as = fs::path(dir_path, fileName, ext = "Rmd"),
+    data = data,
+    open = open,
+    package = "Ulysses")
 
   invisible(data)
 }
@@ -338,7 +368,7 @@ makeStudyProtocol <- function(projectPath = here::here(),
 #' @param projectPath the path to the project
 #' @param open toggle on whether the file should be opened
 #' @export
-makeContribution <- function(projectPath = here::here(),
+makeContributionGuidelines <- function(projectPath = here::here(),
                              open = TRUE) {
 
   data <- rlang::list2(
@@ -352,7 +382,7 @@ makeContribution <- function(projectPath = here::here(),
     save_as = fs::path("documentation", "ContributionGuidelines.md"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
@@ -377,7 +407,7 @@ makeResultsReport <- function(projectPath = here::here(),
     save_as = fs::path("documentation", "ResultsReport.qmd"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
@@ -388,19 +418,36 @@ makeResultsReport <- function(projectPath = here::here(),
 
 
 #' Function to create a config.yml file
+#' @param database the name of the database for the project, can be NULL
+#' @param configBlock the name of the configBlock to use, can be NULL
+#' @param secret a keyword to use as the keyring password to access credentials, if NULL password is ulysses
 #' @param projectPath the path to the project
 #' @param open toggle on whether the file should be opened
-#' @param secret a keyword to use as the keyring password to access credentials
 #' @export
-makeKeyringSetup <- function(projectPath = here::here(), open = TRUE, secret = NULL) {
+makeKeyringSetup <- function(database = NULL,
+                             configBlock = NULL,
+                             secret = NULL,
+                             projectPath = here::here(),
+                             open = TRUE) {
 
-  keyringName <- snakecase::to_snake_case(getStudyDetails("StudyTitle", projectPath = projectPath))
+  keyringName <- basename(projectPath)
+
+  if (is.null(database)) {
+    database <- "[Add database]"
+  }
+
+  if (is.null(configBlock)) {
+    configBlock <- "[Add config block]"
+  }
+
   if (is.null(secret)) {
-    keyringPassword <- keyringName
+    keyringPassword <- "ulysses"
   }
 
   data <- rlang::list2(
-    'Name' = keyringName,
+    'Block' = configBlock,
+    'Database' = database,
+    'Study' = keyringName,
     'Secret'= keyringPassword
   )
 
@@ -409,9 +456,8 @@ makeKeyringSetup <- function(projectPath = here::here(), open = TRUE, secret = N
     save_as = fs::path("extras", "KeyringSetup.R"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
-  usethis::use_git_ignore(ignores = "extras/KeyringSetup.R")
 
   invisible(data)
 
@@ -421,7 +467,7 @@ makeKeyringSetup <- function(projectPath = here::here(), open = TRUE, secret = N
 
 #' Email asking to initialize an ohdsi-studies repo
 #' @param senderName the name of the person sending the email
-#' @param projectPath the path to the picard project
+#' @param projectPath the path to the Ulysses project
 #' @param recipientName the name of the person receiving the email
 #' @param open toggle on whether the file should be opened
 #' @export
@@ -446,7 +492,7 @@ requestStudyRepo <- function(senderName, projectPath = here::here(), recipientNa
     save_as = fs::path("extras", "RepoRequestEmail.txt"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
 
   usethis::use_git_ignore(ignores = "extras/StudyRepoRequestEmail.txt")
@@ -458,7 +504,7 @@ requestStudyRepo <- function(senderName, projectPath = here::here(), recipientNa
 
 #' Email asking to participant in an ohdsi study
 #' @param senderName the name of the person sending the email
-#' @param projectPath the path to the picard project
+#' @param projectPath the path to the Ulysses project
 #' @param recipientName the name of the person receiving the email
 #' @param open toggle on whether the file should be opened
 #' @export
@@ -483,7 +529,7 @@ requestStudyParticipation <- function(senderName, projectPath = here::here(), re
     save_as = fs::path("extras", "ParticipationRequestEmail.txt"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
 
   usethis::use_git_ignore(ignores = "extras/ParticipationRequestEmail.txt")
@@ -513,7 +559,7 @@ makeMeetingMinutes <- function(projectPath = here::here(), open = TRUE) {
     save_as = fs::path("extras/minutes", saveName, ext = "qmd"),
     data = data,
     open = open,
-    package = "picard")
+    package = "Ulysses")
 
   invisible(data)
 
