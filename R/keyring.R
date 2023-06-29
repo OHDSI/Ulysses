@@ -130,13 +130,13 @@ setCredential <- function(cred, db, keyringName, keyringPassword, forceCheck = T
 }
 
 #' Function to set multi credentials
-#' @param cred a vector of credentials to set (i.e dbms, user, connectionString). See defaultCredentials on building set
+#' @param creds a vector of credentials to set (i.e dbms, user, connectionString). See defaultCredentials on building set
 #' @param db the database prefix for the credential
 #' @param keyringName the name of the keyringName where the credential will be set
 #' @param keyringPasssword the password for the keyring.
 #' @param forceCheck a toggle that will print blurred credentials to check credential
 #' @export
-setMultipleCredentials <- function(cred, db, keyringName, keyringPassword, forceCheck = TRUE) {
+setMultipleCredentials <- function(creds, db, keyringName, keyringPassword, forceCheck = TRUE) {
 
   if (keyring::keyring_is_locked(keyring = keyringName)) {
     keyring::keyring_unlock(keyring = keyringName, password = keyringPassword)
@@ -150,9 +150,9 @@ setMultipleCredentials <- function(cred, db, keyringName, keyringPassword, force
   )
 
   if (forceCheck) {
-    purrr::walk(key_names, ~blurCreds(item = .x,  keyringName = keyringName, verbose = FALSE))
+    purrr::walk(creds, ~checkDatabaseCredential(cred = .x,  db = db, keyringName = keyringName, verbose = FALSE))
   }
-  invisible(cred)
+  invisible(creds)
 
 }
 
