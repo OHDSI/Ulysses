@@ -4,16 +4,24 @@
 \alias{setDatabaseCredential}
 \title{Function to set single database credential}
 \usage{
-setDatabaseCredential(cred, db, study, forceCheck = TRUE)
+setDatabaseCredential(
+  cred,
+  db,
+  keyringName,
+  keyringPassword,
+  forceCheck = TRUE
+)
 }
 \arguments{
 \item{cred}{the credential to set (i.e dbms, user, connectionString)}
 
 \item{db}{the database prefix for the credential}
 
-\item{study}{the name of the study for the credential set, this will be the keyring name}
+\item{keyringName}{the name of the keyringName for the credential set, this will be the keyring namec}
 
 \item{forceCheck}{a toggle that will print blurred credentials to check credential}
+
+\item{keyringPasssword}{the password for the keyring.}
 }
 \description{
 Function to set single database credential

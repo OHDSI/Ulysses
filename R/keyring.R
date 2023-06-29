@@ -83,8 +83,27 @@ defaultCredentials <- function() {
   return(creds)
 }
 
+#' Function to check the database credential
+#' @param cred the credential to set (i.e dbms, user, connectionString)
+#' @param db the database prefix for the credential
+#' @param keyringName the name of the keyringName for the credential check, this will be the keyring namec
+#' @param verbose toggle option to print console message
+#' @export
+checkDatabaseCredential <- function(cred, db, keyringName, verbose = TRUE) {
 
+  #paste name to set full credential
+  key_name <- paste(db, cred, sep = "_")
 
+  if (verbose) {
+    cli::cat_bullet("Check that credential ", crayon::green(key_name), " is correct.",
+                    bullet = "warning", bullet_col = "yellow")
+  }
+
+  #print credential
+  blurCreds(item = key_name, keyringName = keyringName)
+
+  invisible(key_name)
+}
 
 #' Function to set single database credential
 #' @param cred the credential to set (i.e dbms, user, connectionString)
@@ -102,12 +121,10 @@ setDatabaseCredential <- function(cred, db, keyringName, keyringPassword, forceC
   cli::cat_bullet("Input your credentials in the dialog box",
                   bullet = "warning", bullet_col = "yellow")
 
-  key_name <- set_cred(cred = cred, db = db, keyringName = keyringName)
+  set_cred(cred = cred, db = db, keyringName = keyringName)
 
   if (forceCheck) {
-    cli::cat_bullet("Check the credential is correct",
-                    bullet = "warning", bullet_col = "yellow")
-    blurCreds(item = key_name, keyringName = keyringName)
+    checkDatabaseCredential(cred = cred, db = db, keyringName = keyringName)
   }
   invisible(key_name)
 }
@@ -127,15 +144,13 @@ setAllDatabaseCredentials <- function(cred, db, keyringName, keyringPassword, fo
 
   cli::cat_bullet("Input your credentials in the dialog box",
                   bullet = "warning", bullet_col = "yellow")
-  key_names <- purrr::map_chr(
+  purrr::walk(
     cred,
     ~set_cred(cred = .x, db = db, keyringName = keyringName)
   )
 
   if (forceCheck) {
-    cli::cat_bullet("Check the credential is correct",
-                    bullet = "warning", bullet_col = "yellow")
-    purrr::walk(key_names, ~blurCreds(item = .x,  keyringName = keyringName))
+    purrr::walk(key_names, ~blurCreds(item = .x,  keyringName = keyringName, verbose = FALSE))
   }
   invisible(cred)
 
@@ -160,6 +175,8 @@ setStudyKeyring <- function(keyringName, keyringPassword) {
       dropKeyring(keyringName = keyringName, keyringPassword = keyringPassword)
       #Set keyring
       setKeyring(keyringName = keyringName, keyringPassword = keyringPassword)
+    } else{
+      cli::cat_bullet("Keeping keyring ", crayon::cyan(keyringName), ". ")
     }
   } else{
     #Set keyring

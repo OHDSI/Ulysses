@@ -4,16 +4,24 @@
 \alias{setAllDatabaseCredentials}
 \title{Function to set all database credentials}
 \usage{
-setAllDatabaseCredentials(cred, db, study, forceCheck = TRUE)
+setAllDatabaseCredentials(
+  cred,
+  db,
+  keyringName,
+  keyringPassword,
+  forceCheck = TRUE
+)
 }
 \arguments{
 \item{cred}{a vector of credentials to set (i.e dbms, user, connectionString). See defaultCredentials on building set}
 
 \item{db}{the database prefix for the credential}
 
-\item{study}{the name of the study for the credential set, this will be the keyring name}
+\item{keyringName}{the name of the keyringName where the credential will be set}
 
 \item{forceCheck}{a toggle that will print blurred credentials to check credential}
+
+\item{keyringPasssword}{the password for the keyring.}
 }
 \description{
 Function to set all database credentials
