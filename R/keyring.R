@@ -1,3 +1,19 @@
+# Keyring Functions ----------------------
+
+## Helpers ------------
+set_cred <- function(cred, db, keyringName) {
+
+  key_name <- paste(db, cred, sep = "_")
+  prompt_txt <- glue::glue("Set {key_name}: ")
+
+  keyring::key_set(
+    service = key_name,
+    keyring = keyringName,
+    prompt = prompt_txt
+  )
+  invisible(key_name)
+}
+
 blurCreds <- function(item,  keyringName) {
   cred <- keyring::key_get(service = item, keyring = keyringName)
   txt <- glue::glue(item, ": ", crayon::blurred(cred))
@@ -6,20 +22,48 @@ blurCreds <- function(item,  keyringName) {
 }
 
 
-
-
-set_cred <- function(cred, db, study) {
-
-  key_name <- paste(db, cred, sep = "_")
-  prompt_txt <- glue::glue("Set {key_name}: ")
-
-  keyring::key_set(
-    service = key_name,
-    keyring = study,
-    prompt = prompt_txt
-  )
-  invisible(key_name)
+checkKeyring <- function(keyringName, keyringPassword) {
+  allKeyrings <- keyring::keyring_list()
+  keyringName %in% allKeyrings$keyring
 }
+
+
+dropKeyring <- function(keyringName, keyringPassword) {
+
+  if (keyring::keyring_is_locked(keyring = keyringName)) {
+    keyring::keyring_unlock(keyring = keyringName, password = keyringPassword)
+  }
+  # Delete all keys from the keyring so we can delete it
+  cli::cat_bullet("Delete existing keyring: ", keyringName,
+                  bullet = "warning", bullet_col = "yellow")
+  keys <- keyring::key_list(keyring = keyringName)
+  if (nrow(keys) > 0) {
+    for (i in 1:nrow(keys)) {
+      # drop keys
+      keyring::key_delete(keys$service[i], keyring = keyringName)
+    }
+  }
+  # drop keyring
+  keyring::keyring_delete(keyring = keyringName)
+
+  invisible(allKeyrings)
+
+}
+
+
+setKeyring <- function(keyringName, keyringPassword) {
+
+  cli::cat_bullet(
+    "Creating a study keyring for: ", crayon::cyan(keyringName),
+    bullet = "info", bullet_col = "blue"
+  )
+  # create keyring
+  keyring::keyring_create(keyring = keyringName, password = keyringPassword)
+
+  invisible(keyringName)
+}
+
+## UI ------------
 
 #' Function to list default credentials
 #' @description
@@ -45,20 +89,25 @@ defaultCredentials <- function() {
 #' Function to set single database credential
 #' @param cred the credential to set (i.e dbms, user, connectionString)
 #' @param db the database prefix for the credential
-#' @param study the name of the study for the credential set, this will be the keyring name
+#' @param keyringName the name of the keyringName for the credential set, this will be the keyring namec
+#' @param keyringPasssword the password for the keyring.
 #' @param forceCheck a toggle that will print blurred credentials to check credential
 #' @export
-setDatabaseCredential <- function(cred, db, study, forceCheck = TRUE) {
+setDatabaseCredential <- function(cred, db, keyringName, keyringPassword, forceCheck = TRUE) {
+
+  if (keyring::keyring_is_locked(keyring = keyringName)) {
+    keyring::keyring_unlock(keyring = keyringName, password = keyringPassword)
+  }
 
   cli::cat_bullet("Input your credentials in the dialog box",
                   bullet = "warning", bullet_col = "yellow")
 
-  key_name <- set_cred(cred = cred, db = db, study = study)
+  key_name <- set_cred(cred = cred, db = db, keyringName = keyringName)
 
   if (forceCheck) {
     cli::cat_bullet("Check the credential is correct",
                     bullet = "warning", bullet_col = "yellow")
-    blurCreds(item = key_name, keyringName = study)
+    blurCreds(item = key_name, keyringName = keyringName)
   }
   invisible(key_name)
 }
@@ -66,49 +115,33 @@ setDatabaseCredential <- function(cred, db, study, forceCheck = TRUE) {
 #' Function to set all database credentials
 #' @param cred a vector of credentials to set (i.e dbms, user, connectionString). See defaultCredentials on building set
 #' @param db the database prefix for the credential
-#' @param study the name of the study for the credential set, this will be the keyring name
+#' @param keyringName the name of the keyringName where the credential will be set
+#' @param keyringPasssword the password for the keyring.
 #' @param forceCheck a toggle that will print blurred credentials to check credential
 #' @export
-setAllDatabaseCredentials <- function(cred, db, study, forceCheck = TRUE) {
+setAllDatabaseCredentials <- function(cred, db, keyringName, keyringPassword, forceCheck = TRUE) {
+
+  if (keyring::keyring_is_locked(keyring = keyringName)) {
+    keyring::keyring_unlock(keyring = keyringName, password = keyringPassword)
+  }
 
   cli::cat_bullet("Input your credentials in the dialog box",
                   bullet = "warning", bullet_col = "yellow")
   key_names <- purrr::map_chr(
     cred,
-    ~set_cred(cred = .x, db = db, study = study)
+    ~set_cred(cred = .x, db = db, keyringName = keyringName)
   )
 
   if (forceCheck) {
     cli::cat_bullet("Check the credential is correct",
                     bullet = "warning", bullet_col = "yellow")
-    purrr::walk(key_names, ~blurCreds(item = .x,  keyringName = study))
+    purrr::walk(key_names, ~blurCreds(item = .x,  keyringName = keyringName))
   }
   invisible(cred)
 
 }
 
 
-dropKeyring <- function(keyringName, keyringPassword) {
-
-  allKeyrings <- keyring::keyring_list()
-  if (keyringName %in% allKeyrings$keyring) {
-    if (keyring::keyring_is_locked(keyring = keyringName)) {
-      keyring::keyring_unlock(keyring = keyringName, password = keyringPassword)
-    }
-    # Delete all keys from the keyring so we can delete it
-    cli::cat_bullet("Delete existing keyring: ", keyringName,
-                    bullet = "warning", bullet_col = "yellow")
-    keys <- keyring::key_list(keyring = keyringName)
-    if (nrow(keys) > 0) {
-      for (i in 1:nrow(keys)) {
-        keyring::key_delete(keys$service[i], keyring = keyringName)
-      }
-    }
-    keyring::keyring_delete(keyring = keyringName)
-  }
-  invisible(allKeyrings)
-
-}
 
 #' Function to set study keyring
 #' @param keyringName the name of the keyring, this should be the reponame for the study
@@ -116,17 +149,22 @@ dropKeyring <- function(keyringName, keyringPassword) {
 #' @export
 setStudyKeyring <- function(keyringName, keyringPassword) {
 
-  #Check if keyring exists and drop
-  dropKeyring(keyringName = keyringName, keyringPassword = keyringPassword)
+  # check if keyring exists
+  check <- checkKeyring(keyringName = keyringName, keyringPassword = keyringPassword)
 
-  cli::cat_bullet(
-    "Creating a study keyring for: ", crayon::cyan(keyringName),
-    bullet = "info", bullet_col = "blue"
-  )
-
-  # create keyring
-  keyring::keyring_create(keyring = keyringName, password = keyringPassword)
-
+  if (check) {
+    ask1 <- usethis::ui_yeah(
+      "This keyring already exists. Do you want to drop the keyring and its contents?"
+    )
+    if (ask1) {
+      dropKeyring(keyringName = keyringName, keyringPassword = keyringPassword)
+      #Set keyring
+      setKeyring(keyringName = keyringName, keyringPassword = keyringPassword)
+    }
+  } else{
+    #Set keyring
+    setKeyring(keyringName = keyringName, keyringPassword = keyringPassword)
+  }
   invisible(keyringName)
 }
 

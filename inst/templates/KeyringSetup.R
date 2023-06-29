@@ -36,14 +36,16 @@ setStudyKeyring(keyringName = keyringName,
 setAllDatabaseCredentials(
   cred = defaultCredentials(),
   db = configBlock,
-  study = keyringName,
+  keyringName = keyringName,
+  keyringPassword = keyringPassword,
   forceCheck = TRUE
 )
 
 # If a single credential is incorrect, change it
 # setDatabaseCredential(cred = "dbms",
 #                       db = configBlock,
-#                       study = keyringName,
+#                       keyringName = keyringName,
+#                       keyringPassword = keyringPassword,
 #                       forceCheck = TRUE
 # )
 
@@ -54,7 +56,7 @@ setAllDatabaseCredentials(
 connectionDetails <- DatabaseConnector::createConnectionDetails(
   dbms = config::get("dbms", config = configBlock),
   user = config::get("user", config = configBlock),
-  password = config::get("user", config = configBlock),
+  password = config::get("password", config = configBlock),
   connectionString = config::get("connectionString", config = configBlock)
 )
 connectionDetails$dbms
