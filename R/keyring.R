@@ -105,14 +105,14 @@ checkDatabaseCredential <- function(cred, db, keyringName, verbose = TRUE) {
   invisible(key_name)
 }
 
-#' Function to set single database credential
+#' Function to set single credential
 #' @param cred the credential to set (i.e dbms, user, connectionString)
 #' @param db the database prefix for the credential
 #' @param keyringName the name of the keyringName for the credential set, this will be the keyring namec
 #' @param keyringPasssword the password for the keyring.
 #' @param forceCheck a toggle that will print blurred credentials to check credential
 #' @export
-setDatabaseCredential <- function(cred, db, keyringName, keyringPassword, forceCheck = TRUE) {
+setCredential <- function(cred, db, keyringName, keyringPassword, forceCheck = TRUE) {
 
   if (keyring::keyring_is_locked(keyring = keyringName)) {
     keyring::keyring_unlock(keyring = keyringName, password = keyringPassword)
@@ -129,14 +129,14 @@ setDatabaseCredential <- function(cred, db, keyringName, keyringPassword, forceC
   invisible(key_name)
 }
 
-#' Function to set all database credentials
+#' Function to set multi credentials
 #' @param cred a vector of credentials to set (i.e dbms, user, connectionString). See defaultCredentials on building set
 #' @param db the database prefix for the credential
 #' @param keyringName the name of the keyringName where the credential will be set
 #' @param keyringPasssword the password for the keyring.
 #' @param forceCheck a toggle that will print blurred credentials to check credential
 #' @export
-setAllDatabaseCredentials <- function(cred, db, keyringName, keyringPassword, forceCheck = TRUE) {
+setMultipleCredentials <- function(cred, db, keyringName, keyringPassword, forceCheck = TRUE) {
 
   if (keyring::keyring_is_locked(keyring = keyringName)) {
     keyring::keyring_unlock(keyring = keyringName, password = keyringPassword)
