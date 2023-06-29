@@ -5,7 +5,7 @@
 \title{Function to set multi credentials}
 \usage{
 setMultipleCredentials(
-  cred,
+  creds,
   db,
   keyringName,
   keyringPassword,
@@ -13,7 +13,7 @@ setMultipleCredentials(
 )
 }
 \arguments{
-\item{cred}{a vector of credentials to set (i.e dbms, user, connectionString). See defaultCredentials on building set}
+\item{creds}{a vector of credentials to set (i.e dbms, user, connectionString). See defaultCredentials on building set}
 
 \item{db}{the database prefix for the credential}
 

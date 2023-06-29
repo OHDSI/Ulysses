@@ -248,7 +248,7 @@ makeCaprScript <- function(scriptName,
                            open = TRUE) {
 
   intFileName <- paste0("Capr_", scriptName)
-  intPath <- fs::path(projectPath, "analysis/private/Capr") %>%
+  intPath <- fs::path(projectPath, "scratch/Capr") %>%
     fs::dir_create()
 
   if (is.null(configBlock)) {
@@ -265,7 +265,47 @@ makeCaprScript <- function(scriptName,
 
   usethis::use_template(
     template = "Capr.R",
-    save_as = fs::path("analysis/private/Capr", intFileName, ext = "R"),
+    save_as = fs::path("scratch/Capr", intFileName, ext = "R"),
+    data = data,
+    open = open,
+    package = "Ulysses")
+
+  invisible(data)
+
+}
+#' Function to create a pipeline task as an R file
+#' @param keyringName The name of the keyring for the study, if null defaults to dir basename
+#' @param keyringPassword The password for the keyring, if null defauls to ohdsi
+#' @param projectPath the path to the project
+#' @param open toggle on whether the file should be opened
+#' @export
+makeWebApiScript <- function(keyringName = NULL,
+                             keyringPassword = NULL,
+                             projectPath = here::here(),
+                             open = TRUE) {
+
+
+  fileName <- "ImportCohortsFromWebApi"
+
+  if (is.null(keyringName)) {
+    keyringName <- basename(projectPath)
+  }
+
+  if (is.null(keyringPasword)) {
+    keyringPassword <- "ohdsi"
+  }
+
+
+  data <- rlang::list2(
+    'Study' = keyringName,
+    'Secret'= keyringPassword,
+    'FileName' = fileName
+  )
+
+
+  usethis::use_template(
+    template = "WebApi.R",
+    save_as = fs::path("scratch/ImportCohortsFromWebApi.R"),
     data = data,
     open = open,
     package = "Ulysses")
@@ -480,7 +520,7 @@ makeKeyringSetup <- function(database = NULL,
   }
 
   if (is.null(secret)) {
-    keyringPassword <- "ulysses"
+    keyringPassword <- "ohdsi"
   }
 
   data <- rlang::list2(

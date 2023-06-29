@@ -145,7 +145,7 @@ setMultipleCredentials <- function(creds, db, keyringName, keyringPassword, forc
   cli::cat_bullet("Input your credentials in the dialog box",
                   bullet = "warning", bullet_col = "yellow")
   purrr::walk(
-    cred,
+    creds,
     ~set_cred(cred = .x, db = db, keyringName = keyringName)
   )
 

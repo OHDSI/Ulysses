@@ -21,7 +21,7 @@ keyringName <- "{{{ Study }}}" # the name of the keyring
 keyringPassword <- "{{{ Secret }}}" # password for keyring
 # This password is simply to avoid a prompt when creating the keyring
 
-## c) Check or create Config File------------------------
+## C) Check or create Config File------------------------
 
 # check if config.yml file exists, make it if it does not exist
 checkConfig()
