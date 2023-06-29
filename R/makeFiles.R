@@ -235,6 +235,45 @@ makeInternals <- function(internalsName, projectPath = here::here(), open = TRUE
 
 }
 
+
+#' Function to create a pipeline task as an R file
+#' @param scriptName The name of the capr file that is being created
+#' @param configBlock the name of the config block to use for the script
+#' @param projectPath the path to the project
+#' @param open toggle on whether the file should be opened
+#' @export
+makeCaprScript <- function(scriptName,
+                           configBlock = NULL,
+                           projectPath = here::here(),
+                           open = TRUE) {
+
+  intFileName <- paste0("Capr_", scriptName)
+  intPath <- fs::path(projectPath, "analysis/private/Capr") %>%
+    fs::dir_create()
+
+  if (is.null(configBlock)) {
+    configBlock <- "[Add config block]"
+  }
+
+  data <- rlang::list2(
+    'Study' = getStudyDetails("StudyTitle", projectPath = projectPath),
+    'Name' = scriptName,
+    'Author' = getStudyDetails("StudyLead", projectPath = projectPath),
+    'FileName' = intFileName
+  )
+
+
+  usethis::use_template(
+    template = "Capr.R",
+    save_as = fs::path("analysis/private/Capr", intFileName, ext = "R"),
+    data = data,
+    open = open,
+    package = "Ulysses")
+
+  invisible(data)
+
+}
+
 # Documentation Files -----------------------
 
 #' Function to create a SAP
