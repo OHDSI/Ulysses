@@ -1,7 +1,7 @@
 # Ulysses 0.0.2
 
 * Add keyring functions and update SetupKeyring.R template
-* Update repository request template
+* Update repository request email template
 
 # Ulysses 0.0.1
 
