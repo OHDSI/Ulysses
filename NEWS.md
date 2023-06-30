@@ -2,6 +2,7 @@
 
 * Add keyring functions and update SetupKeyring.R template
 * Update repository request email template
+* Add git function to publish repo to remote
 
 # Ulysses 0.0.1
 
