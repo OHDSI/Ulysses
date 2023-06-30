@@ -67,8 +67,8 @@ email
 
 email |>
   smtp_send(
-    to = senderEmail,
-    from = recipientEmail,
+    to = recipientEmail,
+    from = senderEmail,
     subject = "Requesting new study reposority for {{{ RepoName }}}",
     credentials = creds_key(id = "ulysses_email")
   )
