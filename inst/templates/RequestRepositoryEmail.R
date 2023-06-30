@@ -17,6 +17,7 @@ library(tidyverse, quietly = TRUE)
 ## B) Variables -----------------
 
 provider <- "gmail" # the smtp provider
+repoName <- "{{{ RepoName }}}"
 senderName <- "{{{ SenderName }}}" # place your name as the sender
 senderEmail <- "{{{ SenderEmail }}}" # place your email as the sender
 recipientName <- "{{{ RecipientName }}}" # name of recipient
@@ -46,7 +47,7 @@ email <-
 
           I would like to start a new OHDSI study! 😀🔬
 
-          Could you please initialize a github repository using the name {{{ RepoName }}} in the ohdsi-studies repository?
+          Could you please initialize a github repository using the name {repoName} in the ohdsi-studies repository?
 
           I am using `Ulysses` 🔧 to initialize this OHDSI study.
 
@@ -70,7 +71,7 @@ email |>
   smtp_send(
     to = senderEmail,
     from = recipientEmail,
-    subject = "Requesting new study reposority for {{{ Study }}}",
+    subject = "Requesting new study reposority for {{{ RepoName }}}",
     credentials = creds_key(id = "ulysses_email")
   )
 
