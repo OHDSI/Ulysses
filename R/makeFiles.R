@@ -545,12 +545,14 @@ makeKeyringSetup <- function(database = NULL,
 
 
 #' Email asking to initialize an ohdsi-studies repo
-#' @param senderName the name of the person sending the email
+#' @param senderName your name as the person sending the email
+#' @param senderEmail your email address
+#' @param recipientName the recipients name, defaults to Admin
+#' @param recipientEmail the recipients email, defaults to a dummy email
 #' @param projectPath the path to the Ulysses project
-#' @param recipientName the name of the person receiving the email
 #' @param open toggle on whether the file should be opened
 #' @export
-requestStudyRepo <- function(senderName,
+requestStudyRepository <- function(senderName,
                              senderEmail,
                              recipientName = NULL,
                              recipientEmail = NULL,
@@ -587,43 +589,6 @@ requestStudyRepo <- function(senderName,
 
 
   usethis::use_git_ignore(ignores = "extras/RequestRepositoryEmail.R")
-
-  invisible(data)
-
-}
-
-
-#' Email asking to participant in an ohdsi study
-#' @param senderName the name of the person sending the email
-#' @param projectPath the path to the Ulysses project
-#' @param recipientName the name of the person receiving the email
-#' @param open toggle on whether the file should be opened
-#' @export
-requestStudyParticipation <- function(senderName, projectPath = here::here(), recipientName = NULL, open = TRUE) {
-  #get study name
-  studyName <- basename(projectPath) %>%
-    snakecase::to_upper_camel_case()
-
-
-  if (is.null(recipientName)) {
-    recipientName <- "[Add Name of Recipient]"
-  }
-
-  data <- rlang::list2(
-    'Study' = studyName,
-    'Sender' = senderName,
-    'Recipient' = recipientName
-  )
-
-  usethis::use_template(
-    template = "ParticipationRequestEmail.txt",
-    save_as = fs::path("extras", "ParticipationRequestEmail.txt"),
-    data = data,
-    open = open,
-    package = "Ulysses")
-
-
-  usethis::use_git_ignore(ignores = "extras/ParticipationRequestEmail.txt")
 
   invisible(data)
 

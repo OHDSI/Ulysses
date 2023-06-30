@@ -49,14 +49,16 @@ email <-
 
           Could you please initialize a github repository using the name **{repoName}** in the ohdsi-studies repository?
 
-          Please let me know if you require any additional information about my study. Thank you!
+          Please let me know if you require any additional information about my study.
+
+          Thank you!
 
           Best,
 
           {senderName}"
       )
     ),
-    footer = md(glue::glue("Email sent on {dateTime}. Using `Ulysses` 🔧"))
+    footer = md(glue::glue("Email sent on {dateTime} using `Ulysses`⛵"))
   )
 
 
