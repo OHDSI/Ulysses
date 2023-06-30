@@ -62,7 +62,7 @@ connectionDetails <- DatabaseConnector::createConnectionDetails(
 connectionDetails$dbms
 
 
-# G) Session Info ------------------------
+## G) Session Info ------------------------
 
 sessioninfo::session_info()
 rm(list=ls())

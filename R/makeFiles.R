@@ -550,31 +550,43 @@ makeKeyringSetup <- function(database = NULL,
 #' @param recipientName the name of the person receiving the email
 #' @param open toggle on whether the file should be opened
 #' @export
-requestStudyRepo <- function(senderName, projectPath = here::here(), recipientName = NULL, open = TRUE) {
-  #get study name
-  studyName <- basename(projectPath) %>%
+requestStudyRepo <- function(senderName,
+                             senderEmail,
+                             recipientName = NULL,
+                             recipientEmail = NULL,
+                             projectPath = here::here(),
+                             open = TRUE) {
+  #get repo name
+  repoName <- basename(projectPath) %>%
     snakecase::to_upper_camel_case()
 
 
   if (is.null(recipientName)) {
-    recipientName <- "[Add Name of Recipient]"
+    recipientName <- "Admin"
   }
 
+  if (is.null(recipientEmail)) {
+    recipientEmail <- "adminEmail@ohdsi.org"
+  }
+
+
   data <- rlang::list2(
-    'Study' = studyName,
-    'Sender' = senderName,
-    'Recipient' = recipientName
+    'RepoName' = repoName,
+    'SenderName' = senderName,
+    'SenderEmail' = senderEmail,
+    'RecipientName' = recipientName,
+    'RecipientEmail' = recipientEmail
   )
 
   usethis::use_template(
-    template = "RepoRequestEmail.txt",
-    save_as = fs::path("extras", "RepoRequestEmail.txt"),
+    template = "RequestRepositoryEmail.R",
+    save_as = fs::path("extras", "RequestRepositoryEmail.R"),
     data = data,
     open = open,
     package = "Ulysses")
 
 
-  usethis::use_git_ignore(ignores = "extras/StudyRepoRequestEmail.txt")
+  usethis::use_git_ignore(ignores = "extras/RequestRepositoryEmail.R")
 
   invisible(data)
 

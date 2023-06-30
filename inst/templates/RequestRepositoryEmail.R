@@ -17,10 +17,10 @@ library(tidyverse, quietly = TRUE)
 ## B) Variables -----------------
 
 provider <- "gmail" # the smtp provider
-senderName <- "{{{ Sender }}}" # place your name as the sender
-senderEmail <- "{{{ Email }}}" # place your email as the sender
-recipientName <- "Admin" # name of recipient
-recipientEmail <- "admin@ohdsi.org" # email of ohdsi-studies repo admin
+senderName <- "{{{ SenderName }}}" # place your name as the sender
+senderEmail <- "{{{ SenderEmail }}}" # place your email as the sender
+recipientName <- "{{{ RecipientName }}}" # name of recipient
+recipientEmail <- "{{{ RecipientEmail }}}" # email of ohdsi-studies repo admin
 dateTime <- add_readable_time() # Date and time that email is sent
 
 ## C) Setup SMTP -------------------
@@ -46,7 +46,7 @@ email <-
 
           I would like to start a new OHDSI study! 😀🔬
 
-          Could you please initialize a github repository using the name boo in the ohdsi-studies repository?
+          Could you please initialize a github repository using the name {{{ RepoName }}} in the ohdsi-studies repository?
 
           I am using `Ulysses` 🔧 to initialize this OHDSI study.
 
