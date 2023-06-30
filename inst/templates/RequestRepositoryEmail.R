@@ -29,13 +29,13 @@ dateTime <- add_readable_time() # Date and time that email is sent
 # You must provide the password for your email account
 # If using gmail you need to supply the password for less secure apps
 
-# setup the smtp credentials to send emails
+
+# setup the smtp credentials to send emails. Will notify you if key already exists.
 create_smtp_creds_key(
   id = "ulysses_email",
   user = senderEmail,
   provider = provider
 )
-
 ## D) Create Email ----------------
 
 email <-
@@ -47,9 +47,7 @@ email <-
 
           I would like to start a new OHDSI study! 😀🔬
 
-          Could you please initialize a github repository using the name {repoName} in the ohdsi-studies repository?
-
-          I am using `Ulysses` 🔧 to initialize this OHDSI study.
+          Could you please initialize a github repository using the name **{repoName}** in the ohdsi-studies repository?
 
           Please let me know if you require any additional information about my study. Thank you!
 
@@ -58,7 +56,7 @@ email <-
           {senderName}"
       )
     ),
-    footer = md(glue::glue("Email sent on {date_time}."))
+    footer = md(glue::glue("Email sent on {dateTime}. Using `Ulysses` 🔧"))
   )
 
 
