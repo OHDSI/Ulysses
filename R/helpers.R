@@ -50,3 +50,19 @@ findStepNumber <- function(dir = c("cohortsToCreate", "analysis/studyTasks"), pr
   return(step)
 
 }
+
+
+getGithubUser <- function() {
+  fn <- purrr::safely(gh::gh_whoami)
+  gitCreds <- fn()
+  if (length(gitCreds$error) > 0) {
+    cli::cat_bullet("Need to set up a Github PAT. Follow instructions from: ",
+                    crayon::italic("https://gh.r-lib.org/articles/managing-personal-access-tokens.html"),
+                    bullet = "warning",
+                    bullet_col = "yellow")
+    user <- "githubUser"
+  }
+  user <- gitCreds$result$login
+
+  return(user)
+}

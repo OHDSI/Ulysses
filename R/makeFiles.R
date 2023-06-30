@@ -545,15 +545,25 @@ makeKeyringSetup <- function(database = NULL,
 
 
 #' Email asking to initialize an ohdsi-studies repo
+#'
 #' @param senderName your name as the person sending the email
 #' @param senderEmail your email address
+#' @param githubUserName your github username.
 #' @param recipientName the recipients name, defaults to Admin
 #' @param recipientEmail the recipients email, defaults to a dummy email
 #' @param projectPath the path to the Ulysses project
 #' @param open toggle on whether the file should be opened
+#'
+#' @details
+#' This function works best if you have properly setup a Github PAT. To configure the PAT
+#' follow the \href{https://gh.r-lib.org/articles/managing-personal-access-tokens.html}{instructions}
+#' from the gh package.
+#'
+#'
 #' @export
 requestStudyRepository <- function(senderName,
                              senderEmail,
+                             githubUserName = NULL,
                              recipientName = NULL,
                              recipientEmail = NULL,
                              projectPath = here::here(),
@@ -572,8 +582,13 @@ requestStudyRepository <- function(senderName,
   }
 
 
+  if (is.null(githubUserName)) {
+    githubUser <- getGithubUser()
+  }
+
   data <- rlang::list2(
     'RepoName' = repoName,
+    'GithubUser' = githubUser,
     'SenderName' = senderName,
     'SenderEmail' = senderEmail,
     'RecipientName' = recipientName,

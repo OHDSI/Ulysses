@@ -18,6 +18,7 @@ library(tidyverse, quietly = TRUE)
 
 provider <- "gmail" # the smtp provider
 repoName <- "{{{ RepoName }}}"
+githubUserName <- "{{{ GithubUser }}}" # place your github user name
 senderName <- "{{{ SenderName }}}" # place your name as the sender
 senderEmail <- "{{{ SenderEmail }}}" # place your email as the sender
 recipientName <- "{{{ RecipientName }}}" # name of recipient
@@ -40,18 +41,22 @@ create_smtp_creds_key(
 
 email <-
   compose_email(
-    header = md("## ohdsi-studies Repository Request 📢"),
+    header = md("## 📣 ohdsi-studies Repository Request 📣"),
     body = md(
       glue::glue(
-        "Dear {recipientName},
+        "Hi {recipientName}, 👋
 
-          I would like to start a new OHDSI study! 😀🔬
+          I would like to start a new OHDSI study! 🔬
 
           Could you please initialize a github repository using the name **{repoName}** in the ohdsi-studies repository?
 
+          I am using `Ulysses` to build my OHDSI study and am following its template.
+
+          My github username is **{githubUserName}**.
+
           Please let me know if you require any additional information about my study.
 
-          Thank you!
+          Thank you! 😀
 
           Best,
 
