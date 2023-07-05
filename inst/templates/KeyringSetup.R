@@ -42,7 +42,7 @@ setMulitpleCredentials(
 )
 
 # If a single credential is incorrect, change it
-# setDatabaseCredential(cred = "dbms",
+# setCredential(cred = "dbms",
 #                       db = configBlock,
 #                       keyringName = keyringName,
 #                       keyringPassword = keyringPassword,
