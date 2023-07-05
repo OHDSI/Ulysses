@@ -46,7 +46,7 @@ dropKeyring <- function(keyringName, keyringPassword) {
   # drop keyring
   keyring::keyring_delete(keyring = keyringName)
 
-  invisible(allKeyrings)
+  invisible(keyringName)
 
 }
 
@@ -109,7 +109,7 @@ checkDatabaseCredential <- function(cred, db, keyringName, verbose = TRUE) {
 #' @param cred the credential to set (i.e dbms, user, connectionString)
 #' @param db the database prefix for the credential
 #' @param keyringName the name of the keyringName for the credential set, this will be the keyring namec
-#' @param keyringPasssword the password for the keyring.
+#' @param keyringPassword the password for the keyring.
 #' @param forceCheck a toggle that will print blurred credentials to check credential
 #' @export
 setCredential <- function(cred, db, keyringName, keyringPassword, forceCheck = TRUE) {
@@ -126,14 +126,14 @@ setCredential <- function(cred, db, keyringName, keyringPassword, forceCheck = T
   if (forceCheck) {
     checkDatabaseCredential(cred = cred, db = db, keyringName = keyringName)
   }
-  invisible(key_name)
+  invisible(cred)
 }
 
 #' Function to set multi credentials
 #' @param creds a vector of credentials to set (i.e dbms, user, connectionString). See defaultCredentials on building set
 #' @param db the database prefix for the credential
 #' @param keyringName the name of the keyringName where the credential will be set
-#' @param keyringPasssword the password for the keyring.
+#' @param keyringPassword the password for the keyring.
 #' @param forceCheck a toggle that will print blurred credentials to check credential
 #' @export
 setMultipleCredentials <- function(creds, db, keyringName, keyringPassword, forceCheck = TRUE) {

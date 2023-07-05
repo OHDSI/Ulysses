@@ -291,7 +291,7 @@ makeWebApiScript <- function(keyringName = NULL,
     keyringName <- basename(projectPath)
   }
 
-  if (is.null(keyringPasword)) {
+  if (is.null(keyringPassword)) {
     keyringPassword <- "ohdsi"
   }
 
