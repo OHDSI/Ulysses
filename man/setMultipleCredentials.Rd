@@ -19,9 +19,9 @@ setMultipleCredentials(
 
 \item{keyringName}{the name of the keyringName where the credential will be set}
 
-\item{forceCheck}{a toggle that will print blurred credentials to check credential}
+\item{keyringPassword}{the password for the keyring.}
 
-\item{keyringPasssword}{the password for the keyring.}
+\item{forceCheck}{a toggle that will print blurred credentials to check credential}
 }
 \description{
 Function to set multi credentials

@@ -13,9 +13,9 @@ setCredential(cred, db, keyringName, keyringPassword, forceCheck = TRUE)
 
 \item{keyringName}{the name of the keyringName for the credential set, this will be the keyring namec}
 
-\item{forceCheck}{a toggle that will print blurred credentials to check credential}
+\item{keyringPassword}{the password for the keyring.}
 
-\item{keyringPasssword}{the password for the keyring.}
+\item{forceCheck}{a toggle that will print blurred credentials to check credential}
 }
 \description{
 Function to set single credential

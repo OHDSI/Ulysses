@@ -7,6 +7,7 @@
 requestStudyRepository(
   senderName,
   senderEmail,
+  githubUserName = NULL,
   recipientName = NULL,
   recipientEmail = NULL,
   projectPath = here::here(),
@@ -18,6 +19,8 @@ requestStudyRepository(
 
 \item{senderEmail}{your email address}
 
+\item{githubUserName}{your github username.}
+
 \item{recipientName}{the recipients name, defaults to Admin}
 
 \item{recipientEmail}{the recipients email, defaults to a dummy email}
@@ -28,4 +31,9 @@ requestStudyRepository(
 }
 \description{
 Email asking to initialize an ohdsi-studies repo
+}
+\details{
+This function works best if you have properly setup a Github PAT. To configure the PAT
+follow the \href{https://gh.r-lib.org/articles/managing-personal-access-tokens.html}{instructions}
+from the gh package.
 }
