@@ -37,6 +37,12 @@
     <loc>/reference/checkConfig.html</loc>
   </url>
   <url>
+    <loc>/reference/checkDatabaseCredential.html</loc>
+  </url>
+  <url>
+    <loc>/reference/defaultCredentials.html</loc>
+  </url>
+  <url>
     <loc>/reference/index.html</loc>
   </url>
   <url>
@@ -44,6 +50,9 @@
   </url>
   <url>
     <loc>/reference/makeAnalysisScript.html</loc>
+  </url>
+  <url>
+    <loc>/reference/makeCaprScript.html</loc>
   </url>
   <url>
     <loc>/reference/makeCohortDetails.html</loc>
@@ -88,16 +97,34 @@
     <loc>/reference/makeStudySAP.html</loc>
   </url>
   <url>
+    <loc>/reference/makeWebApiScript.html</loc>
+  </url>
+  <url>
     <loc>/reference/newOhdsiStudy.html</loc>
   </url>
   <url>
     <loc>/reference/pipe.html</loc>
   </url>
   <url>
+    <loc>/reference/publishStudyToRepository.html</loc>
+  </url>
+  <url>
     <loc>/reference/requestStudyParticipation.html</loc>
   </url>
   <url>
     <loc>/reference/requestStudyRepo.html</loc>
+  </url>
+  <url>
+    <loc>/reference/requestStudyRepository.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setCredential.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setMultipleCredentials.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setStudyKeyring.html</loc>
   </url>
   <url>
     <loc>/reference/Ulysses-package.html</loc>
