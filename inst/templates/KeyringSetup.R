@@ -33,7 +33,7 @@ setStudyKeyring(keyringName = keyringName,
                 keyringPassword = keyringPassword)
 
 # set credential keys in keyring
-setAllDatabaseCredentials(
+setMulitpleCredentials(
   cred = defaultCredentials(),
   db = configBlock,
   keyringName = keyringName,

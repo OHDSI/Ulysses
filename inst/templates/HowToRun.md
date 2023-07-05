@@ -32,13 +32,6 @@ You also require your site data to be mapped to the [OMOP CDM](https://ohdsi.git
   4) Unzip the folder on your local computer that is easily accessible within R Studio
   5) Open folder the folder and select `{{{ Repo }}}.Rproj`
 
-### Via Picard
-
-Modify and use the following code block to download the study locally. 
-
-```
-picard::downloadStudy(org = {{{ Org }}}, repo = {{{ Repo }}}, savePath = "path_to_dir")
-```
 
 ## How to execute the {{{ Study }}} study
 
