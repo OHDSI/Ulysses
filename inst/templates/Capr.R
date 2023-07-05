@@ -3,10 +3,10 @@
 # A. File Info -----------------------
 
 # Study: {{{ Study }}}
-# Name: {{{ Name }}}
+# Name: Capr Script for {{{ Name }}}
 # Author: {{{ Author }}}
 # Date: [Add Date]
-# Description: The purpose of this script is to.....
+# Description: The purpose of this Capr script is to develop xxx cohorts....
 
 # B. Dependencies ----------------------
 
@@ -14,16 +14,12 @@
 library(tidyverse, quietly = TRUE)
 library(DatabaseConnector)
 library(config)
-
-## set options Ex. options(connectionObserver = NULL)
-
-## set source files source('my_file.R')
-
+library(Capr)
 
 # C. Connection ----------------------
 
 # set connection Block
-configBlock <- "{{{ Block }}}"
+configBlock <- "[add block]"
 
 # provide connection details
 connectionDetails <- DatabaseConnector::createConnectionDetails(
@@ -44,18 +40,44 @@ withr::defer(expr = DatabaseConnector::disconnect(con), envir = parent.frame()) 
 executionSettings <- config::get(config = configBlock) %>%
   purrr::discard_at(c("dbms", "user", "password", "connectionString"))
 
-outputFolder <- here::here("results") %>%
-  fs::path(executionSettings$databaseName, "{{{ FileName }}}") %>%
-  fs::dir_create()
 
-### Add study variables or load from settings
+cohortFolder <- "[type of cohort]" %>% #if this is the target cohort do not make new folder
+  Ulysses::addCohortFolder()
 
-# E. Script --------------------
 
-# Add script here
+# E. Concept Sets --------------------
+
+# Add concept sets here for example
+
+# hypertension <- cs(
+#   descendants(
+#     316866 # hypertension
+#   )
+# ) %>%
+# getConceptSetDetails(con = con, vocabularyDatabaseSchema = executionSettings$vocabDatabaseSchema)
+
+
+# F. Cohort Definition ----------------
+
+# Add cohort definition  here for example
+
+# hypertensionCohort <- cohort(
+#   entry = entry(
+#     condition(hypertension),
+#     observationWindow = continuousObservation(),
+#     primaryCriteriaLimit = "First"
+#   ),
+#   exit = exit(
+#     endStrategy = observationExit()
+#   )
+# )
+#
+# writeCohort(hypertensionCohort, path = fs::path(cohortFolder, "hypertension", ext = "json"))
+
 
 # F. Session Info ------------------------
 
 sessioninfo::session_info()
 rm(list = ls())
 withr::deferred_run()
+

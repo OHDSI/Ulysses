@@ -235,6 +235,85 @@ makeInternals <- function(internalsName, projectPath = here::here(), open = TRUE
 
 }
 
+
+#' Function to create a pipeline task as an R file
+#' @param scriptName The name of the capr file that is being created
+#' @param configBlock the name of the config block to use for the script
+#' @param projectPath the path to the project
+#' @param open toggle on whether the file should be opened
+#' @export
+makeCaprScript <- function(scriptName,
+                           configBlock = NULL,
+                           projectPath = here::here(),
+                           open = TRUE) {
+
+  intFileName <- paste0("Capr_", scriptName)
+  intPath <- fs::path(projectPath, "scratch/Capr") %>%
+    fs::dir_create()
+
+  if (is.null(configBlock)) {
+    configBlock <- "[Add config block]"
+  }
+
+  data <- rlang::list2(
+    'Study' = getStudyDetails("StudyTitle", projectPath = projectPath),
+    'Name' = scriptName,
+    'Author' = getStudyDetails("StudyLead", projectPath = projectPath),
+    'FileName' = intFileName
+  )
+
+
+  usethis::use_template(
+    template = "Capr.R",
+    save_as = fs::path("scratch/Capr", intFileName, ext = "R"),
+    data = data,
+    open = open,
+    package = "Ulysses")
+
+  invisible(data)
+
+}
+#' Function to create a pipeline task as an R file
+#' @param keyringName The name of the keyring for the study, if null defaults to dir basename
+#' @param keyringPassword The password for the keyring, if null defauls to ohdsi
+#' @param projectPath the path to the project
+#' @param open toggle on whether the file should be opened
+#' @export
+makeWebApiScript <- function(keyringName = NULL,
+                             keyringPassword = NULL,
+                             projectPath = here::here(),
+                             open = TRUE) {
+
+
+  fileName <- "ImportCohortsFromWebApi"
+
+  if (is.null(keyringName)) {
+    keyringName <- basename(projectPath)
+  }
+
+  if (is.null(keyringPassword)) {
+    keyringPassword <- "ohdsi"
+  }
+
+
+  data <- rlang::list2(
+    'Study' = keyringName,
+    'Secret'= keyringPassword,
+    'FileName' = fileName
+  )
+
+
+  usethis::use_template(
+    template = "WebApi.R",
+    save_as = fs::path("scratch/ImportCohortsFromWebApi.R"),
+    data = data,
+    open = open,
+    package = "Ulysses")
+
+  invisible(data)
+
+}
+
 # Documentation Files -----------------------
 
 #' Function to create a SAP
@@ -441,7 +520,7 @@ makeKeyringSetup <- function(database = NULL,
   }
 
   if (is.null(secret)) {
-    keyringPassword <- "ulysses"
+    keyringPassword <- "ohdsi"
   }
 
   data <- rlang::list2(
@@ -466,73 +545,65 @@ makeKeyringSetup <- function(database = NULL,
 
 
 #' Email asking to initialize an ohdsi-studies repo
-#' @param senderName the name of the person sending the email
+#'
+#' @param senderName your name as the person sending the email
+#' @param senderEmail your email address
+#' @param githubUserName your github username.
+#' @param recipientName the recipients name, defaults to Admin
+#' @param recipientEmail the recipients email, defaults to a dummy email
 #' @param projectPath the path to the Ulysses project
-#' @param recipientName the name of the person receiving the email
 #' @param open toggle on whether the file should be opened
+#'
+#' @details
+#' This function works best if you have properly setup a Github PAT. To configure the PAT
+#' follow the \href{https://gh.r-lib.org/articles/managing-personal-access-tokens.html}{instructions}
+#' from the gh package.
+#'
+#'
 #' @export
-requestStudyRepo <- function(senderName, projectPath = here::here(), recipientName = NULL, open = TRUE) {
-  #get study name
-  studyName <- basename(projectPath) %>%
+requestStudyRepository <- function(senderName,
+                             senderEmail,
+                             githubUserName = NULL,
+                             recipientName = NULL,
+                             recipientEmail = NULL,
+                             projectPath = here::here(),
+                             open = TRUE) {
+  #get repo name
+  repoName <- basename(projectPath) %>%
     snakecase::to_upper_camel_case()
 
 
   if (is.null(recipientName)) {
-    recipientName <- "[Add Name of Recipient]"
+    recipientName <- "Admin"
+  }
+
+  if (is.null(recipientEmail)) {
+    recipientEmail <- "adminEmail@ohdsi.org"
+  }
+
+
+  if (is.null(githubUserName)) {
+    githubUser <- getGithubUser()
   }
 
   data <- rlang::list2(
-    'Study' = studyName,
-    'Sender' = senderName,
-    'Recipient' = recipientName
+    'RepoName' = repoName,
+    'GithubUser' = githubUser,
+    'SenderName' = senderName,
+    'SenderEmail' = senderEmail,
+    'RecipientName' = recipientName,
+    'RecipientEmail' = recipientEmail
   )
 
   usethis::use_template(
-    template = "RepoRequestEmail.txt",
-    save_as = fs::path("extras", "RepoRequestEmail.txt"),
+    template = "RequestRepositoryEmail.R",
+    save_as = fs::path("extras", "RequestRepositoryEmail.R"),
     data = data,
     open = open,
     package = "Ulysses")
 
 
-  usethis::use_git_ignore(ignores = "extras/StudyRepoRequestEmail.txt")
-
-  invisible(data)
-
-}
-
-
-#' Email asking to participant in an ohdsi study
-#' @param senderName the name of the person sending the email
-#' @param projectPath the path to the Ulysses project
-#' @param recipientName the name of the person receiving the email
-#' @param open toggle on whether the file should be opened
-#' @export
-requestStudyParticipation <- function(senderName, projectPath = here::here(), recipientName = NULL, open = TRUE) {
-  #get study name
-  studyName <- basename(projectPath) %>%
-    snakecase::to_upper_camel_case()
-
-
-  if (is.null(recipientName)) {
-    recipientName <- "[Add Name of Recipient]"
-  }
-
-  data <- rlang::list2(
-    'Study' = studyName,
-    'Sender' = senderName,
-    'Recipient' = recipientName
-  )
-
-  usethis::use_template(
-    template = "ParticipationRequestEmail.txt",
-    save_as = fs::path("extras", "ParticipationRequestEmail.txt"),
-    data = data,
-    open = open,
-    package = "Ulysses")
-
-
-  usethis::use_git_ignore(ignores = "extras/ParticipationRequestEmail.txt")
+  usethis::use_git_ignore(ignores = "extras/RequestRepositoryEmail.R")
 
   invisible(data)
 

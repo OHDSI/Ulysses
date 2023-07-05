@@ -31,11 +31,12 @@
       configBlock <- "[Add config block]"
       
       # provide connection details
-      connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = config::get("dbms",
-                                                                                         config = configBlock),
-        user = config::get("user",
-                           config = configBlock), password = config::get("user", config = configBlock),
-        connectionString = config::get("connectionString", config = configBlock))
+      connectionDetails <- DatabaseConnector::createConnectionDetails(
+        dbms = config::get("dbms",config = configBlock),
+        user = config::get("user",config = configBlock),
+        password = config::get("password", config = configBlock),
+        connectionString = config::get("connectionString", config = configBlock)
+      )
       
       # connect to database
       con <- DatabaseConnector::connect(connectionDetails)
