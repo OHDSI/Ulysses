@@ -1,0 +1,23 @@
+---
+title: "How-to-Run Study"
+number-sections: true
+number-depth: 1
+---
+
+# Download and Install
+
+<!----Add directions on how to download and install packages ------------>
+
+# Setup 
+
+## `renv` Activation
+
+<!----Add directions on how to activate renv ------------>
+
+## Database Credentials
+
+<!----Add directions on how to setup database credentials ------------>
+
+# Execute Analysis
+
+<!----Add directions on how to execute analysis ------------>
