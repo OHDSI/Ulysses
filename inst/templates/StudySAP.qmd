@@ -102,3 +102,7 @@ We assess baseline characteristics based on a observation window of 365 to 0 day
 <!----Add stratifications -------------->
 
 
+# References
+
+::: {#refs}
+:::
