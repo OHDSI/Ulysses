@@ -52,7 +52,8 @@ addConfig <- function(block, database = block, projectPath = here::here(), open 
   check <- config_check()
 
   if (check) {
-    projName <- basename(projectPath)
+    projFile <- list.files(projectPath, pattern = ".Rproj", full.names = TRUE)
+    projName <- basename(tools::file_path_sans_ext(here::here(projFile)))
     cohortTable <- paste(projName, database, sep = "_")
 
     config_block_txt <- glue::glue(
