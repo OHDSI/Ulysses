@@ -1,12 +1,6 @@
 ---
-title: SAP for {{{ Study }}}
-author: {{{ Author }}}
-date: {{{ Date }}}
-format:
-  html:
-    toc: true
-    number-sections: true
-    embed-resources: true
+title: Study Analysis Plan {{{ Study }}}
+number-sections: true
 ---
 
 
