@@ -58,7 +58,8 @@ makeNews <- function(projectPath = here::here(), open = TRUE) {
 #' @export
 makeConfig <- function(block, database = block, projectPath = here::here(), open = TRUE) {
 
-  projName <- basename(projectPath)
+  projFile <- list.files(projectPath, pattern = ".Rproj", full.names = TRUE)
+  projName <- basename(tools::file_path_sans_ext(here::here(projFile)))
 
   data <- rlang::list2(
     'Project' = projName,
