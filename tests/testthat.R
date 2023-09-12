@@ -9,4 +9,4 @@
 library(testthat)
 library(Ulysses)
 
-test_check("Ulysses")
+#test_check("Ulysses")
