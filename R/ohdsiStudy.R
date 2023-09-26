@@ -47,7 +47,7 @@ newOhdsiStudy <- function(path,
                     bullet_col = "yellow", bullet = "info")
   }
 
-  ignores <- c("exec/", "_study.yml")
+  ignores <- c("exec/")
   usethis::write_union(fs::path(dir_path, ".gitignore"), ignores)
 
 

@@ -1,12 +1,6 @@
 ---
-title: {{{ Title }}}
-author: {{{ Author }}}
-date: {{{ Date }}}
-format:
-  html:
-    toc: true
-    number-sections: true
-    embed-resources: true
+title: {{{ Study }}} Results Report
+number-sections: true
 ---
 
 

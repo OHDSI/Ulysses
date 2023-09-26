@@ -29,8 +29,8 @@ setMilestones <- function(status, startDate, endDate) {
 defaultMilestones <- function() {
   setMilestones(
     status = "Started",
-    startDate = "1960-01-01",
-    endDate = "2099-12-31"
+    startDate = "01-01-1960",
+    endDate = "31-12-2099"
   )
 }
 
@@ -94,7 +94,7 @@ setCdmDetails <- function(cdmVersion, vocabVersion, vocabRelease) {
 }
 defaultCdmDetails <- function() {
   setCdmDetails(
-    cdmVersion = "5.3",
+    cdmVersion = "v5.3",
     vocabVersion = "v5.0",
     vocabRelease = "22-06-2022")
 }
@@ -177,8 +177,9 @@ convert_to_yml <- function(studySettings, savePath) {
 }
 
 #Function to convert yml into a specified list format
-retrieveStudySettings <- function(studySettingsPath){
-  studyYml <- yaml::read_yaml(studySettingsPath)
+retrieveStudySettings <- function(projectPath){
+  ymlPath <- fs::path(projectPath, "_study.yml")
+  studyYml <- yaml::read_yaml(ymlPath)
   studyYml$Authors <- purrr::map_dfr(studyYml$Authors, ~.x)
   return(studyYml)
 }

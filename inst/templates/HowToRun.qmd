@@ -1,7 +1,6 @@
 ---
-title: "How-to-Run Study"
+title: How-to-Run {{{ Study }}}
 number-sections: true
-number-depth: 1
 ---
 
 # Download and Install

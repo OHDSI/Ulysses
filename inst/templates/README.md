@@ -34,4 +34,3 @@ Welcome to the {{{ Project }}} study! {{{ Project }}} is a {{{ StudyType }}} stu
 -   **Report**: {{{ Report }}}
 -   **Results Dashboard**: {{{ Dashboard }}}
 
-

@@ -99,20 +99,21 @@ makeConfig <- function(block, database = block, projectPath = here::here(), open
 #' @param projectPath the path to the project
 #' @param open toggle on whether the file should be opened
 #' @export
-makeStudySAP <- function(projectPath = here::here(), open = TRUE) {
+makeAnalysisPlan <- function(projectPath = here::here(), open = TRUE) {
 
-  title <- getStudyDetails("StudyTitle", projectPath = projectPath) %>%
-    snakecase::to_title_case()
 
+  # retrieve study meta
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)
+
+  # make list of vars for template
   data <- rlang::list2(
-    'Study' = title,
-    'Author' = getStudyDetails("StudyLead", projectPath = projectPath),
-    'Date' = lubridate::today()
+    'Study' = studyMeta$Title
   )
 
+  #create templated output
   usethis::use_template(
-    template = "StudySAP.qmd",
-    save_as = fs::path("documentation", "StudySAP.qmd"),
+    template = "AnalysisPlan.qmd",
+    save_as = fs::path("documentation", "AnalysisPlan.qmd"),
     data = data,
     open = open,
     package = "Ulysses")
@@ -121,36 +122,80 @@ makeStudySAP <- function(projectPath = here::here(), open = TRUE) {
 
 }
 
-#' Function to create a Synopsis file
-#' @param org the name of the organization hosting the repo, for example 'ohdsi-studies'.
-#' If null defaults to a dummy text
-#' @param repo the name of the study repository on github, defaults to the study title
+
+#' R Markdown file to make the contribution guidelines
 #' @param projectPath the path to the project
 #' @param open toggle on whether the file should be opened
 #' @export
-makeHowToRun <- function(org = NULL, repo = NULL,
-                         projectPath = here::here(),
+makeContributionGuidelines <- function(projectPath = here::here(),
+                                       open = TRUE) {
+
+  # retrieve study meta
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)
+
+  # make list of vars for template
+  data <- rlang::list2(
+    'Study' = studyMeta$Title
+  )
+
+  usethis::use_template(
+    template = "ContributionGuidelines.qmd",
+    save_as = fs::path("documentation", "ContributionGuidelines.qmd"),
+    data = data,
+    open = open,
+    package = "Ulysses")
+
+  invisible(data)
+
+}
+
+#' Quarto file to make a results report
+#' @param projectPath the path to the project
+#' @param open toggle on whether the file should be opened
+#' @export
+makeResultsReport <- function(projectPath = here::here(),
+                              open = TRUE) {
+
+  # retrieve study meta
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)
+
+  # make list of vars for template
+  data <- rlang::list2(
+    'Study' = studyMeta$Title
+  )
+
+  usethis::use_template(
+    template = "ResultsReport.qmd",
+    save_as = fs::path("documentation", "ResultsReport.qmd"),
+    data = data,
+    open = open,
+    package = "Ulysses")
+
+  invisible(data)
+
+}
+
+
+
+#' Function to create a HowToRun file
+#' @param projectPath the path to the project
+#' @param open toggle on whether the file should be opened
+#' @export
+makeHowToRun <- function(projectPath = here::here(),
                          open = TRUE) {
 
-  if (is.null(repo)) {
-    repo <- snakecase::to_snake_case(getStudyDetails("StudyTitle", projectPath = projectPath))
-  }
+  # retrieve study meta
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)
 
-  if (is.null(org)) {
-    org <- "[ORG]"
-  }
-
+  # make list of vars for template
   data <- rlang::list2(
-    'Study' = getStudyDetails("StudyTitle", projectPath = projectPath),
-    'Url' = glue::glue("https://github.com/{org}/{repo}"),
-    'Org' = org,
-    'Repo' = repo
+    'Study' = studyMeta$Title
   )
 
 
   usethis::use_template(
     template = "HowToRun.md",
-    save_as = fs::path("documentation", "HowToRun.md"),
+    save_as = fs::path("documentation", "HowToRun.qmd"),
     data = data,
     open = open,
     package = "Ulysses")
@@ -159,6 +204,35 @@ makeHowToRun <- function(org = NULL, repo = NULL,
 
 }
 
+#' Function to create a HowToRun file
+#' @param projectPath the path to the project
+#' @param open toggle on whether the file should be opened
+#' @export
+makeTechSpecs <- function(
+    projectPath = here::here(),
+    open = TRUE) {
+
+  # retrieve study meta
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)
+
+  # make list of vars for template
+  data <- rlang::list2(
+    'Study' = studyMeta$Title
+  )
+
+
+  usethis::use_template(
+    template = "HowToRun.md",
+    save_as = fs::path("documentation", "TechSpecs.qmd"),
+    data = data,
+    open = open,
+    package = "Ulysses")
+
+  invisible(data)
+
+}
+
+# TODO update this to quarto
 #' R Markdown file to make the ohdsi protocol
 #' @param projectPath the path to the project
 #' @param open toggle on whether the file should be opened
@@ -193,83 +267,6 @@ makeOhdsiProtocol <- function(projectPath = here::here(),
 }
 
 
-#' R Markdown file to make the pass protocol
-#' @param projectPath the path to the project
-#' @param open toggle on whether the file should be opened
-#' @export
-makePassProtocol <- function(projectPath = here::here(),
-                              open = TRUE) {
-
-  data <- rlang::list2(
-    'Study' =  getStudyDetails(item = "StudyTitle", projectPath = projectPath),
-    'Author' = getStudyDetails(item = 'StudyLead', projectPath = projectPath),
-    'Date' = lubridate::today()
-  )
-
-  fileName <- snakecase::to_upper_camel_case(getStudyDetails(item = "StudyTitle", projectPath = projectPath)) %>%
-    paste0("Protocol")
-
-  dir_path <- fs::path("documentation", "Protocol") %>%
-    fs::dir_create()
-
-  usethis::use_template(
-    template = "PassProtocol.Rmd",
-    save_as = fs::path(dir_path, fileName, ext = "Rmd"),
-    data = data,
-    open = open,
-    package = "Ulysses")
-
-  invisible(data)
-}
-
-#' R Markdown file to make the contribution guidelines
-#' @param projectPath the path to the project
-#' @param open toggle on whether the file should be opened
-#' @export
-makeContributionGuidelines <- function(projectPath = here::here(),
-                             open = TRUE) {
-
-  data <- rlang::list2(
-    'Study' = getStudyDetails("StudyTitle", projectPath = projectPath),
-    'Lead' = getStudyDetails('StudyLead', projectPath = projectPath)
-  )
-
-
-  usethis::use_template(
-    template = "ContributionGuidelines.md",
-    save_as = fs::path("documentation", "ContributionGuidelines.md"),
-    data = data,
-    open = open,
-    package = "Ulysses")
-
-  invisible(data)
-
-}
-
-#' Quarto file to make a results report
-#' @param projectPath the path to the project
-#' @param open toggle on whether the file should be opened
-#' @export
-makeResultsReport <- function(projectPath = here::here(),
-                              open = TRUE) {
-
-  data <- rlang::list2(
-    'Title' = getStudyDetails("StudyTitle", projectPath = projectPath),
-    'Author' = getStudyDetails('StudyLead', projectPath = projectPath),
-    'Date' = lubridate::today()
-  )
-
-
-  usethis::use_template(
-    template = "ResultsReport.qmd",
-    save_as = fs::path("documentation", "ResultsReport.qmd"),
-    data = data,
-    open = open,
-    package = "Ulysses")
-
-  invisible(data)
-
-}
 
 
 # Extra Files --------------------------------
