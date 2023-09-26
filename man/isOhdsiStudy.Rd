@@ -2,7 +2,7 @@
 % Please edit documentation in R/ohdsiStudy.R
 \name{isOhdsiStudy}
 \alias{isOhdsiStudy}
-\title{Function to check if the directory is a picard project}
+\title{Function to check if the directory is an ohdsi project}
 \usage{
 isOhdsiStudy(basePath)
 }
@@ -10,5 +10,5 @@ isOhdsiStudy(basePath)
 \item{basePath}{the path of the directory}
 }
 \description{
-Function to check if the directory is a picard project
+Function to check if the directory is an ohdsi project
 }

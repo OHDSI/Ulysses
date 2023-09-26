@@ -1,16 +1,14 @@
 #' Function that initializes a new ohdsi study project environment
 #' @param path the path where the project sits
 #' @param projectName the name of the project
-#' @param author the name of the study lead
-#' @param type the type of study either Characterization, PLP or PLE
+#' @param studySettings a list of study settings
 #' @param verbose whether the function should provide steps, default TRUE
 #' @param openProject should the project be opened if created
 #' @import rlang usethis fs
 #' @export
 newOhdsiStudy <- function(path,
                           projectName = basename(path),
-                          author,
-                          type,
+                          studySettings = makeStudySettings(title = basename(path)),
                           verbose = TRUE,
                           openProject = TRUE) {
 
@@ -34,12 +32,13 @@ newOhdsiStudy <- function(path,
   # Step 2: add ohdsi directory structure folders
   addDefaultFolders(projectPath = dir_path, verbose = verbose)
 
-  # Step 3: create _ohdsi.yml file
-  addStudyMeta(projectName = projectName,
-               author = author,
-               type = type,
-               projectPath = dir_path,
-               verbose = verbose)
+  # Step 3: create _study.yml file
+  convert_to_yml(studySettings = studySettings, savePath = dir_path)
+  # addStudyMeta(projectName = projectName,
+  #              author = author,
+  #              type = type,
+  #              projectPath = dir_path,
+  #              verbose = verbose)
 
 
   # Step 4: create gitignore
@@ -106,7 +105,7 @@ addDefaultFolders <- function(projectPath, verbose = TRUE) {
   folders <- c(
     'cohortsToCreate/01_target',
     paste('analysis', analysisFolders, sep = "/"),
-    'exec',
+    paste('exec', execFolders, sep = "/"),
     'extras',
     'documentation'
   )
@@ -116,34 +115,39 @@ addDefaultFolders <- function(projectPath, verbose = TRUE) {
   invisible(pp)
 }
 
-addStudyMeta <- function(projectName,
-                         author,
-                         type = c("Characterization", "Population-Level Estimation", "Patient-Level Prediction"),
-                         projectPath,
-                         verbose = TRUE){
-
-  if (verbose) {
-    cli::cat_bullet("Step 3: Adding _study.yml file",
-                    bullet_col = "yellow", bullet = "info")
-  }
 
 
 
-  # projName <- basename(projectPath) %>%
-  #   snakecase::to_title_case()
-  date <- lubridate::today()
 
-  data <- rlang::list2(
-    'Title' = projectName,
-    'Author' = author,
-    'Type' = type,
-    'Date' = date
-  )
+# addStudyMeta <- function(projectName,
+#                          author,
+#                          type = c("Characterization", "Population-Level Estimation", "Patient-Level Prediction"),
+#                          projectPath,
+#                          verbose = TRUE){
+#
+#   if (verbose) {
+#     cli::cat_bullet("Step 3: Adding _study.yml file",
+#                     bullet_col = "yellow", bullet = "info")
+#   }
+#
+#
+#
+#   # projName <- basename(projectPath) %>%
+#   #   snakecase::to_title_case()
+#   date <- lubridate::today()
+#
+#   data <- rlang::list2(
+#     'Title' = projectName,
+#     'Author' = author,
+#     'Type' = type,
+#     'Date' = date
+#   )
+#
+#   template_contents <- render_template("_study.yml", data = data)
+#   save_as <- fs::path(projectPath, "_study.yml")
+#   new <- write_utf8(save_as, template_contents)
+#   invisible(new)
+#
+#
+# }
 
-  template_contents <- render_template("_study.yml", data = data)
-  save_as <- fs::path(projectPath, "_study.yml")
-  new <- write_utf8(save_as, template_contents)
-  invisible(new)
-
-
-}
