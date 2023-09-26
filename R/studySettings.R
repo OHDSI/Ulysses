@@ -124,9 +124,12 @@ defaultCdmDetails <- function() {
 #' @param title the title of the study
 #' @param authors the author list for the study
 #' @param milestones list of milestone information including study status and timeframe for study
+#' @param cdm list of info about the cdm
 #' @param desc a list of attributes describing the study including the study type and tages
 #' @param contact a list of contact information for study
 #' @param links a list of links to files used in study
+#' @return a list containing study settings
+#' @export
 makeStudySettings <- function(title,
                               authors = defaultAuthors(),
                               milestones = defaultMilestones(),

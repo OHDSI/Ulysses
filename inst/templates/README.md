@@ -2,53 +2,36 @@
 
 <!-- studyStatus: start -->
 
-![Study Status:
-Started](https://img.shields.io/badge/Study%20Status-Repo%20Created-lightgray.svg)
+![Study Status: Started](https://img.shields.io/badge/Study%20Status-Started-blue.svg)
 
 <!-- studyStatus: end -->
 
 
-[![CDM
-Version](https://img.shields.io/badge/CDM%20Version-5.4-lemonchiffon.svg)](https://ohdsi.github.io/CommonDataModel/cdm54.html)
+## Description
 
+Welcome to the {{{ Project }}} study! {{{ Project }}} is a {{{ StudyType }}} study.
 
-[![Vocabulary
-Version](https://img.shields.io/badge/Vocabulary%20Version-5.0-rosybrown.svg)](https://github.com/OHDSI/Vocabulary-v5.0)
+<!----add to description---------->
 
-
-<!---Add in sections and text as necessary for your study ---->
 
 ## Study Information
 
-  - **Study Lead**: {{{ Author }}}
-  - **Analytics Use Case**: {{{ StudyType }}}
-  - **Study Start Date**: {{{ StartDate }}}
-  - **Study End Date**: {{{ EndDate }}}
-  - **Study Tags**: {{{ StudyTags }}}
-  - **Protocol**: {{{ Protocol }}}
-  - **Publications**: {{{ Publications }}}
-  - **Results Explorer**: {{{ Dashboard }}}
+-   **Study Type**: {{{ Study Type }}}
+-   **Contact Name**: {{{ Contact }}}
+-   **Contact Email **: {{{ ContactEmail }}}
 
+## CDM Information
 
-## Description
+-   **CDM Version**: {{{ CdmVersion }}}
+-   **Vocabulary Version**: {{{ VocabVersion }}}
+-   **Vocabulary Release**: {{{ VocabRelease}}}
 
-{{{ Project }}} is a {{{ StudyType }}} study....
+## Resources
 
-<!----Add a project description to your README---->
-
-### Data Used
-
-<!---Add a table with the databases used in the study as seen in example--->
-
-| Name                     | Description                                              |
-|--------------------------|----------------------------------------------------------|
-| Synpuf 110K              | A synthetic database based on CMS data used for testing  |
-
-
-## Study Documentation
-
--   **Study Protocol** [Add Link when available]
--   **How To Run** [Add Link when available]
--   **Contribution Guidelines** [Add Link when available]
+-   **Forum Post**: {{{ ForumPost }}}
+-   **Study Hub**: {{{ Hub }}}
+-   **Protocol**: {{{ Protocol }}}
+-   **Report**: {{{ Report }}}
+-   **Results Dashboard**: {{{ Dashboard }}}
 
 

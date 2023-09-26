@@ -7,19 +7,27 @@
 #' @export
 makeReadMe <- function(projectPath = here::here(), open = TRUE) {
 
+  # retrieve study meta
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)
 
+  #create template vars
   data <- rlang::list2(
-    'Project' = getStudyDetails("StudyTitle", projectPath = projectPath),
-    'Author' = getStudyDetails("StudyLead", projectPath = projectPath),
-    'StudyType' = getStudyDetails("StudyType", projectPath = projectPath),
-    'StartDate' = getStudyDetails("StudyStartDate", projectPath = projectPath),
-    'EndDate' = getStudyDetails("StudyEndDate", projectPath = projectPath),
-    'StudyTags' = getStudyDetails("StudyTags", projectPath = projectPath),
-    'Protocol' = getStudyDetails("LinksProtocol", projectPath = projectPath),
-    'Publications' = getStudyDetails("LinksPublication", projectPath = projectPath),
-    'Dashboard' = getStudyDetails("LinksDashboard", projectPath = projectPath)
+    'Project' = studyMeta$Title,
+    'StudyType' = studyMeta$Description$StudyType,
+    'Contact' = studyMeta$Contact$Name,
+    'ContactEmail' = studyMeta$Contact$Email,
+    'CdmVersion' = studyMeta$CDM$CdmVersion,
+    'VocabVersion' = studyMeta$CDM$VocabVersion,
+    'VocabRelease' = studyMeta$CDM$VocabRelease,
+    'StudyStatus' = studyMeta$Milestones$Status,
+    'ForumPost' = studyMeta$Links$Forum,
+    'Protocol' = studyMeta$Links$Protocol,
+    'Hub' = studyMeta$Links$StudyHub,
+    'Dashboard' = studyMeta$Links$ResultsDashboard,
+    'Report' = studyMeta$Links$Report
   )
 
+  #load template with vars
   usethis::use_template(
     template = "README.md",
     data = data,
@@ -36,8 +44,11 @@ makeReadMe <- function(projectPath = here::here(), open = TRUE) {
 #' @export
 makeNews <- function(projectPath = here::here(), open = TRUE) {
 
+  # retrieve study meta
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)
+
   data <- rlang::list2(
-    'Project' = getStudyDetails("StudyTitle", projectPath = projectPath)
+    'Project' = studyMeta$Title
   )
 
   usethis::use_template(
