@@ -31,10 +31,10 @@ newOhdsiStudy <- function(path,
   #cli::cat_line("\t- Adding .Rproj")
 
 
-  # Step 2: add picard directory structure folders
+  # Step 2: add ohdsi directory structure folders
   addDefaultFolders(projectPath = dir_path, verbose = verbose)
 
-  # Step 3: create _picard.yml file
+  # Step 3: create _ohdsi.yml file
   addStudyMeta(projectName = projectName,
                author = author,
                type = type,
@@ -48,7 +48,7 @@ newOhdsiStudy <- function(path,
                     bullet_col = "yellow", bullet = "info")
   }
 
-  ignores <- c("results/","logs/", "_study.yml")
+  ignores <- c("exec/", "_study.yml")
   usethis::write_union(fs::path(dir_path, ".gitignore"), ignores)
 
 
@@ -62,7 +62,7 @@ newOhdsiStudy <- function(path,
 
 }
 
-#' Function to check if the directory is a picard project
+#' Function to check if the directory is an ohdsi project
 #' @param basePath the path of the directory
 #' @export
 isOhdsiStudy <- function(basePath) {
@@ -71,7 +71,7 @@ isOhdsiStudy <- function(basePath) {
   check1 <- fs::file_exists("_study.yml") %>% unname()
 
   #check if has subfolders
-  folders <- c("analysis", "cohortsToCreate", "results", "logs", "extras")
+  folders <- c("analysis", "cohortsToCreate", "exec", "extras", "documentation")
 
   ff <- fs::dir_ls(basePath, type = "directory") %>%
     basename()
@@ -79,12 +79,12 @@ isOhdsiStudy <- function(basePath) {
 
   if (check1 & check2) {
     cli::cat_bullet(
-      crayon::cyan(basename(basePath)), " is a picard project",
+      crayon::cyan(basename(basePath)), " is an ohdsi project",
       bullet = "tick", bullet_col = "green"
     )
   } else{
     cli::cat_bullet(
-      crayon::cyan(basename(basePath)), " is not a picard project",
+      crayon::cyan(basename(basePath)), " is not an ohdsi project",
       bullet = "cross", bullet_col = "red"
     )
 
@@ -101,14 +101,13 @@ addDefaultFolders <- function(projectPath, verbose = TRUE) {
                     bullet_col = "yellow", bullet = "info")
   }
 
-  cohortFolders <- c('01_target')
-  analysisFolders <- c("settings", "studyTasks", "private")
+  analysisFolders <- c("strategus/settings", "strategus/run", "misc")
+  execFolders <- c('logs', 'StrategusInstantiatedModules', 'results')
   folders <- c(
-    paste('cohortsToCreate', cohortFolders, sep = "/"),
+    'cohortsToCreate/01_target',
     paste('analysis', analysisFolders, sep = "/"),
-    'results',
+    'exec',
     'extras',
-    'logs',
     'documentation'
   )
 
