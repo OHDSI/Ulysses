@@ -1,51 +1,138 @@
-defaultAuthors <- function() {
+# Meta info ------------
+
+## Authors -----------
+setAuthors <- function(name, organization, role) {
   tibble::tibble(
+    name = name,
+    organization = organization,
+    role = role
+  )
+}
+
+defaultAuthors <- function() {
+  setAuthors(
     name = c("Ulysses", "Eurylochus"),
     organization = c("OHDSI", "OHDSI"),
     role = c("Lead", "Developer")
   )
 }
 
-defaultMilestones <- function() {
+## Milestones -----------
+setMilestones <- function(status, startDate, endDate) {
   list(
-    'Status' = "Initialized",
-    'Start Date' = "1960-01-01",
-    'End Date' = "2099-12-31"
+    'Status' = status,
+    'StartDate' = startDate,
+    'EndDate' = endDate
+  )
+}
+
+defaultMilestones <- function() {
+  setMilestones(
+    status = "Started",
+    startDate = "1960-01-01",
+    endDate = "2099-12-31"
+  )
+}
+
+## Descriptions -----------
+setDescription <- function(studyType, tags) {
+  list(
+    'StudyType' = studyType,
+    'Tags' = as.list(tags)
   )
 }
 
 defaultDesc <- function() {
+  setDescription(studyType = "Characterization",
+                 tags = c("Observational Study", "OMOP", "OHDSI"))
+}
+
+## Links -----------
+setLinks <- function(forumPostLink,
+                     protocolLink,
+                     studyHubLink,
+                     resultsDashboardLink,
+                     reportLink) {
   list(
-    'StudyType' = "Characterization",
-    'Tags' = list(
-      "Observational Study",
-      "OMOP",
-      "OHDSI"
-    )
+    'Forum' = forumPostLink,
+    'Protocol' = protocolLink,
+    'StudyHub' = studyHubLink,
+    'ResultsDashboard' = resultsDashboardLink,
+    'Report' = reportLink
   )
 }
 
 defaultLinks <- function() {
-  list(
-    'Forum' = "TBA",
-    'Protocol' = "TBA",
-    'HowToRun' = "TBA",
-    'ContributionGuidelines' = "TBA",
-    'ResultsDashboard' = "TBA",
-    'Report' = "TBA"
+  setLinks(
+    forumPostLink = "TBA",
+    protocolLink = "TBA",
+    studyHubLink = "TBA",
+    resultsDashboardLink = "TBA",
+    reportLink = "TBA"
   )
 }
+
+## Contact -----------
+setContact <- function(name, email) {
+  list(
+    'Name' = name,
+    'Email' = email
+  )
+}
+defaultContact <- function() {
+  setContact(name = "Ulysses", email = "ulysses@ohdsi.org")
+}
+
+
+## Cdm -----------
+setCdmDetails <- function(cdmVersion, vocabVersion, vocabRelease) {
+  list(
+    'CdmVersion' = cdmVersion,
+    'VocabVersion' = vocabVersion,
+    'VocabRelease' = vocabRelease
+  )
+}
+defaultCdmDetails <- function() {
+  setCdmDetails(
+    cdmVersion = "5.3",
+    vocabVersion = "v5.0",
+    vocabRelease = "22-06-2022")
+}
+
+## Data -----------
+# setDataSources <- function(databaseName, location, type, persons, timeFrame) {
+#   tibble::tibble(
+#     databaseName = databaseName,
+#     location = location,
+#     type = type,
+#     persons = persons,
+#     timeFrame
+#   )
+# }
+#
+# defaultDataSources <- function() {
+#   setDataSources(
+#     databaseName = c("CMS Synpuf"),
+#     location = c("US"),
+#     type = c("Claims"),
+#     persons = c("110K"),
+#     timeFrame = c("2008-2010")
+#   )
+# }
 
 #' Function to initialize study settings
 #' @param title the title of the study
 #' @param authors the author list for the study
 #' @param milestones list of milestone information including study status and timeframe for study
 #' @param desc a list of attributes describing the study including the study type and tages
+#' @param contact a list of contact information for study
 #' @param links a list of links to files used in study
 makeStudySettings <- function(title,
                               authors = defaultAuthors(),
                               milestones = defaultMilestones(),
+                              cdm = defaultCdmDetails(),
                               desc = defaultDesc(),
+                              contact = defaultContact(),
                               links = defaultLinks()) {
 
 
@@ -56,7 +143,9 @@ makeStudySettings <- function(title,
     'Authors' = authors,
     'Description' = desc,
     'Milestones' = milestones,
-    'Links' = links
+    'CDM' = cdm,
+    'Links' = links,
+    'Contact' = contact
   )
 
   return(studySettings)
@@ -71,7 +160,7 @@ convert_to_yml <- function(studySettings, savePath) {
 
   cli::cat_bullet(
     "Initialize _study.yml",
-    bullet = "pointer", bullet_col = "yellow"
+    bullet = "tick", bullet_col = "green"
   )
 
   #write _study.yml file
@@ -83,3 +172,11 @@ convert_to_yml <- function(studySettings, savePath) {
   invisible(filePath)
 
 }
+
+#Function to convert yml into a specified list format
+retrieveStudySettings <- function(studySettingsPath){
+  studyYml <- yaml::read_yaml(studySettingsPath)
+  studyYml$Authors <- purrr::map_dfr(studyYml$Authors, ~.x)
+  return(studyYml)
+}
+
