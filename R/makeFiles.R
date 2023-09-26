@@ -194,7 +194,7 @@ makeHowToRun <- function(projectPath = here::here(),
 
 
   usethis::use_template(
-    template = "HowToRun.md",
+    template = "HowToRun.qmd",
     save_as = fs::path("documentation", "HowToRun.qmd"),
     data = data,
     open = open,
@@ -222,7 +222,7 @@ makeTechSpecs <- function(
 
 
   usethis::use_template(
-    template = "HowToRun.md",
+    template = "TechSpecs.qmd",
     save_as = fs::path("documentation", "TechSpecs.qmd"),
     data = data,
     open = open,
