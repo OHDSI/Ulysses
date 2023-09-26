@@ -61,7 +61,7 @@ addConfig <- function(block, database = block, projectPath = here::here(), open 
 {block}:
   databaseName: {database}
   dbms: !expr keyring::key_get('{block}_dbms', keyring = '{projName}')
-  user: !expr keyring::key_get('{block}_user', keyring = '{projName}'),
+  user: !expr keyring::key_get('{block}_user', keyring = '{projName}')
   password: !expr keyring::key_get('{block}_password', keyring = '{projName}')
   connectionString: !expr keyring::key_get('{block}_connectionString', keyring = '{projName}')
   cdmDatabaseSchema: !expr keyring::key_get('{block}_cdmDatabaseSchema', keyring = '{projName}')
