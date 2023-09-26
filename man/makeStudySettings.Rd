@@ -8,7 +8,9 @@ makeStudySettings(
   title,
   authors = defaultAuthors(),
   milestones = defaultMilestones(),
+  cdm = defaultCdmDetails(),
   desc = defaultDesc(),
+  contact = defaultContact(),
   links = defaultLinks()
 )
 }
@@ -19,9 +21,16 @@ makeStudySettings(
 
 \item{milestones}{list of milestone information including study status and timeframe for study}
 
+\item{cdm}{list of info about the cdm}
+
 \item{desc}{a list of attributes describing the study including the study type and tages}
 
+\item{contact}{a list of contact information for study}
+
 \item{links}{a list of links to files used in study}
+}
+\value{
+a list containing study settings
 }
 \description{
 Function to initialize study settings

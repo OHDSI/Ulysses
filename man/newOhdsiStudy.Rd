@@ -7,7 +7,7 @@
 newOhdsiStudy(
   path,
   projectName = basename(path),
-  studySettings = defaultOhdsiStudySettings(),
+  studySettings = makeStudySettings(title = basename(path)),
   verbose = TRUE,
   openProject = TRUE
 )
@@ -16,6 +16,8 @@ newOhdsiStudy(
 \item{path}{the path where the project sits}
 
 \item{projectName}{the name of the project}
+
+\item{studySettings}{a list of study settings}
 
 \item{verbose}{whether the function should provide steps, default TRUE}
 
