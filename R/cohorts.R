@@ -203,18 +203,20 @@ getCohortPrint <- function(cohort) {
   #get cohort header
   cohortName <- snakecase::to_title_case(cohort$name)
   cohortId <- cohort$id
-  cohortHeader <- glue::glue("## {cohortName} (id: {cohortId}) \n\n\n***Cohort Definition***")
-
+  cohortHeader <- glue::glue("## {cohortName} (id: {cohortId}) \n\n\n")
+  version <- "***Versions***\n\n <!-----Add versions----->\n *Version 1*\n * Initial Cohort Definition"
   # get readable cohort logic
   # read json file
   json <- readr::read_file(cohort$file)
   # turn into print friendly
   cdRead <- CirceR::cohortPrintFriendly(json)
-  cdRead <- paste(cohortHeader, cdRead, sep = "\n\n")
+  cdRead <- paste(cohortHeader, "***Cohort Definition***", cdRead, sep = "\n\n")
   # get readable concept set
   csRead <- RJSONIO::fromJSON(json)$ConceptSets |>
     CirceR::conceptSetListPrintFriendly()
   csRead <- paste("***Concept Sets***", csRead, sep = "\n\n")
+
+
 
   #bind to get full read
   readFull <- paste(cdRead, csRead, sep = "\n\n")
