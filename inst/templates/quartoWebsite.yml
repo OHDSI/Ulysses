@@ -8,22 +8,20 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - text: "Study Info"
+      - href: news.qmd
+        text: Changelog
+      - text: "Study Resources"
         menu:
           - text: Analysis Plan
             href: AnalysisPlan.qmd
           - text: Results Report
             href: ResultsReport.qmd
-      - text: "Technical Info"
-        menu:
           - text: Technical Specifications
-            href: techSpecs.qmd
+            href: TechSpecs.qmd
           - text: How-To-Run
             href: HowToRun.qmd
           - text: Contibution Guidelines
             href: ContributionGuidelines.qmd
-          - text: News
-            href: news.qmd
 
 format:
   html:
