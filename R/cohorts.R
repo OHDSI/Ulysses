@@ -136,13 +136,28 @@ setCohortManifest <- function(projectPath = here::here()) {
     name = cohortNames,
     type = cohortType,
     hash = hash,
-    file = cleanFilePath %>% as.character()
+    version = 1L,
+    file = cleanFilePath %>% as.character(),
   ) %>%
     dplyr::mutate(
       id = dplyr::row_number(), .before = 1
     )
 
   return(tb)
+}
+
+updateCohortManifest <- function(cm, idx) {
+
+  # identifiy the cohorts that changed
+  cohortsThatChanged <- fs::path_file(cm$file[idx])
+  newVersion <- cm$version[idx] + 1L
+  cli::cat_bullet("Update ", crayon::green(cohortsThatChanged), " to version ", crayon::magenta(newVersion),
+                  bullet = "pointer", bullet_col = "yellow")
+
+  #update version
+  cm$version[idx] <- newVersion
+
+  return(cm)
 }
 
 #' Function that lists all cohort definitions loaded into the study
@@ -166,7 +181,7 @@ cohortManifest <- function(projectPath = here::here()) {
     if (sum(changedCohorts) > 0) {
       cli::cat_bullet("Circe Cohorts have changed since last check",
                       bullet = "warning", bullet_col = "yellow")
-      cm <- setCohortManifest(projectPath = projectPath)
+      cm <- updateCohortManifest(cm = cm, idx = changedCohorts)
       cli::cat_bullet("Updating CohortManifest.csv", bullet = "tick", bullet_col = "green")
       readr::write_csv(cm, file = cohortManifestPath)
     }
