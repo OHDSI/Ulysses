@@ -1,5 +1,20 @@
 # Functions for git related tasks ------------
 
+getGithubUser <- function() {
+  safe_whoami <- purrr::safely(gh::gh_whoami)
+  gitCreds <- safe_whoami()
+  if (length(gitCreds$error) > 0) {
+    cli::cat_bullet("Need to set up a Github PAT. Follow instructions from: ",
+                    crayon::italic("https://gh.r-lib.org/articles/managing-personal-access-tokens.html"),
+                    bullet = "warning",
+                    bullet_col = "yellow")
+    user <- "githubUser"
+  }
+  user <- gitCreds$result$login
+
+  return(user)
+}
+
 has_git <- function(proj) {
   repo <- tryCatch(gert::git_find(proj), error = function(e) NULL)
   !is.null(repo)
