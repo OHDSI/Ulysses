@@ -87,3 +87,40 @@ addCohortFolder <- function(folderName, projectPath = here::here()) {
   invisible(fullName)
 
 }
+
+#' Function that lists all cohort definitions loaded into the study
+#' @param projectPath the path to the project
+#' @return tibble of the cohorts in the project
+#' @export
+cohortManifest <- function(projectPath = here::here()) {
+
+  cohortFolder <- fs::path(projectPath, "cohortsToCreate")
+
+  #get cohort file paths
+  cohortFiles <- fs::dir_ls(cohortFolder, recurse = TRUE, type = "file", glob = "*.json")
+  #get cohort names
+  cohortNames <- fs::path_file(cohortFiles) %>%
+    fs::path_ext_remove()
+  #get cohort type
+  cohortType <- fs::path_dir(cohortFiles) %>%
+    basename() %>%
+    gsub(".*_", "", .)
+
+  #future addition of hash
+  hash <- purrr::map(cohortFiles, ~readr::read_file(.x)) %>%
+    purrr::map_chr(~digest::digest(.x, algo = "sha1")) %>%
+    unname()
+
+  #return tibble with info
+  tb <- tibble::tibble(
+    name = cohortNames,
+    type = cohortType,
+    hash = hash,
+    file = cohortFiles %>% as.character()
+  ) %>%
+    dplyr::mutate(
+      id = dplyr::row_number(), .before = 1
+    )
+
+  return(tb)
+}
