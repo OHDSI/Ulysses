@@ -146,7 +146,7 @@ setCohortManifest <- function(projectPath = here::here()) {
   return(tb)
 }
 
-updateCohortManifest <- function(cm, idx) {
+updateCohortManifest <- function(cm, hash, idx) {
 
   # identifiy the cohorts that changed
   cohortsThatChanged <- fs::path_file(cm$file[idx])
@@ -155,6 +155,7 @@ updateCohortManifest <- function(cm, idx) {
                   bullet = "pointer", bullet_col = "yellow")
 
   #update version
+  cm$hash[idx] <- hash[idx]
   cm$version[idx] <- newVersion
 
   return(cm)
@@ -181,7 +182,7 @@ cohortManifest <- function(projectPath = here::here()) {
     if (sum(changedCohorts) > 0) {
       cli::cat_bullet("Circe Cohorts have changed since last check",
                       bullet = "warning", bullet_col = "yellow")
-      cm <- updateCohortManifest(cm = cm, idx = changedCohorts)
+      cm <- updateCohortManifest(cm = cm, hash = hash, idx = changedCohorts)
       cli::cat_bullet("Updating CohortManifest.csv", bullet = "tick", bullet_col = "green")
       readr::write_csv(cm, file = cohortManifestPath)
     }
@@ -204,13 +205,13 @@ getCohortPrint <- function(cohort) {
   cohortName <- snakecase::to_title_case(cohort$name)
   cohortId <- cohort$id
   cohortHeader <- glue::glue("## {cohortName} (id: {cohortId}) \n\n\n")
-  version <- "***Versions***\n\n <!-----Add versions----->\n *Version 1*\n * Initial Cohort Definition"
+  version <- "***Versions***\n\n <!-----Add versions----->\n\n *Version 1* \n\n * Initial Cohort Definition"
   # get readable cohort logic
   # read json file
   json <- readr::read_file(cohort$file)
   # turn into print friendly
   cdRead <- CirceR::cohortPrintFriendly(json)
-  cdRead <- paste(cohortHeader, "***Cohort Definition***", cdRead, sep = "\n\n")
+  cdRead <- paste(cohortHeader, version, "***Cohort Definition***", cdRead, sep = "\n\n")
   # get readable concept set
   csRead <- RJSONIO::fromJSON(json)$ConceptSets |>
     CirceR::conceptSetListPrintFriendly()
