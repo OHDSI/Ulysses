@@ -1,7 +1,6 @@
 ---
 title: "Contribution Guidelines"
 number-sections: true
-number-depth: 1
 ---
 
 Welcome to the {{{ Study }}}! Thank you for your interest in participating in this network study. Please read the contribution guidelines carefully to understand how to participate in this study.

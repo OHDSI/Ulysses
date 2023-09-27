@@ -1,5 +1,5 @@
 ---
-title: Study Analysis Plan {{{ Study }}}
+title: {{{ Study }}} Analysis Plan 
 number-sections: true
 ---
 
