@@ -29,3 +29,19 @@ getLatestModules <- function(modules = listStrategusModules()) {
     purrr::set_names(modules)
   return(latestModules)
 }
+
+#' Function to retrieve table of modules
+#' @param projectPath the path to the project
+#' @export
+moduleTable <- function(projectPath = here::here()){
+
+  strategusMods <- retrieveStudySettings(projectPath = projectPath)$Strategus
+
+  tb <- tibble::tibble(
+    'module' = names(strategusMods),
+    'version' = purrr::map_chr(strategusMods, ~.x),
+    'remoteRepo' = "github.com",
+    'remoteUserName' = "ohdsi"
+  )
+  return(tb)
+}

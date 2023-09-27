@@ -9,6 +9,7 @@ makeStudySettings(
   authors = defaultAuthors(),
   milestones = defaultMilestones(),
   cdm = defaultCdmDetails(),
+  strategus = getLatestModules(),
   desc = defaultDesc(),
   contact = defaultContact(),
   links = defaultLinks()
