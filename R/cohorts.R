@@ -111,6 +111,11 @@ setCohortManifest <- function(projectPath = here::here()) {
   cohortFolder <- fs::path(projectPath, "cohortsToCreate")
   #get cohort file paths
   cohortFiles <- fs::dir_ls(cohortFolder, recurse = TRUE, type = "file", glob = "*.json")
+
+  if (length(cohortFiles) == 0) {
+    cli::cli_abort("There are no cohorts in this study. Please add circe json to the cohortsToCreate Folder")
+  }
+
   #get cohort names
   cohortNames <- fs::path_file(cohortFiles) %>%
     fs::path_ext_remove()
