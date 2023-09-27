@@ -99,6 +99,7 @@ defaultCdmDetails <- function() {
     vocabRelease = "22-06-2022")
 }
 
+
 ## Data -----------
 # setDataSources <- function(databaseName, location, type, persons, timeFrame) {
 #   tibble::tibble(
@@ -134,6 +135,7 @@ makeStudySettings <- function(title,
                               authors = defaultAuthors(),
                               milestones = defaultMilestones(),
                               cdm = defaultCdmDetails(),
+                              strategus = getLatestModules(),
                               desc = defaultDesc(),
                               contact = defaultContact(),
                               links = defaultLinks()) {
@@ -147,6 +149,7 @@ makeStudySettings <- function(title,
     'Description' = desc,
     'Milestones' = milestones,
     'CDM' = cdm,
+    'Strategus' = strategus,
     'Links' = links,
     'Contact' = contact
   )
