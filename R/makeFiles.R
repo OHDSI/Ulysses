@@ -411,3 +411,196 @@ makeMeetingMinutes <- function(projectPath = here::here(), open = TRUE) {
   invisible(data)
 
 }
+
+# Analysis Files ---------------------
+
+
+#' Function to create a pipeline task as an R file
+#' @param scriptName The name of the capr file that is being created
+#' @param configBlock the name of the config block to use for the script
+#' @param projectPath the path to the project
+#' @param open toggle on whether the file should be opened
+#' @export
+makeCaprScript <- function(scriptName,
+                           configBlock = NULL,
+                           author = NULL,
+                           date = lubridate::today(),
+                           projectPath = here::here(),
+                           open = TRUE) {
+
+  intFileName <- paste0("Capr_", scriptName)
+
+  if (is.null(configBlock)) {
+    configBlock <- "[Add config block]"
+  }
+
+  # retrieve study meta
+  studyMeta <- Ulysses:::retrieveStudySettings(projectPath = projectPath)
+
+  # specify author
+  if (is.null(author)) {
+    authorName <- studyMeta$Authors %>%
+      dplyr::slice(1) %>%
+      dplyr::pull(name)
+  } else{
+    authorName <- author
+  }
+
+  data <- rlang::list2(
+    'Study' = studyMeta$Title,
+    'Author' = authorName,
+    'Date' = date,
+    'FileName' = intFileName
+  )
+
+
+
+  usethis::use_template(
+    template = "Capr.R",
+    save_as = fs::path("analysis/misc/R", intFileName, ext = "R"),
+    data = data,
+    open = open,
+    package = "Ulysses")
+
+  invisible(data)
+
+}
+#' Function to create a pipeline task as an R file
+#' @param keyringName The name of the keyring for the study, if null defaults to dir basename
+#' @param keyringPassword The password for the keyring, if null defauls to ohdsi
+#' @param projectPath the path to the project
+#' @param open toggle on whether the file should be opened
+#' @export
+makeWebApiScript <- function(keyringName = NULL,
+                             keyringPassword = NULL,
+                             projectPath = here::here(),
+                             open = TRUE) {
+
+
+  fileName <- "ImportCohortsFromWebApi"
+
+  if (is.null(keyringName)) {
+    keyringName <- basename(projectPath)
+  }
+
+  if (is.null(keyringPassword)) {
+    keyringPassword <- "ohdsi"
+  }
+
+
+  data <- rlang::list2(
+    'Study' = keyringName,
+    'Secret'= keyringPassword,
+    'FileName' = fileName
+  )
+
+
+  usethis::use_template(
+    template = "WebApi.R",
+    save_as = fs::path("extras/ImportCohortsFromWebApi.R"),
+    data = data,
+    open = open,
+    package = "Ulysses")
+
+  invisible(data)
+
+}
+
+
+#' Function to create a pipeline task as a Rmd file
+#' @param scriptName The name of the analysis script
+#' @param configBlock the name of the config block to use for the script
+#' @param projectPath the path to the project
+#' @param open toggle on whether the file should be opened
+#' @export
+makeAnalysisScript <- function(scriptName,
+                               configBlock = NULL,
+                               author = NULL,
+                               date = lubridate::today(),
+                               projectPath = here::here(),
+                               open = TRUE) {
+
+
+  if (is.null(configBlock)) {
+    configBlock <- "[Add config block]"
+  }
+
+
+  # retrieve study meta
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)
+
+  # specify author
+  if (is.null(author)) {
+    authorName <- studyMeta$Authors %>%
+      dplyr::slice(1) %>%
+      dplyr::pull(name)
+  } else{
+    authorName <- author
+  }
+
+  data <- rlang::list2(
+    'Study' = studyMeta$Title,
+    'Author' = authorName,
+    'Date' = date,
+    'FileName' = scriptName,
+    'Block' = configBlock
+  )
+
+  usethis::use_template(
+    template = "AnalysisScript.R",
+    save_as = fs::path("analysis/misc/tasks", scriptName, ext = "R"),
+    data = data,
+    open = open,
+    package = "Ulysses")
+
+  invisible(data)
+
+
+}
+
+
+#' Function to create a pipeline task as an R file
+#' @param internalsName The name of the internals file that is being created
+#' @param projectPath the path to the project
+#' @param author the author of the R file, defaults to first author in _study.yml
+#' @param date the date the file was initialized, defaults to today
+#' @param open toggle on whether the file should be opened
+#' @export
+makeInternals <- function(internalsName,
+                          projectPath = here::here(),
+                          author = NULL,
+                          date = lubridate::today(),
+                          open = TRUE) {
+
+  intFileName <- paste0("_", internalsName)
+
+  # retrieve study meta
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)
+
+  # specify author
+  if (is.null(author)) {
+    authorName <- studyMeta$Authors %>%
+      dplyr::slice(1) %>%
+      dplyr::pull(name)
+  } else{
+    authorName <- author
+  }
+
+  data <- rlang::list2(
+    'Study' = studyMeta$Title,
+    'Author' = authorName,
+    'Date' = date,
+    'FileName' = intFileName
+  )
+
+
+  usethis::use_template(
+    template = "Internals.R",
+    save_as = fs::path("analysis/misc/R", intFileName, ext = "R"),
+    data = data,
+    open = open,
+    package = "Ulysses")
+
+  invisible(data)
+
+}
