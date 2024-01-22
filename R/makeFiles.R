@@ -457,7 +457,7 @@ makeCaprScript <- function(scriptName,
 
   usethis::use_template(
     template = "Capr.R",
-    save_as = fs::path("analysis/misc/R", intFileName, ext = "R"),
+    save_as = fs::path("analysis/R", intFileName, ext = "R"),
     data = data,
     open = open,
     package = "Ulysses")
@@ -548,7 +548,7 @@ makeAnalysisScript <- function(scriptName,
 
   usethis::use_template(
     template = "AnalysisScript.R",
-    save_as = fs::path("analysis/misc/tasks", scriptName, ext = "R"),
+    save_as = fs::path("analysis/tasks", scriptName, ext = "R"),
     data = data,
     open = open,
     package = "Ulysses")
@@ -596,7 +596,7 @@ makeInternals <- function(internalsName,
 
   usethis::use_template(
     template = "Internals.R",
-    save_as = fs::path("analysis/misc/R", intFileName, ext = "R"),
+    save_as = fs::path("analysis/R", intFileName, ext = "R"),
     data = data,
     open = open,
     package = "Ulysses")
