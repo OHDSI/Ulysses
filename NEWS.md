@@ -1,9 +1,6 @@
 Ulysses 0.0.3
 =============
 
-* Restructure directories to fit strategus
-    - module version loader
-    - template strategus files
 * add study hub builder
 * convert all documents to qmd
 * add functions to define study settings prior to build
