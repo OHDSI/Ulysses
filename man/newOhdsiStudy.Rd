@@ -7,8 +7,7 @@
 newOhdsiStudy(
   path,
   projectName = basename(path),
-  author,
-  type,
+  studySettings = makeStudySettings(title = basename(path)),
   verbose = TRUE,
   openProject = TRUE
 )
@@ -18,9 +17,7 @@ newOhdsiStudy(
 
 \item{projectName}{the name of the project}
 
-\item{author}{the name of the study lead}
-
-\item{type}{the type of study either Characterization, PLP or PLE}
+\item{studySettings}{a list of study settings}
 
 \item{verbose}{whether the function should provide steps, default TRUE}
 

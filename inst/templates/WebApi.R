@@ -78,16 +78,11 @@ cohortName <- gsub("\\s", "_", cohortNames)
 # get json from webApi
 cohortJson <- getWebApiCohortJson(cohortId = cohortId, baseUrl = baseUrl)
 
-cohortFolder <- "[type of cohort]" %>% #if this is the target cohort do not make new folder
-  addCohortFolder()
 
-
-cohortFile <- fs::path(cohortFolder, cohortName, ext = "json")
+cohortFile <- fs::path("cohorts/json", cohortName, ext = "json")
 readr::write_file(cohortJson, file = cohortFile)
 
 
-# F. Session Info ------------------------
+# F. Clean up ------------------------
 
-sessioninfo::session_info()
 rm(list = ls())
-withr::deferred_run()

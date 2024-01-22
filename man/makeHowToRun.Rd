@@ -2,20 +2,15 @@
 % Please edit documentation in R/makeFiles.R
 \name{makeHowToRun}
 \alias{makeHowToRun}
-\title{Function to create a Synopsis file}
+\title{Function to create a HowToRun file}
 \usage{
-makeHowToRun(org = NULL, repo = NULL, projectPath = here::here(), open = TRUE)
+makeHowToRun(projectPath = here::here(), open = TRUE)
 }
 \arguments{
-\item{org}{the name of the organization hosting the repo, for example 'ohdsi-studies'.
-If null defaults to a dummy text}
-
-\item{repo}{the name of the study repository on github, defaults to the study title}
-
 \item{projectPath}{the path to the project}
 
 \item{open}{toggle on whether the file should be opened}
 }
 \description{
-Function to create a Synopsis file
+Function to create a HowToRun file
 }

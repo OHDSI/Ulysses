@@ -7,6 +7,8 @@
 makeCaprScript(
   scriptName,
   configBlock = NULL,
+  author = NULL,
+  date = lubridate::today(),
   projectPath = here::here(),
   open = TRUE
 )

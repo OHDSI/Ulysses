@@ -4,12 +4,22 @@
 \alias{makeInternals}
 \title{Function to create a pipeline task as an R file}
 \usage{
-makeInternals(internalsName, projectPath = here::here(), open = TRUE)
+makeInternals(
+  internalsName,
+  projectPath = here::here(),
+  author = NULL,
+  date = lubridate::today(),
+  open = TRUE
+)
 }
 \arguments{
 \item{internalsName}{The name of the internals file that is being created}
 
 \item{projectPath}{the path to the project}
+
+\item{author}{the author of the R file, defaults to first author in _study.yml}
+
+\item{date}{the date the file was initialized, defaults to today}
 
 \item{open}{toggle on whether the file should be opened}
 }

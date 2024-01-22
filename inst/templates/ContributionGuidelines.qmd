@@ -1,0 +1,66 @@
+---
+title: "Contribution Guidelines"
+number-sections: true
+---
+
+Welcome to the {{{ Study }}}! Thank you for your interest in participating in this network study. Please read the contribution guidelines carefully to understand how to participate in this study.
+
+
+# Code of Conduct
+
+This study follows a code of conduct specified by [Contributor Covenant version 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/) in the interest of harboring an open and welcome environment for all contributors to this study. By participating in this study you agree to abide by these terms. 
+
+# Participation
+
+Please contract the study coordinator to express your interest in participating in this study. When contacting the study coordinator of your interest in participation, please provide the following information: 
+
+-   **Primary Contact**: person managing the network study participation
+-   **Analyst Contact**: person running the study code at the institution (can be same as primary)
+-   **Name of Database**: full name of database and a short hand name if available
+-   **CDM and Vocabulary version**: specification of the OMOP CDM version and vocabulary version
+-   **Country/Region of Database**: geographic coverage of healthcare database
+-   **Type of Database**: claims, EHR, etc
+-   **Database Coverage**: the number of persons and time frame represented in the database
+
+# Bugs and Questions
+
+## Issues
+
+The {{{ Study }}} study uses github to version control the study code required to run the analysis. As a github repository, we use [issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/about-issues) to track bugs and answer questions about the study code. Debugging issues collaboratively ensures that all study nodes are informed on code issues and have the most up-to-date code required to successfully run the study. An issue at your site is likely a similar problem for someone else.
+
+Creating an issue can be done through the github repository. Via web UI, navigate to the tab labelled **Issues** and select the green button **New Issue**. This will create a post powered by Markdown which you will be able to describe the **Issue** in the repository. For more efficient communication, @mention collaborators to guide the conversation in their direction. 
+
+### Rules
+
+1)  **DO NOT** post any database credentials in an issue. Issues are public.
+2)  Provide a reproducible example of the error you are encountering.
+3)  Before posting an issue, please review all open and closed issues that may already answer your question
+
+### Contributing
+
+We encourage study participants to contribute to the code base when appropriate. In order to contribute code to this study follow these steps:
+
+1) Fork and clone the repository.
+2) Create a new branch: `git checkout -b my-branch-name`.
+3) Make your change and test that it is working.
+4) Push to your fork and submit a pull request. Wait for review and merge
+
+Here are a few things you can do that will increase the likelihood of your pull request being accepted:
+
+- Follow the [tidyverse style guide](https://style.tidyverse.org/index.html) and ensure your change is legible
+- Keep your changes as focused as possible. If there are multiple changes you would like to make that are not dependent upon each other, consider submitting them as separate pull requests.
+- Write a [good commit message](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
+
+
+# Branches and Releases
+
+The latest version of the study code will be maintain in the `main` branch of the github repository (**PROVIDE LINK**). Additional branches to the study repository may be maintained for the purposes of feature enhancements in development or custom work-around solutions for a particular study site. Please only run the study using the main branch of the repository unless otherwise stated by the study coordinator. The study repository will maintain a release cycle to differentiate versions of the study code. Please run the latest release of the study code unless otherwise stated by the study coordinator.
+
+
+# Sending Results
+
+Add instructions on how to send study results.....
+
+
+
+

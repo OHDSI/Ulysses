@@ -36,19 +36,19 @@ dir.create(path = "./extras/pdf_vignette/", showWarnings = FALSE)
 # render markdown to pdf
 
 ### start study
-rmarkdown::render('vignettes/start_study.Rmd',
-                  output_file = '../extras/pdf_vignette/start_study.pdf',
-                  rmarkdown::pdf_document(latex_engine = 'pdflatex',
-                                          toc = TRUE, number_sections = TRUE))
-unlink('extras/pdf_vignette/start_study.tex')
+rmarkdown::render("vignettes/start_study.Rmd",
+                  output_file = "../extras/pdf_vignette/start_study.pdf",
+
+  rmarkdown::pdf_document(latex_engine = "pdflatex", toc = TRUE, number_sections = TRUE))
+unlink("extras/pdf_vignette/start_study.tex")
 
 
 ### start study
-rmarkdown::render('vignettes/ulysses_directory.Rmd',
-                  output_file = '../extras/pdf_vignette/ulysses_directory.pdf',
-                  rmarkdown::pdf_document(latex_engine = 'pdflatex',
-                                          toc = TRUE, number_sections = TRUE))
-unlink('extras/pdf_vignette/ulysses_directory.tex')
+rmarkdown::render("vignettes/ulysses_directory.Rmd",
+                  output_file = "../extras/pdf_vignette/ulysses_directory.pdf",
+
+  rmarkdown::pdf_document(latex_engine = "pdflatex", toc = TRUE, number_sections = TRUE))
+unlink("extras/pdf_vignette/ulysses_directory.tex")
 
 # 4) build site ------------------------
 pkgdown::build_site()

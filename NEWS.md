@@ -1,11 +1,24 @@
-# Ulysses 0.0.2
+Ulysses 0.0.3
+=============
+
+* add study hub builder
+* convert all documents to qmd
+* add functions to define study settings prior to build
+* add cohort functions
+    - `cohortManifest` lists cohorts used in study
+    - `makeCohortDetails` renders human-readable file to convey cohort definitions
+    - add versioning to cohort definitions
+
+Ulysses 0.0.2
+=============
 
 * Add keyring functions and update SetupKeyring.R template
 * Update repository request email template
 * Add git function to publish repo to remote
 * Fix bugs in HowToRun and KeyringSetup template
 
-# Ulysses 0.0.1
+Ulysses 0.0.1
+=============
 
 * Add initial functionality
     * file templates for:

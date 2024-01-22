@@ -3,9 +3,8 @@
 # A. File Info -----------------------
 
 # Study: {{{ Study }}}
-# Name: Capr Script for {{{ Name }}}
 # Author: {{{ Author }}}
-# Date: [Add Date]
+# Date: {{{ Date }}}
 # Description: The purpose of this Capr script is to develop xxx cohorts....
 
 # B. Dependencies ----------------------
@@ -31,8 +30,6 @@ connectionDetails <- DatabaseConnector::createConnectionDetails(
 
 # connect to database
 con <- DatabaseConnector::connect(connectionDetails)
-withr::defer(expr = DatabaseConnector::disconnect(con), envir = parent.frame())  #close on exit
-
 
 # D. Variables -----------------------
 
@@ -40,10 +37,8 @@ withr::defer(expr = DatabaseConnector::disconnect(con), envir = parent.frame()) 
 executionSettings <- config::get(config = configBlock) %>%
   purrr::discard_at(c("dbms", "user", "password", "connectionString"))
 
-
-cohortFolder <- "[type of cohort]" %>% #if this is the target cohort do not make new folder
-  Ulysses::addCohortFolder()
-
+# specify cohort folder
+cohortFolder <- fs::path(here::here(), "cohorts/json")
 
 # E. Concept Sets --------------------
 
@@ -75,9 +70,8 @@ cohortFolder <- "[type of cohort]" %>% #if this is the target cohort do not make
 # writeCohort(hypertensionCohort, path = fs::path(cohortFolder, "hypertension", ext = "json"))
 
 
-# F. Session Info ------------------------
+# F. Clean up ------------------------
 
-sessioninfo::session_info()
+DatabaseConnector::disconnect(con)
 rm(list = ls())
-withr::deferred_run()
 
