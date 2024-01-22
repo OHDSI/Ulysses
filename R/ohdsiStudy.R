@@ -100,10 +100,10 @@ addDefaultFolders <- function(projectPath, verbose = TRUE) {
                     bullet_col = "yellow", bullet = "info")
   }
 
-  analysisFolders <- c("strategus/settings", "strategus/run", "misc")
-  execFolders <- c('logs', 'StrategusInstantiatedModules', 'results')
+  analysisFolders <- c("R", "tasks", "migrations")
+  execFolders <- c('logs', 'results', "export")
   folders <- c(
-    'cohortsToCreate/01_target',
+    'cohorts/json',
     paste('analysis', analysisFolders, sep = "/"),
     paste('exec', execFolders, sep = "/"),
     'extras',
