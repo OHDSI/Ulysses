@@ -1,100 +1,15 @@
 # Functions to work with cohorts to create
 
 
-## Helpers -----------------------
-findStepNumber <- function(dir = c("cohortsToCreate", "analysis/studyTasks"), projectPath = here::here()) {
 
-  dir <- match.arg(dir, choices = c("cohortsToCreate", "analysis/studyTasks"))
-
-  if (dir == "cohortsToCreate") {
-    items <- fs::path(projectPath, dir) %>%
-      fs::dir_ls(type = "directory") %>%
-      basename()
-  }
-
-  if (dir == "analysis/studyTasks") {
-    items <- fs::path(projectPath, dir) %>%
-      fs::dir_ls(type = "file") %>%
-      basename()
-  }
-
-  if (length(items) == 0) {
-    step <- 1L
-  } else {
-    lastNumber <- gsub("_.*", "", items) %>%
-      as.integer() %>%
-      max()
-    step <- lastNumber + 1L
-  }
-
-  return(step)
-
-}
-
-addFolder <- function(name, path) {
-  cli::cat_bullet("Creating new folder ", crayon::cyan(name), " at ", crayon::cyan(path),
-                  bullet = "tick", bullet_col = "green")
-
-  fs::path(path, name) %>%
-    fs::dir_create()
-
-}
-
-check_cohort_folders <- function(path, folderName) {
-
-  ls <- fs::dir_ls(path = path, type = "dir") %>%
-    basename()
-
-  check <- grepl(folderName, ls)
-  if (any(check)) {
-    folderNameExists <- ls[check]
-    txt <- glue::glue("Folder {folderName} already exists. Would you like to remove it?")
-    opt <- usethis::ui_yeah(txt)
-    if (opt) {
-      pp <- fs::path(path, folderNameExists) %>%
-        fs::dir_delete()
-      cli::cat_bullet("Cohort folder ", crayon::cyan(pp), " has been removed.",
-                      bullet = "info", bullet_col = "blue")
-    }
-  }
-  invisible(folderName)
-
-}
-
-## Add Folder -------------
-
-#' Function to create a cohort folder in input/cohortsToCreate
-#' @param folderName The name of the new folder
-#' @param projectPath the path to the project
-#' @export
-addCohortFolder <- function(folderName, projectPath = here::here()) {
-
-  dir_path <- fs::path(projectPath, "cohortsToCreate")
-  check_cohort_folders(path = dir_path, folderName = folderName)
-
-  folderNumber <- findStepNumber(dir = "cohortsToCreate")
-
-  if (folderNumber < 10L) {
-    folderNumber <- scales::label_number(prefix = "0")(folderNumber)
-  }
-
-  folderName <- snakecase::to_lower_camel_case(folderName)
-
-  fullName <- paste(folderNumber, folderName, sep = "_")
-
-  addFolder(name = fullName, path = dir_path)
-
-  invisible(fullName)
-
-}
 
 cohortHash <- function(projectPath = here::here()) {
 
   #get cohort file paths
-  cohortFolder <- fs::path(projectPath, "cohortsToCreate")
+  cohortFolder <- fs::path(projectPath, "cohorts/json")
 
   #get cohort file paths
-  cohortFiles <- fs::dir_ls(cohortFolder, recurse = TRUE, type = "file", glob = "*.json")
+  cohortFiles <- fs::dir_ls(cohortFolder, type = "file", glob = "*.json")
 
   #future addition of hash
   hash <- purrr::map(cohortFiles, ~readr::read_file(.x)) %>%
@@ -108,9 +23,9 @@ cohortHash <- function(projectPath = here::here()) {
 setCohortManifest <- function(projectPath = here::here()) {
 
   #get cohort file paths
-  cohortFolder <- fs::path(projectPath, "cohortsToCreate")
+  cohortFolder <- fs::path(projectPath, "cohorts/json")
   #get cohort file paths
-  cohortFiles <- fs::dir_ls(cohortFolder, recurse = TRUE, type = "file", glob = "*.json")
+  cohortFiles <- fs::dir_ls(cohortFolder, type = "file", glob = "*.json")
 
   if (length(cohortFiles) == 0) {
     cli::cli_abort("There are no cohorts in this study. Please add circe json to the cohortsToCreate Folder")
@@ -119,25 +34,16 @@ setCohortManifest <- function(projectPath = here::here()) {
   #get cohort names
   cohortNames <- fs::path_file(cohortFiles) %>%
     fs::path_ext_remove()
-  #get cohort type
-  typeDir <- fs::path_dir(cohortFiles) %>%
-    basename()
-  cohortType <- typeDir %>%
-    gsub(".*_", "", .)
 
   #future addition of hash
   hash <- cohortHash(projectPath = projectPath)
 
-  # create relative path to circe cohorts
-  cleanFilePath <- fs::path("cohortsToCreate", typeDir, fs::path_file(cohortFiles))
 
   #return tibble with info
   tb <- tibble::tibble(
     name = cohortNames,
-    type = cohortType,
     hash = hash,
     version = 1L,
-    file = cleanFilePath %>% as.character(),
   ) %>%
     dplyr::mutate(
       id = dplyr::row_number(), .before = 1
@@ -149,7 +55,7 @@ setCohortManifest <- function(projectPath = here::here()) {
 updateCohortManifest <- function(cm, hash, idx) {
 
   # identifiy the cohorts that changed
-  cohortsThatChanged <- fs::path_file(cm$file[idx])
+  cohortsThatChanged <- fs::path("cohorts/json", cm$name[idx], ext = "json")
   newVersion <- cm$version[idx] + 1L
   cli::cat_bullet("Update ", crayon::green(cohortsThatChanged), " to version ", crayon::magenta(newVersion),
                   bullet = "pointer", bullet_col = "yellow")
@@ -167,7 +73,7 @@ updateCohortManifest <- function(cm, hash, idx) {
 #' @export
 cohortManifest <- function(projectPath = here::here()) {
 
-  cohortManifestPath <- fs::path(projectPath, "cohortsToCreate/CohortManifest.csv")
+  cohortManifestPath <- fs::path(projectPath, "cohorts/CohortManifest.csv")
   check <- fs::file_exists(cohortManifestPath)
 
   if (check) {
@@ -191,7 +97,7 @@ cohortManifest <- function(projectPath = here::here()) {
     cm <- setCohortManifest(projectPath = projectPath)
     cli::cat_bullet("Initializing CohortManifest.csv", bullet = "tick", bullet_col = "green")
     readr::write_csv(cm, file = cohortManifestPath)
-    usethis::use_git_ignore(ignores = "cohortsToCreate/CohortManifest.csv")
+    usethis::use_git_ignore(ignores = "cohorts/CohortManifest.csv")
   }
 
   return(cm)
@@ -204,45 +110,43 @@ getCohortPrint <- function(cohort) {
   #get cohort header
   cohortName <- snakecase::to_title_case(cohort$name)
   cohortId <- cohort$id
-  cohortHeader <- glue::glue("## {cohortName} (id: {cohortId}) \n\n\n")
-  version <- "***Versions***\n\n <!-----Add versions----->\n\n *Version 1* \n\n * Initial Cohort Definition"
+  cohortHeader <- glue::glue("# {cohortName} (id: {cohortId}) \n")
   # get readable cohort logic
+  # get file path
+  cohortFile <- fs::path("cohorts/json", cohort$name, ext = "json")
   # read json file
-  json <- readr::read_file(cohort$file)
+  json <- readr::read_file(cohortFile)
   # turn into print friendly
   cdRead <- CirceR::cohortPrintFriendly(json)
-  cdRead <- paste(cohortHeader, version, "***Cohort Definition***", cdRead, sep = "\n\n")
+  cdRead <- paste(cohortHeader, "## Cohort Definition", cdRead, sep = "\n\n")
   # get readable concept set
   csRead <- RJSONIO::fromJSON(json)$ConceptSets |>
     CirceR::conceptSetListPrintFriendly()
-  csRead <- paste("***Concept Sets***", csRead, sep = "\n\n")
-
-
+  csRead <- paste("## Concept Sets", csRead, sep = "\n\n")
 
   #bind to get full read
   readFull <- paste(cdRead, csRead, sep = "\n\n")
   return(readFull)
 }
 
-# print circe by section
 
-cohortReadBySection <- function(cm, type) {
-  # get the name of the section
-  #typeSym <- rlang::sym(type)
-  typeName <- snakecase::to_title_case(type)
-  nameOfSection <- glue::glue("# {typeName}\n\n")
-  # filter cohorts of that type
-  cohorts <- cm %>%
-    dplyr::filter(type == !!type)
-  # split rows into a list
-  cohorts <- whisker::rowSplit(cohorts)
-  # get print of each cohort in the section
-  cohortSections <- purrr::map_chr(cohorts, ~getCohortPrint(.x))
-  #add header to string
-  cohortSections <- c(nameOfSection, cohortSections)
-  cohortSections <- paste(cohortSections, collapse = "\n")
-  return(cohortSections)
-}
+# cohortReadBySection <- function(cm, type) {
+#   # get the name of the section
+#   #typeSym <- rlang::sym(type)
+#   typeName <- snakecase::to_title_case(type)
+#   nameOfSection <- glue::glue("# {typeName}\n\n")
+#   # filter cohorts of that type
+#   cohorts <- cm %>%
+#     dplyr::filter(type == !!type)
+#   # split rows into a list
+#   cohorts <- whisker::rowSplit(cohorts)
+#   # get print of each cohort in the section
+#   cohortSections <- purrr::map_chr(cohorts, ~getCohortPrint(.x))
+#   #add header to string
+#   cohortSections <- c(nameOfSection, cohortSections)
+#   cohortSections <- paste(cohortSections, collapse = "\n")
+#   return(cohortSections)
+# }
 
 #' Function to create the cohort details for the study
 #' @description
@@ -259,11 +163,11 @@ makeCohortDetails <- function(projectPath = here::here(), open = TRUE) {
   cohortDetailsPath <- fs::path(projectPath, "documentation/CohortDetails.qmd")
 
   # get cohort manifest
-  cm <- cohortManifest(projectPath = projectPath)
-  # find distinct cohort types
-  numType <- unique(cm$type)
+  cm <- Ulysses::cohortManifest(projectPath = projectPath) %>%
+    whisker::rowSplit()
+
   #get readable cohort details
-  cohortDetails <- purrr::map_chr(numType, ~cohortReadBySection(cm, type = .x))
+  cohortDetails <- purrr::map_chr(cm, ~getCohortPrint(cohort = .x))
 
   headerText <- "---
 title: Cohort Details
@@ -271,10 +175,10 @@ number-sections: true
 number-depth: 1
 toc: TRUE
 toc-depth: 2
----"
+---\n\n\n"
   cohortDetails <- c(headerText, cohortDetails)
   # write to documenation section
-  cli::cat_bullet("Render Cohort Details using cohortsToCreate folder",
+  cli::cat_bullet("Render Cohort Details using cohorts/json folder",
                   bullet = "tick", bullet_col = "green")
   readr::write_lines(cohortDetails, file = cohortDetailsPath)
 
