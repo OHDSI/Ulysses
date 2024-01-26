@@ -2,7 +2,7 @@
 checkWebsiteYml <- function(projectPath = here::here()) {
 
   #create yml path
-  ymlPath <- fs::path(projectPath, "documentation/_quarto.yml")
+  ymlPath <- fs::path(projectPath, "documentation/hub/_quarto.yml")
   check <- fs::file_exists(ymlPath)
   if (check) {
     cli::cat_bullet("_quarto.yml already exists for study hub", bullet = "pointer", bullet_col = "yellow")
@@ -28,7 +28,7 @@ makeWebsiteYaml <- function(projectPath = here::here()) {
     #build template
     usethis::use_template(
       template = "quartoWebsite.yml",
-      save_as = fs::path("documentation", "_quarto.yml"),
+      save_as = fs::path("documentation/hub", "_quarto.yml"),
       data = data,
       open = FALSE,
       package = "Ulysses")
@@ -54,14 +54,14 @@ makeIndexQuarto <- function(projectPath = here::here()) {
   newReadMe <- lines[keepLines]
 
   #set path to documentation
-  docPath <- fs::path(projectPath, "documentation/index.qmd")
+  docPath <- fs::path(projectPath, "documentation/hub/index.qmd")
 
   #write new readme to index.qmd
   cli::cat_bullet("Convert README.md to index.qmd", bullet = "tick", bullet_col = "green")
   readr::write_lines(newReadMe, file = docPath)
 
   #ignore index.qmd as it is redundant to README.md
-  usethis::use_git_ignore(ignores = "documentation/index.qmd")
+  usethis::use_git_ignore(ignores = "documentation/hub/index.qmd")
   invisible(docPath)
 }
 
@@ -81,7 +81,7 @@ makeNewsQuarto <- function(projectPath = here::here()) {
   readr::write_lines(lines, file = docPath)
 
   #ignore index.qmd as it is redundant to README.md
-  usethis::use_git_ignore(ignores = "documentation/news.qmd")
+  usethis::use_git_ignore(ignores = "documentation/hub/news.qmd")
   invisible(docPath)
 }
 
@@ -89,7 +89,7 @@ makeNewsQuarto <- function(projectPath = here::here()) {
 missingStandardDocs <- function(projectPath = here::here()) {
 
   # make path to documentation folder
-  docsPath <- fs::path(projectPath, "documentation")
+  docsPath <- fs::path(projectPath, "documentation/hub")
 
   # look up all qmd files
   resourceFiles <- fs::dir_ls(docsPath, glob = "*.qmd") %>%
@@ -124,7 +124,7 @@ makeMissingDocs <- function(missingDocs, projectPath = here::here()) {
 previewStudyHub <- function(projectPath = here::here()) {
 
   # make index path and check that it exists
-  indexFilePath <- fs::path(projectPath, "documentation/_site/index.html")
+  indexFilePath <- fs::path(projectPath, "documentation/hub/_site/index.html")
   check <- fs::file_exists(indexFilePath)
 
   if (check ) {
@@ -162,7 +162,7 @@ buildStudyHub <- function(projectPath = here::here()) {
   makeNewsQuarto(projectPath = projectPath)
 
   # make doc path
-  docsPath <- fs::path(projectPath, "documentation")
+  docsPath <- fs::path(projectPath, "documentation/hub")
 
   # step 6: build study hub
   cli::cat_bullet("Build Study Hub", bullet = "tick", bullet_col = "green")
