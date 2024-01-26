@@ -15,7 +15,7 @@ website:
         href: ResultsReport.qmd
       - href: news.qmd
         text: Changelog
-    page-footer: '{{{ Footer }}}'
+  page-footer: '{{{ Footer }}}'
 
 format:
   html:
