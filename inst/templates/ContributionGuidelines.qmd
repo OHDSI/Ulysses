@@ -3,7 +3,7 @@ title: "Contribution Guidelines"
 number-sections: true
 ---
 
-Welcome to the {{{ Study }}}! Thank you for your interest in participating in this network study. Please read the contribution guidelines carefully to understand how to participate in this study.
+Welcome to the {{{ Title }}}! Thank you for your interest in participating in this network study. Please read the contribution guidelines carefully to understand how to participate in this study.
 
 
 # Code of Conduct
@@ -26,7 +26,7 @@ Please contract the study coordinator to express your interest in participating 
 
 ## Issues
 
-The {{{ Study }}} study uses github to version control the study code required to run the analysis. As a github repository, we use [issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/about-issues) to track bugs and answer questions about the study code. Debugging issues collaboratively ensures that all study nodes are informed on code issues and have the most up-to-date code required to successfully run the study. An issue at your site is likely a similar problem for someone else.
+The {{{ Title }}} study uses github to version control the study code required to run the analysis. As a github repository, we use [issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/about-issues) to track bugs and answer questions about the study code. Debugging issues collaboratively ensures that all study nodes are informed on code issues and have the most up-to-date code required to successfully run the study. An issue at your site is likely a similar problem for someone else.
 
 Creating an issue can be done through the github repository. Via web UI, navigate to the tab labelled **Issues** and select the green button **New Issue**. This will create a post powered by Markdown which you will be able to describe the **Issue** in the repository. For more efficient communication, @mention collaborators to guide the conversation in their direction. 
 

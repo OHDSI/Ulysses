@@ -1,0 +1,20 @@
+# Config File for {{{ Title }}}
+
+default:
+  projectName: {{{ ID }}}
+
+
+# Config block for {{ Block }}
+
+{{ Block }}:
+  databaseName: {{ Database }}
+  cohortTable: {{ Cohort }}
+  dbms: '{{ Block }}_dbms'
+  user: '{{ Block }}_user'
+  password: '{{ Block }}_password'
+  connectionString: '{{ Block }}_connectionString'
+  cdmDatabaseSchema: '{{ Block }}_cdmDatabaseSchema'
+  vocabDatabaseSchema: '{{ Block }}_vocabDatabaseSchema'
+  workDatabaseSchema: '{{ Block }}_workDatabaseSchema'
+  tempEmulationSchema: NULL
+

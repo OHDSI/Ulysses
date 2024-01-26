@@ -1,5 +1,7 @@
 ---
-title: {{{ Study }}} Analysis Plan 
+title: Analysis Plan 
+subtitle: {{{ Title }}} 
+author: {{ Developer }}
 number-sections: true
 ---
 
@@ -49,20 +51,6 @@ knitr::opts_chunk$set(echo = FALSE)
 
 <!-- Add data sources, Example table for data sources -->
 
-
-```{r}
-#| label: tbl-data_sources
-#| echo: false
-#| tbl-cap: Data Sources used in study
-
-dataSources <- tibble::tribble(
-  ~Name, ~Country, ~Type, ~Size, ~Availability, ~Description,
-  "Synpuf", "US", "claims", "110K", "2008-2010", "Synthetic data source based on US Medicare data"
-)
-
-flextable::flextable(dataSources)
-
-```
 
 # Analysis Plan
 

@@ -1,0 +1,21 @@
+# Config File for {{ Title }}
+
+default:
+  projectName: {{ ID }}
+
+{{#data}}
+
+# Config block for {{ Block }}
+
+{{ Block }}:
+  databaseName: {{{ Database }}}
+  cohortTable: {{{ Cohort }}}
+  dbms: !expr keyring::key_get('{{ Block }}_dbms', keyring = '{{ ID }}')
+  user: !expr keyring::key_get('{{ Block }}_user', keyring = '{{ ID }}')
+  password: !expr keyring::key_get('{{ Block }}_password', keyring = '{{ ID }}')
+  connectionString: !expr keyring::key_get('{{ Block }}_connectionString', keyring = '{{ ID }}')
+  cdmDatabaseSchema: !expr keyring::key_get('{{ Block }}_cdmDatabaseSchema', keyring = '{{ ID }}')
+  vocabDatabaseSchema: !expr keyring::key_get('{{ Block }}_vocabDatabaseSchema', keyring = '{{ ID }}')
+  workDatabaseSchema: !expr keyring::key_get('{{ Block }}_workDatabaseSchema', keyring = '{{ ID }}')
+
+{{/data}}

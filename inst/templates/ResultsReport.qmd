@@ -1,5 +1,7 @@
 ---
-title: {{{ Study }}} Results Report
+title: Results Report
+subtitle: {{{ Title }}} 
+author: {{ Developer }}
 number-sections: true
 ---
 

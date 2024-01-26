@@ -2,7 +2,7 @@
 
 # A. File Info -----------------------
 
-# Study: {{{ Study }}}
+# Study: {{{ Title }}}
 # Author: {{{ Author }}}
 # Date: {{{ Date }}}
 # Description: The purpose of this script is to.....
