@@ -7,7 +7,12 @@
 newOhdsiStudy(
   path,
   projectName = basename(path),
-  studySettings = makeStudySettings(title = basename(path)),
+  studyInfo = setStudyInfo(id = basename(path)),
+  authors = setStudyAuthors(),
+  timeline = setStudyTimeline(),
+  about = setStudyDescription(),
+  links = setStudyLinks(),
+  tags = setStudyTags(),
   verbose = TRUE,
   openProject = TRUE
 )
@@ -17,7 +22,23 @@ newOhdsiStudy(
 
 \item{projectName}{the name of the project}
 
-\item{studySettings}{a list of study settings}
+\item{studyInfo}{a list object identifying the title, type and study version,
+defaults to \code{setStudyInfo}, see documentation}
+
+\item{authors}{a list object identifying the lead and developer authors names and emails,
+defaults to \code{setStudyAuthors}, see documentation.}
+
+\item{timeline}{a list object identifying the study status, start and end date,
+defaults to \code{setStudyTimeline}, see documentation}
+
+\item{about}{a list object identifying the study description, therapeutic area and databases,
+defaults to \code{setStudyDescription}, see documentation}
+
+\item{links}{a list object identifying the linked resources of the study,
+defaults to \code{setStudyLinks}, see documentation}
+
+\item{tags}{a list object identifying tags to the study,
+defauls to \code{setStudyTags}, see documentation}
 
 \item{verbose}{whether the function should provide steps, default TRUE}
 

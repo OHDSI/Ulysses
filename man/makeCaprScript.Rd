@@ -7,7 +7,6 @@
 makeCaprScript(
   scriptName,
   configBlock = NULL,
-  author = NULL,
   date = lubridate::today(),
   projectPath = here::here(),
   open = TRUE
@@ -17,6 +16,8 @@ makeCaprScript(
 \item{scriptName}{The name of the capr file that is being created}
 
 \item{configBlock}{the name of the config block to use for the script}
+
+\item{date}{the date the script was built, default to today's date}
 
 \item{projectPath}{the path to the project}
 

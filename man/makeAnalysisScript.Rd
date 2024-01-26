@@ -7,7 +7,6 @@
 makeAnalysisScript(
   scriptName,
   configBlock = NULL,
-  author = NULL,
   date = lubridate::today(),
   projectPath = here::here(),
   open = TRUE
@@ -17,6 +16,8 @@ makeAnalysisScript(
 \item{scriptName}{The name of the analysis script}
 
 \item{configBlock}{the name of the config block to use for the script}
+
+\item{date}{the date the script was built, default to today's date}
 
 \item{projectPath}{the path to the project}
 
