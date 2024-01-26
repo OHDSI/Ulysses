@@ -8,23 +8,30 @@
 makeReadMe <- function(projectPath = here::here(), open = TRUE) {
 
   # retrieve study meta
-  studyMeta <- retrieveStudySettings(projectPath = projectPath)
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)$study
 
-  #create template vars
+  #prep author info as single line name(email)
+  leadAuthor <- glue::glue("{studyMeta$authors$lead$name} ({studyMeta$authors$lead$email})")
+  developerAuthor <- glue::glue("{studyMeta$authors$developer$name} ({studyMeta$authors$developer$email})")
+
+  # prep data sources
+  dataSources <- paste(studyMeta$about$`data-sources`, collapse = ", ")
+
+  # prep tags
+  tags <- paste(studyMeta$tags, collapse = ", ")
+
   data <- rlang::list2(
-    'Project' = studyMeta$Title,
-    'StudyType' = studyMeta$Description$StudyType,
-    'Contact' = studyMeta$Contact$Name,
-    'ContactEmail' = studyMeta$Contact$Email,
-    'CdmVersion' = studyMeta$CDM$CdmVersion,
-    'VocabVersion' = studyMeta$CDM$VocabVersion,
-    'VocabRelease' = studyMeta$CDM$VocabRelease,
-    'StudyStatus' = studyMeta$Milestones$Status,
-    'ForumPost' = studyMeta$Links$Forum,
-    'Protocol' = studyMeta$Links$Protocol,
-    'Hub' = studyMeta$Links$StudyHub,
-    'Dashboard' = studyMeta$Links$ResultsDashboard,
-    'Report' = studyMeta$Links$Report
+    'Title' = studyMeta$title,
+    'ID' = studyMeta$id,
+    'Type' = studyMeta$type,
+    'Start' = studyMeta$timeline$`start-date`,
+    'End' = studyMeta$timeline$`end-date`,
+    'Lead' = leadAuthor,
+    'Developer' = developerAuthor,
+    'Tags' = tags,
+    'TA' = studyMeta$about$`therapeutic-area`,
+    'Description' = studyMeta$about$description,
+    'DS' = dataSources
   )
 
   #load template with vars
@@ -45,10 +52,11 @@ makeReadMe <- function(projectPath = here::here(), open = TRUE) {
 makeNews <- function(projectPath = here::here(), open = TRUE) {
 
   # retrieve study meta
-  studyMeta <- retrieveStudySettings(projectPath = projectPath)
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)$study
 
   data <- rlang::list2(
-    'Project' = studyMeta$Title
+    'ID' = studyMeta$id,
+    'Version' = studyMeta$version
   )
 
   usethis::use_template(
@@ -61,39 +69,14 @@ makeNews <- function(projectPath = here::here(), open = TRUE) {
 
 }
 
-#' Function to create a config.yml file
-#' @param block the name of the config block
-#' @param database the name of the database for the block, default to block name
-#' @param projectPath the path to the project
-#' @param open toggle on whether the file should be opened
-#' @export
-makeConfig <- function(block, database = block, projectPath = here::here(), open = TRUE) {
-
-  projFile <- list.files(projectPath, pattern = ".Rproj", full.names = TRUE)
-  projName <- basename(tools::file_path_sans_ext(projFile))
-
-  data <- rlang::list2(
-    'Project' = projName,
-    'Cohort' = paste(projName, database, sep = "_"),
-    'Block' = block,
-    'Database' = database
-  )
-
-  usethis::use_template(
-    template = "config.yml",
-    data = data,
-    open = open,
-    package = "Ulysses")
-
-  usethis::use_git_ignore(ignores = "config.yml")
-
-  invisible(data)
-}
-
-
 
 
 # Documentation Files -----------------------
+
+replaceTitleColon <- function(title){
+    gsub("\\:", "-", title)
+}
+
 
 #' Function to create a SAP
 #' @param projectPath the path to the project
@@ -103,17 +86,18 @@ makeAnalysisPlan <- function(projectPath = here::here(), open = TRUE) {
 
 
   # retrieve study meta
-  studyMeta <- retrieveStudySettings(projectPath = projectPath)
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)$study
 
   # make list of vars for template
   data <- rlang::list2(
-    'Study' = studyMeta$Title
+    'Title' = replaceTitleColon(studyMeta$title),
+    'Developer' = studyMeta$authors$developer$name
   )
 
   #create templated output
   usethis::use_template(
     template = "AnalysisPlan.qmd",
-    save_as = fs::path("documentation", "AnalysisPlan.qmd"),
+    save_as = fs::path("documentation/hub", "AnalysisPlan.qmd"),
     data = data,
     open = open,
     package = "Ulysses")
@@ -131,16 +115,16 @@ makeContributionGuidelines <- function(projectPath = here::here(),
                                        open = TRUE) {
 
   # retrieve study meta
-  studyMeta <- retrieveStudySettings(projectPath = projectPath)
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)$study
 
   # make list of vars for template
   data <- rlang::list2(
-    'Study' = studyMeta$Title
+    'Title' = replaceTitleColon(studyMeta$title)
   )
 
   usethis::use_template(
     template = "ContributionGuidelines.qmd",
-    save_as = fs::path("documentation", "ContributionGuidelines.qmd"),
+    save_as = fs::path("documentation/hub", "ContributionGuidelines.qmd"),
     data = data,
     open = open,
     package = "Ulysses")
@@ -157,16 +141,17 @@ makeResultsReport <- function(projectPath = here::here(),
                               open = TRUE) {
 
   # retrieve study meta
-  studyMeta <- retrieveStudySettings(projectPath = projectPath)
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)$study
 
   # make list of vars for template
   data <- rlang::list2(
-    'Study' = studyMeta$Title
+    'Title' = replaceTitleColon(studyMeta$title),
+    'Developer' = studyMeta$authors$developer$name
   )
 
   usethis::use_template(
     template = "ResultsReport.qmd",
-    save_as = fs::path("documentation", "ResultsReport.qmd"),
+    save_as = fs::path("documentation/hub", "ResultsReport.qmd"),
     data = data,
     open = open,
     package = "Ulysses")
@@ -185,17 +170,18 @@ makeHowToRun <- function(projectPath = here::here(),
                          open = TRUE) {
 
   # retrieve study meta
-  studyMeta <- retrieveStudySettings(projectPath = projectPath)
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)$study
 
   # make list of vars for template
   data <- rlang::list2(
-    'Study' = studyMeta$Title
+    'Title' = replaceTitleColon(studyMeta$title),
+    'Developer' = studyMeta$authors$developer$name
   )
 
 
   usethis::use_template(
     template = "HowToRun.qmd",
-    save_as = fs::path("documentation", "HowToRun.qmd"),
+    save_as = fs::path("documentation/hub", "HowToRun.qmd"),
     data = data,
     open = open,
     package = "Ulysses")
@@ -213,17 +199,17 @@ makeTechSpecs <- function(
     open = TRUE) {
 
   # retrieve study meta
-  studyMeta <- retrieveStudySettings(projectPath = projectPath)
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)$study
 
   # make list of vars for template
   data <- rlang::list2(
-    'Study' = studyMeta$Title
+    'Title' = replaceTitleColon(studyMeta$title)
   )
 
 
   usethis::use_template(
     template = "TechSpecs.qmd",
-    save_as = fs::path("documentation", "TechSpecs.qmd"),
+    save_as = fs::path("documentation/hub", "TechSpecs.qmd"),
     data = data,
     open = open,
     package = "Ulysses")
@@ -233,38 +219,35 @@ makeTechSpecs <- function(
 }
 
 # TODO update this to quarto
-#' R Markdown file to make the ohdsi protocol
-#' @param projectPath the path to the project
-#' @param open toggle on whether the file should be opened
-#' @export
-makeOhdsiProtocol <- function(projectPath = here::here(),
-                              open = TRUE) {
 
-  data <- rlang::list2(
-    'Study' =  getStudyDetails(item = "StudyTitle", projectPath = projectPath),
-    'Date' = lubridate::today()
-  )
-
-  fileName <- snakecase::to_upper_camel_case(getStudyDetails(item = "StudyTitle", projectPath = projectPath)) %>%
-    paste0("Protocol")
-
-  dir_path <- fs::path("documentation", "Protocol") %>%
-    fs::dir_create()
-
-  usethis::use_template(
-    template = "OhdsiProtocol.Rmd",
-    save_as = fs::path(dir_path, fileName, ext = "Rmd"),
-    data = data,
-    open = open,
-    package = "Ulysses")
-
-  #get Protocol Components and move to folder
-  fs::path_package("Ulysses", "templates/Protocol-Components") %>%
-    fs::dir_copy(new_path = dir_path, overwrite = TRUE)
-
-
-  invisible(data)
-}
+# makeOhdsiProtocol <- function(projectPath = here::here(),
+#                               open = TRUE) {
+#
+#   data <- rlang::list2(
+#     'Study' =  getStudyDetails(item = "StudyTitle", projectPath = projectPath),
+#     'Date' = lubridate::today()
+#   )
+#
+#   fileName <- snakecase::to_upper_camel_case(getStudyDetails(item = "StudyTitle", projectPath = projectPath)) %>%
+#     paste0("Protocol")
+#
+#   dir_path <- fs::path("documentation", "Protocol") %>%
+#     fs::dir_create()
+#
+#   usethis::use_template(
+#     template = "OhdsiProtocol.Rmd",
+#     save_as = fs::path(dir_path, fileName, ext = "Rmd"),
+#     data = data,
+#     open = open,
+#     package = "Ulysses")
+#
+#   #get Protocol Components and move to folder
+#   fs::path_package("Ulysses", "templates/Protocol-Components") %>%
+#     fs::dir_copy(new_path = dir_path, overwrite = TRUE)
+#
+#
+#   invisible(data)
+# }
 
 
 
@@ -320,97 +303,94 @@ makeKeyringSetup <- function(database = NULL,
 }
 
 
-#' Email asking to initialize an ohdsi-studies repo
-#'
-#' @param senderName your name as the person sending the email
-#' @param senderEmail your email address
-#' @param githubUserName your github username.
-#' @param recipientName the recipients name, defaults to Admin
-#' @param recipientEmail the recipients email, defaults to a dummy email
-#' @param projectPath the path to the Ulysses project
-#' @param open toggle on whether the file should be opened
-#'
-#' @details
-#' This function works best if you have properly setup a Github PAT. To configure the PAT
-#' follow the \href{https://gh.r-lib.org/articles/managing-personal-access-tokens.html}{instructions}
-#' from the gh package.
-#'
-#'
-#' @export
-requestStudyRepository <- function(senderName,
-                             senderEmail,
-                             githubUserName = NULL,
-                             recipientName = NULL,
-                             recipientEmail = NULL,
-                             projectPath = here::here(),
-                             open = TRUE) {
-  #get repo name
-  repoName <- basename(projectPath) %>%
-    snakecase::to_upper_camel_case()
+# Email asking to initialize an ohdsi-studies repo
+#
+# senderName your name as the person sending the email
+# senderEmail your email address
+# githubUserName your github username.
+# recipientName the recipients name, defaults to Admin
+# recipientEmail the recipients email, defaults to a dummy email
+# projectPath the path to the Ulysses project
+# open toggle on whether the file should be opened
+#
+#
+# This function works best if you have properly setup a Github PAT. To configure the PAT
+# follow the \href{https://gh.r-lib.org/articles/managing-personal-access-tokens.html}{instructions}
+# from the gh package.
+#
 
 
-  if (is.null(recipientName)) {
-    recipientName <- "Admin"
-  }
+# requestStudyRepository <- function(senderName,
+#                              senderEmail,
+#                              githubUserName = NULL,
+#                              recipientName = NULL,
+#                              recipientEmail = NULL,
+#                              projectPath = here::here(),
+#                              open = TRUE) {
+#   #get repo name
+#   repoName <- basename(projectPath) %>%
+#     snakecase::to_upper_camel_case()
+#
+#
+#   if (is.null(recipientName)) {
+#     recipientName <- "Admin"
+#   }
+#
+#   if (is.null(recipientEmail)) {
+#     recipientEmail <- "adminEmail@ohdsi.org"
+#   }
+#
+#
+#   if (is.null(githubUserName)) {
+#     githubUser <- getGithubUser()
+#   }
+#
+#   data <- rlang::list2(
+#     'RepoName' = repoName,
+#     'GithubUser' = githubUser,
+#     'SenderName' = senderName,
+#     'SenderEmail' = senderEmail,
+#     'RecipientName' = recipientName,
+#     'RecipientEmail' = recipientEmail
+#   )
+#
+#   usethis::use_template(
+#     template = "RequestRepositoryEmail.R",
+#     save_as = fs::path("extras", "RequestRepositoryEmail.R"),
+#     data = data,
+#     open = open,
+#     package = "Ulysses")
+#
+#
+#   usethis::use_git_ignore(ignores = "extras/RequestRepositoryEmail.R")
+#
+#   invisible(data)
+#
+# }
 
-  if (is.null(recipientEmail)) {
-    recipientEmail <- "adminEmail@ohdsi.org"
-  }
 
 
-  if (is.null(githubUserName)) {
-    githubUser <- getGithubUser()
-  }
-
-  data <- rlang::list2(
-    'RepoName' = repoName,
-    'GithubUser' = githubUser,
-    'SenderName' = senderName,
-    'SenderEmail' = senderEmail,
-    'RecipientName' = recipientName,
-    'RecipientEmail' = recipientEmail
-  )
-
-  usethis::use_template(
-    template = "RequestRepositoryEmail.R",
-    save_as = fs::path("extras", "RequestRepositoryEmail.R"),
-    data = data,
-    open = open,
-    package = "Ulysses")
-
-
-  usethis::use_git_ignore(ignores = "extras/RequestRepositoryEmail.R")
-
-  invisible(data)
-
-}
-
-
-#' Function to create a meeting minutes file
-#' @param projectPath the path to the project
-#' @param open toggle on whether the file should be opened
-#' @export
-makeMeetingMinutes <- function(projectPath = here::here(), open = TRUE) {
-
-  data <- rlang::list2(
-    'Study' = getStudyDetails("StudyTitle", projectPath = projectPath),
-    'Author' = getStudyDetails("StudyLead", projectPath = projectPath),
-    'Date' = lubridate::today()
-  )
-
-  saveName <- glue::glue("minutes_{lubridate::today()}") %>%
-    snakecase::to_snake_case()
-
-  usethis::use_template(
-    template = "MeetingMinutes.qmd",
-    save_as = fs::path("extras/minutes", saveName, ext = "qmd"),
-    data = data,
-    open = open,
-    package = "Ulysses")
-
-  invisible(data)
-
-}
+# makeMeetingMinutes <- function(projectPath = here::here(), open = TRUE) {
+#
+#   data <- rlang::list2(
+#     'Study' = getStudyDetails("StudyTitle", projectPath = projectPath),
+#     'Author' = getStudyDetails("StudyLead", projectPath = projectPath),
+#     'Date' = lubridate::today()
+#   )
+#
+#   saveName <- glue::glue("minutes_{lubridate::today()}") %>%
+#     snakecase::to_snake_case()
+#
+#   usethis::use_template(
+#     template = "MeetingMinutes.qmd",
+#     save_as = fs::path("extras/minutes", saveName, ext = "qmd"),
+#     data = data,
+#     open = open,
+#     package = "Ulysses")
+#
+#   invisible(data)
+#
+# }
 
 # Analysis Files ---------------------
 
@@ -418,12 +398,12 @@ makeMeetingMinutes <- function(projectPath = here::here(), open = TRUE) {
 #' Function to create a pipeline task as an R file
 #' @param scriptName The name of the capr file that is being created
 #' @param configBlock the name of the config block to use for the script
+#' @param date the date the script was built, default to today's date
 #' @param projectPath the path to the project
 #' @param open toggle on whether the file should be opened
 #' @export
 makeCaprScript <- function(scriptName,
                            configBlock = NULL,
-                           author = NULL,
                            date = lubridate::today(),
                            projectPath = here::here(),
                            open = TRUE) {
@@ -435,20 +415,12 @@ makeCaprScript <- function(scriptName,
   }
 
   # retrieve study meta
-  studyMeta <- Ulysses:::retrieveStudySettings(projectPath = projectPath)
+  studyMeta <- Ulysses:::retrieveStudySettings(projectPath = projectPath)$study
 
-  # specify author
-  if (is.null(author)) {
-    authorName <- studyMeta$Authors %>%
-      dplyr::slice(1) %>%
-      dplyr::pull(name)
-  } else{
-    authorName <- author
-  }
 
   data <- rlang::list2(
-    'Study' = studyMeta$Title,
-    'Author' = authorName,
+    'Title' = replaceTitleColon(studyMeta$title),
+    'Author' = studyMeta$authors$developer$name,
     'Date' = date,
     'FileName' = intFileName
   )
@@ -457,7 +429,7 @@ makeCaprScript <- function(scriptName,
 
   usethis::use_template(
     template = "Capr.R",
-    save_as = fs::path("analysis/R", intFileName, ext = "R"),
+    save_as = fs::path("analysis/src", intFileName, ext = "R"),
     data = data,
     open = open,
     package = "Ulysses")
@@ -510,12 +482,12 @@ makeWebApiScript <- function(keyringName = NULL,
 #' Function to create a pipeline task as a Rmd file
 #' @param scriptName The name of the analysis script
 #' @param configBlock the name of the config block to use for the script
+#' @param date the date the script was built, default to today's date
 #' @param projectPath the path to the project
 #' @param open toggle on whether the file should be opened
 #' @export
 makeAnalysisScript <- function(scriptName,
                                configBlock = NULL,
-                               author = NULL,
                                date = lubridate::today(),
                                projectPath = here::here(),
                                open = TRUE) {
@@ -527,20 +499,12 @@ makeAnalysisScript <- function(scriptName,
 
 
   # retrieve study meta
-  studyMeta <- retrieveStudySettings(projectPath = projectPath)
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)$study
 
-  # specify author
-  if (is.null(author)) {
-    authorName <- studyMeta$Authors %>%
-      dplyr::slice(1) %>%
-      dplyr::pull(name)
-  } else{
-    authorName <- author
-  }
 
   data <- rlang::list2(
-    'Study' = studyMeta$Title,
-    'Author' = authorName,
+    'Title' = replaceTitleColon(studyMeta$title),
+    'Author' = studyMeta$authors$developer$name,
     'Date' = date,
     'FileName' = scriptName,
     'Block' = configBlock
@@ -561,34 +525,23 @@ makeAnalysisScript <- function(scriptName,
 
 #' Function to create a pipeline task as an R file
 #' @param internalsName The name of the internals file that is being created
+#' @param date the date the script was built, default to today's date
 #' @param projectPath the path to the project
-#' @param author the author of the R file, defaults to first author in _study.yml
-#' @param date the date the file was initialized, defaults to today
 #' @param open toggle on whether the file should be opened
 #' @export
 makeInternals <- function(internalsName,
-                          projectPath = here::here(),
-                          author = NULL,
                           date = lubridate::today(),
+                          projectPath = here::here(),
                           open = TRUE) {
 
   intFileName <- paste0("_", internalsName)
 
   # retrieve study meta
-  studyMeta <- retrieveStudySettings(projectPath = projectPath)
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)$study
 
-  # specify author
-  if (is.null(author)) {
-    authorName <- studyMeta$Authors %>%
-      dplyr::slice(1) %>%
-      dplyr::pull(name)
-  } else{
-    authorName <- author
-  }
 
   data <- rlang::list2(
-    'Study' = studyMeta$Title,
-    'Author' = authorName,
+    'Author' = studyMeta$authors$developer$name,
     'Date' = date,
     'FileName' = intFileName
   )
@@ -596,7 +549,7 @@ makeInternals <- function(internalsName,
 
   usethis::use_template(
     template = "Internals.R",
-    save_as = fs::path("analysis/R", intFileName, ext = "R"),
+    save_as = fs::path("analysis/src", intFileName, ext = "R"),
     data = data,
     open = open,
     package = "Ulysses")
