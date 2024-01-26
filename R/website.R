@@ -175,3 +175,24 @@ buildStudyHub <- function(projectPath = here::here()) {
 
   invisible(docsPath)
 }
+
+#' Function to import a folder of images for a study hub
+#' @param imageFolder the file path for an image folder
+#' @param projectPath path to ohdsi study
+#' @return invisible return of the image file folder
+#' @export
+importImages <- function(imageFolder, projectPath = here::here()) {
+
+  newImageFolder <- fs::path(projectPath, "documentation/hub/images") %>%
+    fs::dir_create()
+
+  #create directory for images
+  fs::dir_create()
+
+  imageFiles <- fs::dir_copy(
+    path = imageFolder,
+    new_path = newImageFolder
+  )
+
+  invisible(imageFiles)
+}
