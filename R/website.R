@@ -13,14 +13,35 @@ checkWebsiteYml <- function(projectPath = here::here()) {
 
 
 # Function to create quarto yml
-makeWebsiteYaml <- function(projectPath = here::here()) {
+makeWebsiteYaml <- function(footer = NULL,
+                            logoPath = NULL,
+                            backgroundColor = "#336B91", #OHDSI Blue
+                            projectPath = here::here()) {
 
   # retrieve study meta
-  studyMeta <- retrieveStudySettings(projectPath = projectPath)
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)$study
+
+  if (is.null(footer)) {
+    footer <- "Produced using Ulysses Package"
+  }
+
+  if (is.null(logoPath)) {
+
+    logoPath <- fs::path_package("Ulysses", "images")
+
+    importImages(imageFolder = logoPath, projectPath = here::here())
+
+    logo <- "images/ohdsi_logo.png"
+
+  }
+
 
   # make list of vars for template
   data <- rlang::list2(
-    'Study' = studyMeta$Title
+    'Title' = replaceTitleColon(studyMeta$title),
+    'Footer' = footer,
+    'Color' = backgroundColor,
+    'Logo' = logo
   )
 
   check <- checkWebsiteYml(projectPath = projectPath)
@@ -74,7 +95,7 @@ makeNewsQuarto <- function(projectPath = here::here()) {
   lines <- readr::read_lines(readMePath)
 
   #set path to documentation
-  docPath <- fs::path(projectPath, "documentation/news.qmd")
+  docPath <- fs::path(projectPath, "documentation/hub/news.qmd")
 
   #write new readme to index.qmd
   cli::cat_bullet("Convert NEWS to news.qmd", bullet = "tick", bullet_col = "green")
@@ -96,8 +117,7 @@ missingStandardDocs <- function(projectPath = here::here()) {
     basename() %>%
     tools::file_path_sans_ext()
 
-  expectedFiles <- c("AnalysisPlan", "ContributionGuidelines", "HowToRun",
-                     "ResultsReport", "TechSpecs")
+  expectedFiles <- c("AnalysisPlan", "ResultsReport")
 
   `%notin%` <- Negate("%in%")
 
@@ -142,12 +162,25 @@ previewStudyHub <- function(projectPath = here::here()) {
 
 #' Function to build study hub
 #' @param projectPath path to ohdsi study
+#' @param logoPath a path to a logo png to use in the quarto website, defaults to
+#' ohdsi logo from Ulysses inst.
+#' @param footer add a footer to the study Hub
+#' @param backgroundColor change background color, defaults to OHDSI blue #336B91
 #' @return builds a _site folder in documenation that holds the html website
 #' @export
-buildStudyHub <- function(projectPath = here::here()) {
+buildStudyHub <- function(projectPath = here::here(),
+                          logoPath = NULL,
+                          footer = NULL,
+                          backgroundColor = "#336B91" #OHDSI Blue
+                          ) {
 
   # Step 1: Make yml
-  makeWebsiteYaml(projectPath = projectPath)
+  makeWebsiteYaml(
+    footer = footer,
+    logoPath = logoPath,
+    backgroundColor = backgroundColor,
+    projectPath = projectPath
+  )
 
   # step 2: check standard files for website
   missingDocs <- missingStandardDocs(projectPath = projectPath)
@@ -186,8 +219,6 @@ importImages <- function(imageFolder, projectPath = here::here()) {
   newImageFolder <- fs::path(projectPath, "documentation/hub/images") %>%
     fs::dir_create()
 
-  #create directory for images
-  fs::dir_create()
 
   imageFiles <- fs::dir_copy(
     path = imageFolder,

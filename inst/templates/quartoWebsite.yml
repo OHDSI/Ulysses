@@ -2,31 +2,27 @@ project:
   type: website
 
 website:
-  title: {{{ Study }}}
+  title: '{{{ Title }}}'
   navbar:
-    background: primary
+    background: '{{{ Color }}}'
+    logo: 'images/{{{ Logo }}}'
     left:
       - href: index.qmd
         text: Home
+      - text: Analysis Plan
+        href: AnalysisPlan.qmd
+      - text: Results Report
+        href: ResultsReport.qmd
       - href: news.qmd
         text: Changelog
-      - text: "Study Resources"
-        menu:
-          - text: Analysis Plan
-            href: AnalysisPlan.qmd
-          - text: Results Report
-            href: ResultsReport.qmd
-          - text: Technical Specifications
-            href: TechSpecs.qmd
-          - text: How-To-Run
-            href: HowToRun.qmd
-          - text: Contibution Guidelines
-            href: ContributionGuidelines.qmd
+    page-footer: '{{{ Footer }}}'
 
 format:
   html:
     theme: cosmo
     toc: true
+    fig-cap-location: "top"
+    tbl-cap-location: "top"
 
 
 
