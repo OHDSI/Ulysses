@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Ulysses</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.4</span>
       </span>
     </div>
 
@@ -33,9 +33,6 @@
   </a>
   <ul class="dropdown-menu" role="menu"><li>
       <a href="../articles/start_study.html">Creating a study using Ulysses</a>
-    </li>
-    <li>
-      <a href="../articles/ulysses_directory.html">Introduction to Ulysses Directory</a>
     </li>
   </ul></li>
 <li>
@@ -66,8 +63,12 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">newOhdsiStudy</span><span class="op">(</span></span>
 <span>  <span class="va">path</span>,</span>
 <span>  projectName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">basename</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span>,</span>
-<span>  <span class="va">author</span>,</span>
-<span>  <span class="va">type</span>,</span>
+<span>  studyInfo <span class="op">=</span> <span class="fu"><a href="setStudyInfo.html">setStudyInfo</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">basename</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  authors <span class="op">=</span> <span class="fu"><a href="setStudyAuthors.html">setStudyAuthors</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  timeline <span class="op">=</span> <span class="fu"><a href="setStudyTimeline.html">setStudyTimeline</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  about <span class="op">=</span> <span class="fu"><a href="setStudyDescription.html">setStudyDescription</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  links <span class="op">=</span> <span class="fu"><a href="setStudyLinks.html">setStudyLinks</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  tags <span class="op">=</span> <span class="fu"><a href="setStudyTags.html">setStudyTags</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  openProject <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -83,12 +84,34 @@
 <dd><p>the name of the project</p></dd>
 
 
-<dt>author</dt>
-<dd><p>the name of the study lead</p></dd>
+<dt>studyInfo</dt>
+<dd><p>a list object identifying the title, type and study version,
+defaults to <code>setStudyInfo</code>, see documentation</p></dd>
 
 
-<dt>type</dt>
-<dd><p>the type of study either Characterization, PLP or PLE</p></dd>
+<dt>authors</dt>
+<dd><p>a list object identifying the lead and developer authors names and emails,
+defaults to <code>setStudyAuthors</code>, see documentation.</p></dd>
+
+
+<dt>timeline</dt>
+<dd><p>a list object identifying the study status, start and end date,
+defaults to <code>setStudyTimeline</code>, see documentation</p></dd>
+
+
+<dt>about</dt>
+<dd><p>a list object identifying the study description, therapeutic area and databases,
+defaults to <code>setStudyDescription</code>, see documentation</p></dd>
+
+
+<dt>links</dt>
+<dd><p>a list object identifying the linked resources of the study,
+defaults to <code>setStudyLinks</code>, see documentation</p></dd>
+
+
+<dt>tags</dt>
+<dd><p>a list object identifying tags to the study,
+defauls to <code>setStudyTags</code>, see documentation</p></dd>
 
 
 <dt>verbose</dt>

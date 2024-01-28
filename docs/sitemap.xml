@@ -31,7 +31,22 @@
     <loc>/reference/addConfig.html</loc>
   </url>
   <url>
+    <loc>/reference/addDataSources.html</loc>
+  </url>
+  <url>
+    <loc>/reference/addLinks.html</loc>
+  </url>
+  <url>
     <loc>/reference/addScratchFolder.html</loc>
+  </url>
+  <url>
+    <loc>/reference/addStudyMember.html</loc>
+  </url>
+  <url>
+    <loc>/reference/addTags.html</loc>
+  </url>
+  <url>
+    <loc>/reference/buildStudyHub.html</loc>
   </url>
   <url>
     <loc>/reference/checkConfig.html</loc>
@@ -40,13 +55,28 @@
     <loc>/reference/checkDatabaseCredential.html</loc>
   </url>
   <url>
+    <loc>/reference/cohortManifest.html</loc>
+  </url>
+  <url>
     <loc>/reference/defaultCredentials.html</loc>
+  </url>
+  <url>
+    <loc>/reference/importCredentialsToConfig.html</loc>
+  </url>
+  <url>
+    <loc>/reference/importImages.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
   </url>
   <url>
+    <loc>/reference/initConfig.html</loc>
+  </url>
+  <url>
     <loc>/reference/isOhdsiStudy.html</loc>
+  </url>
+  <url>
+    <loc>/reference/makeAnalysisPlan.html</loc>
   </url>
   <url>
     <loc>/reference/makeAnalysisScript.html</loc>
@@ -79,6 +109,9 @@
     <loc>/reference/makeMeetingMinutes.html</loc>
   </url>
   <url>
+    <loc>/reference/makeMigrationScript.html</loc>
+  </url>
+  <url>
     <loc>/reference/makeNews.html</loc>
   </url>
   <url>
@@ -100,10 +133,16 @@
     <loc>/reference/makeWebApiScript.html</loc>
   </url>
   <url>
+    <loc>/reference/moduleTable.html</loc>
+  </url>
+  <url>
     <loc>/reference/newOhdsiStudy.html</loc>
   </url>
   <url>
     <loc>/reference/pipe.html</loc>
+  </url>
+  <url>
+    <loc>/reference/previewStudyHub.html</loc>
   </url>
   <url>
     <loc>/reference/publishStudyToRepository.html</loc>
@@ -118,15 +157,63 @@
     <loc>/reference/requestStudyRepository.html</loc>
   </url>
   <url>
+    <loc>/reference/retrieveStudySettings.html</loc>
+  </url>
+  <url>
     <loc>/reference/setCredential.html</loc>
   </url>
   <url>
     <loc>/reference/setMultipleCredentials.html</loc>
   </url>
   <url>
+    <loc>/reference/setStudyAuthors.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setStudyDescription.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setStudyInfo.html</loc>
+  </url>
+  <url>
     <loc>/reference/setStudyKeyring.html</loc>
   </url>
   <url>
+    <loc>/reference/setStudyLinks.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setStudyTags.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setStudyTimeline.html</loc>
+  </url>
+  <url>
     <loc>/reference/Ulysses-package.html</loc>
+  </url>
+  <url>
+    <loc>/reference/updateDeveloperInfo.html</loc>
+  </url>
+  <url>
+    <loc>/reference/updateLeadInfo.html</loc>
+  </url>
+  <url>
+    <loc>/reference/updateStudyDescription.html</loc>
+  </url>
+  <url>
+    <loc>/reference/updateStudyEndDate.html</loc>
+  </url>
+  <url>
+    <loc>/reference/updateStudyStatus.html</loc>
+  </url>
+  <url>
+    <loc>/reference/updateStudyTitle.html</loc>
+  </url>
+  <url>
+    <loc>/reference/updateStudyVersion.html</loc>
+  </url>
+  <url>
+    <loc>/reference/updateTherapeuticArea.html</loc>
+  </url>
+  <url>
+    <loc>/reference/zipResults.html</loc>
   </url>
 </urlset>

@@ -27,7 +27,7 @@ Requires R (version 4.1 or higher)
   install.packages("remotes")
   remotes::install_github("ohdsi/Ulysses")
   ```
-
+3. Install [quarto](https://quarto.org/docs/get-started/index.html)
 
 # User Documentation
 
@@ -36,7 +36,6 @@ Documentation can be found on the [package website](https://ohdsi.github.io/Ulys
 PDF versions of the documentation are available:
 
 - Vignette: [Ulysses Intro](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/pdf_vignette/start_study.pdf)
-- Vignette: [Ulysses Directory](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/pdf_vignette/ulysses_directory.pdf)
 - [Package manual](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/Ulysses.pdf)
 
 # Support

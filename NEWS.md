@@ -1,3 +1,15 @@
+Ulysses 0.0.4
+=============
+* Finalize Directory
+* Finalize meta fields for _study.yml
+* Reconfigure `newOhdsiStudy()` with better meta inputs
+* Add functions to interface with _study.yml
+* Reroute makeFiles to directory and meta fields
+* Add `makeMigrationsScript()` template
+* Update study hub website format
+* Update vignette
+
+
 Ulysses 0.0.3
 =============
 
