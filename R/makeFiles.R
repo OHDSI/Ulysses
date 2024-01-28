@@ -523,6 +523,46 @@ makeAnalysisScript <- function(scriptName,
 }
 
 
+
+
+#' Function to create a migration script
+#' @param scriptName The name of the analysis script
+#' @param date the date the script was built, default to today's date
+#' @param projectPath the path to the project
+#' @param open toggle on whether the file should be opened
+#' @export
+makeMigrationScript <- function(scriptName,
+                               date = lubridate::today(),
+                               projectPath = here::here(),
+                               open = TRUE) {
+
+
+
+  # retrieve study meta
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)$study
+  migrationScriptName <- glue::glue("migrate_{scriptName}")
+
+
+  data <- rlang::list2(
+    'Title' = replaceTitleColon(studyMeta$title),
+    'Author' = studyMeta$authors$developer$name,
+    'Date' = date,
+    'FileName' = migrationScriptName
+  )
+
+  usethis::use_template(
+    template = "MigrationScript.R",
+    save_as = fs::path("analysis/migration", migrationScriptName, ext = "R"),
+    data = data,
+    open = open,
+    package = "Ulysses")
+
+  invisible(data)
+
+
+}
+
+
 #' Function to create a pipeline task as an R file
 #' @param internalsName The name of the internals file that is being created
 #' @param date the date the script was built, default to today's date
