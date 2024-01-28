@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Ulysses</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.4</span>
       </span>
     </div>
 
@@ -33,9 +33,6 @@
   </a>
   <ul class="dropdown-menu" role="menu"><li>
       <a href="../articles/start_study.html">Creating a study using Ulysses</a>
-    </li>
-    <li>
-      <a href="../articles/ulysses_directory.html">Introduction to Ulysses Directory</a>
     </li>
   </ul></li>
 <li>
@@ -61,17 +58,29 @@
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="addCohortFolder.html">addCohortFolder()</a></code> </p>
-        </td>
-        <td><p>Function to create a cohort folder in input/cohortsToCreate</p></td>
-      </tr><tr><td>
           <p><code><a href="addConfig.html">addConfig()</a></code> </p>
         </td>
         <td><p>Add a line to the config file</p></td>
       </tr><tr><td>
-          <p><code><a href="addScratchFolder.html">addScratchFolder()</a></code> </p>
+          <p><code><a href="addDataSources.html">addDataSources()</a></code> </p>
         </td>
-        <td><p>Function to create a scratch folder</p></td>
+        <td><p>Function to add study data sources</p></td>
+      </tr><tr><td>
+          <p><code><a href="addLinks.html">addLinks()</a></code> </p>
+        </td>
+        <td><p>Function to add study links</p></td>
+      </tr><tr><td>
+          <p><code><a href="addStudyMember.html">addStudyMember()</a></code> </p>
+        </td>
+        <td><p>Function to add a study member</p></td>
+      </tr><tr><td>
+          <p><code><a href="addTags.html">addTags()</a></code> </p>
+        </td>
+        <td><p>Function to add study tags</p></td>
+      </tr><tr><td>
+          <p><code><a href="buildStudyHub.html">buildStudyHub()</a></code> </p>
+        </td>
+        <td><p>Function to build study hub</p></td>
       </tr><tr><td>
           <p><code><a href="checkConfig.html">checkConfig()</a></code> </p>
         </td>
@@ -81,13 +90,33 @@
         </td>
         <td><p>Function to check the database credential</p></td>
       </tr><tr><td>
+          <p><code><a href="cohortManifest.html">cohortManifest()</a></code> </p>
+        </td>
+        <td><p>Function that lists all cohort definitions loaded into the study</p></td>
+      </tr><tr><td>
           <p><code><a href="defaultCredentials.html">defaultCredentials()</a></code> </p>
         </td>
         <td><p>Function to list default credentials</p></td>
       </tr><tr><td>
+          <p><code><a href="importCredentialsToConfig.html">importCredentialsToConfig()</a></code> </p>
+        </td>
+        <td><p>Function to import credentials in stored csv to study config.yml</p></td>
+      </tr><tr><td>
+          <p><code><a href="importImages.html">importImages()</a></code> </p>
+        </td>
+        <td><p>Function to import a folder of images for a study hub</p></td>
+      </tr><tr><td>
+          <p><code><a href="initConfig.html">initConfig()</a></code> </p>
+        </td>
+        <td><p>Function to create a config.yml file</p></td>
+      </tr><tr><td>
           <p><code><a href="isOhdsiStudy.html">isOhdsiStudy()</a></code> </p>
         </td>
-        <td><p>Function to check if the directory is a picard project</p></td>
+        <td><p>Function to check if the directory is an ohdsi project</p></td>
+      </tr><tr><td>
+          <p><code><a href="makeAnalysisPlan.html">makeAnalysisPlan()</a></code> </p>
+        </td>
+        <td><p>Function to create a SAP</p></td>
       </tr><tr><td>
           <p><code><a href="makeAnalysisScript.html">makeAnalysisScript()</a></code> </p>
         </td>
@@ -99,23 +128,15 @@
       </tr><tr><td>
           <p><code><a href="makeCohortDetails.html">makeCohortDetails()</a></code> </p>
         </td>
-        <td><p>Function to create a cohort details file</p></td>
-      </tr><tr><td>
-          <p><code><a href="makeConfig.html">makeConfig()</a></code> </p>
-        </td>
-        <td><p>Function to create a config.yml file</p></td>
+        <td><p>Function to create the cohort details for the study</p></td>
       </tr><tr><td>
           <p><code><a href="makeContributionGuidelines.html">makeContributionGuidelines()</a></code> </p>
         </td>
         <td><p>R Markdown file to make the contribution guidelines</p></td>
       </tr><tr><td>
-          <p><code><a href="makeExample.html">makeExample()</a></code> </p>
-        </td>
-        <td><p>Function to create an example OHDSI script</p></td>
-      </tr><tr><td>
           <p><code><a href="makeHowToRun.html">makeHowToRun()</a></code> </p>
         </td>
-        <td><p>Function to create a Synopsis file</p></td>
+        <td><p>Function to create a HowToRun file</p></td>
       </tr><tr><td>
           <p><code><a href="makeInternals.html">makeInternals()</a></code> </p>
         </td>
@@ -125,21 +146,13 @@
         </td>
         <td><p>Function to create a config.yml file</p></td>
       </tr><tr><td>
-          <p><code><a href="makeMeetingMinutes.html">makeMeetingMinutes()</a></code> </p>
+          <p><code><a href="makeMigrationScript.html">makeMigrationScript()</a></code> </p>
         </td>
-        <td><p>Function to create a meeting minutes file</p></td>
+        <td><p>Function to create a migration script</p></td>
       </tr><tr><td>
           <p><code><a href="makeNews.html">makeNews()</a></code> </p>
         </td>
         <td><p>Function to create a NEWS file</p></td>
-      </tr><tr><td>
-          <p><code><a href="makeOhdsiProtocol.html">makeOhdsiProtocol()</a></code> </p>
-        </td>
-        <td><p>R Markdown file to make the ohdsi protocol</p></td>
-      </tr><tr><td>
-          <p><code><a href="makePassProtocol.html">makePassProtocol()</a></code> </p>
-        </td>
-        <td><p>R Markdown file to make the pass protocol</p></td>
       </tr><tr><td>
           <p><code><a href="makeReadMe.html">makeReadMe()</a></code> </p>
         </td>
@@ -149,25 +162,29 @@
         </td>
         <td><p>Quarto file to make a results report</p></td>
       </tr><tr><td>
-          <p><code><a href="makeStudySAP.html">makeStudySAP()</a></code> </p>
-        </td>
-        <td><p>Function to create a SAP</p></td>
-      </tr><tr><td>
           <p><code><a href="makeWebApiScript.html">makeWebApiScript()</a></code> </p>
         </td>
         <td><p>Function to create a pipeline task as an R file</p></td>
+      </tr><tr><td>
+          <p><code><a href="moduleTable.html">moduleTable()</a></code> </p>
+        </td>
+        <td><p>Function to retrieve table of modules</p></td>
       </tr><tr><td>
           <p><code><a href="newOhdsiStudy.html">newOhdsiStudy()</a></code> </p>
         </td>
         <td><p>Function that initializes a new ohdsi study project environment</p></td>
       </tr><tr><td>
+          <p><code><a href="previewStudyHub.html">previewStudyHub()</a></code> </p>
+        </td>
+        <td><p>Function to preview study hub</p></td>
+      </tr><tr><td>
           <p><code><a href="publishStudyToRepository.html">publishStudyToRepository()</a></code> </p>
         </td>
         <td><p>Publish Study to Repo</p></td>
       </tr><tr><td>
-          <p><code><a href="requestStudyRepository.html">requestStudyRepository()</a></code> </p>
+          <p><code><a href="retrieveStudySettings.html">retrieveStudySettings()</a></code> </p>
         </td>
-        <td><p>Email asking to initialize an ohdsi-studies repo</p></td>
+        <td><p>Function to convert yml into a specified list format</p></td>
       </tr><tr><td>
           <p><code><a href="setCredential.html">setCredential()</a></code> </p>
         </td>
@@ -177,9 +194,69 @@
         </td>
         <td><p>Function to set multi credentials</p></td>
       </tr><tr><td>
+          <p><code><a href="setStudyAuthors.html">setStudyAuthors()</a></code> </p>
+        </td>
+        <td><p>Function to set study authors</p></td>
+      </tr><tr><td>
+          <p><code><a href="setStudyDescription.html">setStudyDescription()</a></code> </p>
+        </td>
+        <td><p>Function to set study description</p></td>
+      </tr><tr><td>
+          <p><code><a href="setStudyInfo.html">setStudyInfo()</a></code> </p>
+        </td>
+        <td><p>Function to set study info</p></td>
+      </tr><tr><td>
           <p><code><a href="setStudyKeyring.html">setStudyKeyring()</a></code> </p>
         </td>
         <td><p>Function to set study keyring</p></td>
+      </tr><tr><td>
+          <p><code><a href="setStudyLinks.html">setStudyLinks()</a></code> </p>
+        </td>
+        <td><p>Function to set study links</p></td>
+      </tr><tr><td>
+          <p><code><a href="setStudyTags.html">setStudyTags()</a></code> </p>
+        </td>
+        <td><p>Function to set study tags</p></td>
+      </tr><tr><td>
+          <p><code><a href="setStudyTimeline.html">setStudyTimeline()</a></code> </p>
+        </td>
+        <td><p>Function to set study timeline</p></td>
+      </tr><tr><td>
+          <p><code><a href="updateDeveloperInfo.html">updateDeveloperInfo()</a></code> </p>
+        </td>
+        <td><p>Function to update developer Infor</p></td>
+      </tr><tr><td>
+          <p><code><a href="updateLeadInfo.html">updateLeadInfo()</a></code> </p>
+        </td>
+        <td><p>Function to update lead Infor</p></td>
+      </tr><tr><td>
+          <p><code><a href="updateStudyDescription.html">updateStudyDescription()</a></code> </p>
+        </td>
+        <td><p>Function to update study description</p></td>
+      </tr><tr><td>
+          <p><code><a href="updateStudyEndDate.html">updateStudyEndDate()</a></code> </p>
+        </td>
+        <td><p>Function to update study end date</p></td>
+      </tr><tr><td>
+          <p><code><a href="updateStudyStatus.html">updateStudyStatus()</a></code> </p>
+        </td>
+        <td><p>Function to update study status</p></td>
+      </tr><tr><td>
+          <p><code><a href="updateStudyTitle.html">updateStudyTitle()</a></code> </p>
+        </td>
+        <td><p>Function to update study title</p></td>
+      </tr><tr><td>
+          <p><code><a href="updateStudyVersion.html">updateStudyVersion()</a></code> </p>
+        </td>
+        <td><p>Function to update study version</p></td>
+      </tr><tr><td>
+          <p><code><a href="updateTherapeuticArea.html">updateTherapeuticArea()</a></code> </p>
+        </td>
+        <td><p>Function to update study therapeutic area</p></td>
+      </tr><tr><td>
+          <p><code><a href="zipResults.html">zipResults()</a></code> </p>
+        </td>
+        <td><p>Funciton to compress results into a zip file</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

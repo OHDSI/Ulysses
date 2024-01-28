@@ -1,6 +1,6 @@
 # @file PackageMaintenance
 #
-# Copyright 2023 Observational Health Data Sciences and Informatics
+# Copyright 2024 Observational Health Data Sciences and Informatics
 #
 # This file is part of Capr
 #
@@ -42,13 +42,6 @@ rmarkdown::render("vignettes/start_study.Rmd",
   rmarkdown::pdf_document(latex_engine = "pdflatex", toc = TRUE, number_sections = TRUE))
 unlink("extras/pdf_vignette/start_study.tex")
 
-
-### start study
-rmarkdown::render("vignettes/ulysses_directory.Rmd",
-                  output_file = "../extras/pdf_vignette/ulysses_directory.pdf",
-
-  rmarkdown::pdf_document(latex_engine = "pdflatex", toc = TRUE, number_sections = TRUE))
-unlink("extras/pdf_vignette/ulysses_directory.tex")
 
 # 4) build site ------------------------
 pkgdown::build_site()

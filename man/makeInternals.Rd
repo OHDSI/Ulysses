@@ -6,20 +6,17 @@
 \usage{
 makeInternals(
   internalsName,
-  projectPath = here::here(),
-  author = NULL,
   date = lubridate::today(),
+  projectPath = here::here(),
   open = TRUE
 )
 }
 \arguments{
 \item{internalsName}{The name of the internals file that is being created}
 
+\item{date}{the date the script was built, default to today's date}
+
 \item{projectPath}{the path to the project}
-
-\item{author}{the author of the R file, defaults to first author in _study.yml}
-
-\item{date}{the date the file was initialized, defaults to today}
 
 \item{open}{toggle on whether the file should be opened}
 }

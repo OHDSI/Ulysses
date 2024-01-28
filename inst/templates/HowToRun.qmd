@@ -1,7 +1,39 @@
 ---
-title: How-to-Run {{{ Study }}}
+title: How-to-Run {{{ Title }}}
+author: {{ Developer }}
 number-sections: true
 ---
+
+# Technical Specifications and pre-requisites
+
+In order to execute the {{{ Title }}} study please ensure the following technical requirements have been installed or are satisfied.
+
+## HADES Setup
+
+To run this study you must setup the [HADES environment](https://ohdsi.github.io/Hades/rSetup.html).
+
+-   Install [R](https://cloud.r-project.org/) (version 4.1 or greater)
+-   Install [R Studio](https://posit.co/download/rstudio-desktop/)
+-   On Windows: Install [RTools](https://cran.r-project.org/bin/windows/Rtools/)
+-   Install [Java](https://www.java.com/en/)
+
+
+## Supported Databases
+
+You also require your site data to be mapped to the [OMOP CDM](https://ohdsi.github.io/CommonDataModel/) and administered on one of the following supported database platforms:
+
+-   Microsoft SQL Server
+-   PostgreSQL
+-   Google BigQuery
+-   Amazon RedShift
+-   Snowflake
+
+## OMOP CDM Data Quality
+
+Prior to running this analysis, the data standardized to the OMOP CDM must undergo a level of quality control to ensure the data is ready for use in a network study. The OHDSI community provides two tools for running data quality checks:
+
+- [ACHILLES](https://github.com/OHDSI/Achilles)
+- [DataQualityDashboard](https://github.com/OHDSI/DataQualityDashboard)
 
 # Download and Install
 

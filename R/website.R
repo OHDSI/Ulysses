@@ -2,7 +2,7 @@
 checkWebsiteYml <- function(projectPath = here::here()) {
 
   #create yml path
-  ymlPath <- fs::path(projectPath, "documentation/_quarto.yml")
+  ymlPath <- fs::path(projectPath, "documentation/hub/_quarto.yml")
   check <- fs::file_exists(ymlPath)
   if (check) {
     cli::cat_bullet("_quarto.yml already exists for study hub", bullet = "pointer", bullet_col = "yellow")
@@ -13,14 +13,35 @@ checkWebsiteYml <- function(projectPath = here::here()) {
 
 
 # Function to create quarto yml
-makeWebsiteYaml <- function(projectPath = here::here()) {
+makeWebsiteYaml <- function(footer = NULL,
+                            logoPath = NULL,
+                            backgroundColor = "#336B91", #OHDSI Blue
+                            projectPath = here::here()) {
 
   # retrieve study meta
-  studyMeta <- retrieveStudySettings(projectPath = projectPath)
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)$study
+
+  if (is.null(footer)) {
+    footer <- "Produced using Ulysses Package"
+  }
+
+  if (is.null(logoPath)) {
+
+    logoPath <- fs::path_package("Ulysses", "images")
+
+    importImages(imageFolder = logoPath, projectPath = here::here())
+
+    logo <- "images/ohdsi_logo.png"
+
+  }
+
 
   # make list of vars for template
   data <- rlang::list2(
-    'Study' = studyMeta$Title
+    'Title' = replaceTitleColon(studyMeta$title),
+    'Footer' = footer,
+    'Color' = backgroundColor,
+    'Logo' = logo
   )
 
   check <- checkWebsiteYml(projectPath = projectPath)
@@ -28,7 +49,7 @@ makeWebsiteYaml <- function(projectPath = here::here()) {
     #build template
     usethis::use_template(
       template = "quartoWebsite.yml",
-      save_as = fs::path("documentation", "_quarto.yml"),
+      save_as = fs::path("documentation/hub", "_quarto.yml"),
       data = data,
       open = FALSE,
       package = "Ulysses")
@@ -54,14 +75,14 @@ makeIndexQuarto <- function(projectPath = here::here()) {
   newReadMe <- lines[keepLines]
 
   #set path to documentation
-  docPath <- fs::path(projectPath, "documentation/index.qmd")
+  docPath <- fs::path(projectPath, "documentation/hub/index.qmd")
 
   #write new readme to index.qmd
   cli::cat_bullet("Convert README.md to index.qmd", bullet = "tick", bullet_col = "green")
   readr::write_lines(newReadMe, file = docPath)
 
   #ignore index.qmd as it is redundant to README.md
-  usethis::use_git_ignore(ignores = "documentation/index.qmd")
+  usethis::use_git_ignore(ignores = "documentation/hub/index.qmd")
   invisible(docPath)
 }
 
@@ -74,14 +95,14 @@ makeNewsQuarto <- function(projectPath = here::here()) {
   lines <- readr::read_lines(readMePath)
 
   #set path to documentation
-  docPath <- fs::path(projectPath, "documentation/news.qmd")
+  docPath <- fs::path(projectPath, "documentation/hub/news.qmd")
 
   #write new readme to index.qmd
   cli::cat_bullet("Convert NEWS to news.qmd", bullet = "tick", bullet_col = "green")
   readr::write_lines(lines, file = docPath)
 
   #ignore index.qmd as it is redundant to README.md
-  usethis::use_git_ignore(ignores = "documentation/news.qmd")
+  usethis::use_git_ignore(ignores = "documentation/hub/news.qmd")
   invisible(docPath)
 }
 
@@ -89,15 +110,14 @@ makeNewsQuarto <- function(projectPath = here::here()) {
 missingStandardDocs <- function(projectPath = here::here()) {
 
   # make path to documentation folder
-  docsPath <- fs::path(projectPath, "documentation")
+  docsPath <- fs::path(projectPath, "documentation/hub")
 
   # look up all qmd files
   resourceFiles <- fs::dir_ls(docsPath, glob = "*.qmd") %>%
     basename() %>%
     tools::file_path_sans_ext()
 
-  expectedFiles <- c("AnalysisPlan", "ContributionGuidelines", "HowToRun",
-                     "ResultsReport", "TechSpecs")
+  expectedFiles <- c("AnalysisPlan", "ResultsReport")
 
   `%notin%` <- Negate("%in%")
 
@@ -124,7 +144,7 @@ makeMissingDocs <- function(missingDocs, projectPath = here::here()) {
 previewStudyHub <- function(projectPath = here::here()) {
 
   # make index path and check that it exists
-  indexFilePath <- fs::path(projectPath, "documentation/_site/index.html")
+  indexFilePath <- fs::path(projectPath, "documentation/hub/_site/index.html")
   check <- fs::file_exists(indexFilePath)
 
   if (check ) {
@@ -142,12 +162,25 @@ previewStudyHub <- function(projectPath = here::here()) {
 
 #' Function to build study hub
 #' @param projectPath path to ohdsi study
+#' @param logoPath a path to a logo png to use in the quarto website, defaults to
+#' ohdsi logo from Ulysses inst.
+#' @param footer add a footer to the study Hub
+#' @param backgroundColor change background color, defaults to OHDSI blue #336B91
 #' @return builds a _site folder in documenation that holds the html website
 #' @export
-buildStudyHub <- function(projectPath = here::here()) {
+buildStudyHub <- function(projectPath = here::here(),
+                          logoPath = NULL,
+                          footer = NULL,
+                          backgroundColor = "#336B91" #OHDSI Blue
+                          ) {
 
   # Step 1: Make yml
-  makeWebsiteYaml(projectPath = projectPath)
+  makeWebsiteYaml(
+    footer = footer,
+    logoPath = logoPath,
+    backgroundColor = backgroundColor,
+    projectPath = projectPath
+  )
 
   # step 2: check standard files for website
   missingDocs <- missingStandardDocs(projectPath = projectPath)
@@ -162,7 +195,7 @@ buildStudyHub <- function(projectPath = here::here()) {
   makeNewsQuarto(projectPath = projectPath)
 
   # make doc path
-  docsPath <- fs::path(projectPath, "documentation")
+  docsPath <- fs::path(projectPath, "documentation/hub")
 
   # step 6: build study hub
   cli::cat_bullet("Build Study Hub", bullet = "tick", bullet_col = "green")
@@ -174,4 +207,23 @@ buildStudyHub <- function(projectPath = here::here()) {
   previewStudyHub(projectPath = projectPath)
 
   invisible(docsPath)
+}
+
+#' Function to import a folder of images for a study hub
+#' @param imageFolder the file path for an image folder
+#' @param projectPath path to ohdsi study
+#' @return invisible return of the image file folder
+#' @export
+importImages <- function(imageFolder, projectPath = here::here()) {
+
+  newImageFolder <- fs::path(projectPath, "documentation/hub/images") %>%
+    fs::dir_create()
+
+
+  imageFiles <- fs::dir_copy(
+    path = imageFolder,
+    new_path = newImageFolder
+  )
+
+  invisible(imageFiles)
 }

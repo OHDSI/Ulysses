@@ -1,9 +1,9 @@
 ---
-title: Technical Specifications for {{{ Study }}}
+title: Technical Specifications for {{{ Title }}}
 number-sections: true
 ---
 
-In order to execute the {{{ Study }}} study please ensure the following technical requirements have been installed or are satisfied.
+In order to execute the {{{ Title }}} study please ensure the following technical requirements have been installed or are satisfied.
 
 # HADES Setup
 

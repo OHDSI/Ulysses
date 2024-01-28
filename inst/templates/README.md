@@ -1,4 +1,4 @@
-# {{{ Project }}}
+# {{{ Title }}}
 
 <!-- studyStatus: start -->
 
@@ -6,31 +6,35 @@
 
 <!-- studyStatus: end -->
 
-
-## Description
-
-Welcome to the {{{ Project }}} study! {{{ Project }}} is a {{{ StudyType }}} study.
-
-<!----add to description---------->
-
-
 ## Study Information
 
--   **Study Type**: {{{ Study Type }}}
--   **Contact Name**: {{{ Contact }}}
--   **Contact Email **: {{{ ContactEmail }}}
+-   **Study Id**: {{{ ID }}}
+-   **Study Type**: {{{ Type }}}
+-   **Study Start Date**: {{{ Start }}}
+-   **Expected Study End Date**: {{{ End }}}
+-   **Study Lead**: {{{ Lead }}}
+-   **Study Developer**: {{{ Developer }}}
+-   **Tags**: {{{ Tags }}}
 
-## CDM Information
+## Study Description 
 
--   **CDM Version**: {{{ CdmVersion }}}
--   **Vocabulary Version**: {{{ VocabVersion }}}
--   **Vocabulary Release**: {{{ VocabRelease}}}
+{{{ Description }}}
+
+-   **Therapeutic Area**: {{{ TA }}}
+-   **Data Sources**: {{{ DS }}}
 
 ## Resources
 
--   **Forum Post**: {{{ ForumPost }}}
--   **Study Hub**: {{{ Hub }}}
--   **Protocol**: {{{ Protocol }}}
--   **Report**: {{{ Report }}}
--   **Results Dashboard**: {{{ Dashboard }}}
+<!-- studyLinks: start -->
+
+-   **Study Concept**: TBD
+-   **Analysis Plan**: TBD
+-   **Report**: TBD
+-   **Dashboard**: TBD
+
+<!-- studyLinks: end -->
+
+
+
+
 

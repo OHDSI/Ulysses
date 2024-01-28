@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Ulysses</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.4</span>
       </span>
     </div>
 
@@ -58,9 +58,6 @@
   <ul class="dropdown-menu" role="menu">
 <li>
       <a href="../articles/start_study.html">Creating a study using Ulysses</a>
-    </li>
-    <li>
-      <a href="../articles/ulysses_directory.html">Introduction to Ulysses Directory</a>
     </li>
   </ul>
 </li>
@@ -146,68 +143,278 @@ the <code>Ulysses</code> package. We review:</p>
 begin creating an OHDSI study. To do this, you can run code as shown in
 the block below:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">Ulysses</span><span class="fu">::</span><span class="fu"><a href="../reference/newOhdsiStudy.html">newOhdsiStudy</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/newOhdsiStudy.html">newOhdsiStudy</a></span><span class="op">(</span></span>
 <span>  path <span class="op">=</span> <span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"my_ohdsi_study"</span><span class="op">)</span>,</span>
-<span>  author <span class="op">=</span> <span class="st">"Ulysses S. Grant"</span>,</span>
-<span>  type <span class="op">=</span> <span class="st">"Characterization"</span>,</span>
-<span>  directory <span class="op">=</span> <span class="st">"[my_directory]"</span>,</span>
-<span>  open <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  studyInfo <span class="op">=</span> <span class="fu"><a href="../reference/setStudyInfo.html">setStudyInfo</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">basename</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="st">"my_ohdsi_study"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                           title <span class="op">=</span> <span class="st">"My OHDSI Study"</span><span class="op">)</span>,</span>
+<span>  authors <span class="op">=</span> <span class="fu"><a href="../reference/setStudyAuthors.html">setStudyAuthors</a></span><span class="op">(</span></span>
+<span>    developer <span class="op">=</span> <span class="st">"John Smith"</span>,</span>
+<span>    developerEmail <span class="op">=</span> <span class="st">"john.smith@ohdsi.org"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  about <span class="op">=</span> <span class="fu"><a href="../reference/setStudyDescription.html">setStudyDescription</a></span><span class="op">(</span></span>
+<span>    desc <span class="op">=</span> <span class="st">"This is an OHDSI study for characterizing a population. This is an example."</span>,</span>
+<span>    ta <span class="op">=</span> <span class="st">"Cardiovascular"</span>,</span>
+<span>    dataSources <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Synthea"</span>, <span class="st">"Synpuf"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  tags <span class="op">=</span> <span class="fu"><a href="../reference/setStudyTags.html">setStudyTags</a></span><span class="op">(</span><span class="st">"OHDSI"</span>, <span class="st">"OMOP"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>This function will print some information to your console about
 start-up tasks and open an R project in a new session, for details on
 Rstudio projects see <a href="https://r-pkgs.org/workflow101.html#sec-workflow101-rstudio-projects" class="external-link">link</a>.</p>
-<p>In the new R session, we are directed to a clean R studio session. In
-the files pane you will see a directory structure as depicted in the
-image below. For more details about the directory structure refer to the
-<em>Introduction to Ulysses Directory</em> vignette in this package.
-Congratulations! You have started an OHDSI study!</p>
-<div class="figure">
-<img src="images/ulysses_directory.png" alt=""><p class="caption">Ulysses Style OHDSI Study Directory</p>
+<p>The additional inputs of the <code>newOhdsiStudy</code> function
+build meta data for the study repository that will be stored in a
+<code>_study.yml</code> file. This meta data serves two purposes: 1)
+provides human-readable information about the study and 2) serves as a
+source of information to populate fields for templated files generated
+using <code>Ulysses</code>. For example, if we were to generate a
+<code>README</code> file using <code>Ulysses</code> it would be built
+using this meta information.</p>
+</div>
+<div class="section level2">
+<h2 id="ulysses-directory-structure">Ulysses Directory structure<a class="anchor" aria-label="anchor" href="#ulysses-directory-structure"></a>
+</h2>
+<p>In a new R session, users will notice a pre-populated directory
+structure in their project folder. This directory structure contains
+specific folders and files that are important for a study to be
+self-contained within the new R project.</p>
+<div class="float">
+<img src="images/ulysses_directory.png" alt="Ulysses Directory Structure"><div class="figcaption">Ulysses Directory Structure</div>
+</div>
+<p><code>Ulysses</code> builds the following folders:</p>
+<div class="section level4">
+<h4 id="analysis">
+<code>analysis</code><a class="anchor" aria-label="anchor" href="#analysis"></a>
+</h4>
+<p>The analysis folder contains files that correspond to study analysis.
+There are three main folders created.</p>
+<ul>
+<li>
+<code>src</code> - contains the underlying functions that execute
+the analysis. These files can be R scripts, sql files or python scripts,
+for example. With <code>Ulysses</code>, users can generate templated
+internal R files using the command <code>makeInternals</code>.</li>
+<li>
+<code>tasks</code> - hold the executing scripts that generate the
+results of the study. With <code>Ulysses</code>, we think of studies as
+a series of tasks implemented in a specific order, like a pipeline. The
+<code>tasks</code> folder organizes these individual tasks. With
+<code>Ulysses</code>, users can generate templated internal R files
+using the command <code>makeAnalysisScript</code>.</li>
+<li>
+<code>migrations</code> - contain post-processing scripts to move
+and prepare data from a series of results to a format that is
+“presentation ready”. When conducting studies in OMOP, it is common to
+run the same analysis on different databases. Migration scripts help
+bind the results of all databases run in the study and format tables to
+present in a quarto report or shiny app. With <code>Ulysses</code>,
+users can generate templated internal R files using the command
+<code>makeMigrationScript</code>.</li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="cohorts">
+<code>cohorts</code><a class="anchor" aria-label="anchor" href="#cohorts"></a>
+</h4>
+<p>The cohorts folder is meant to organize files that are used to
+generate cohort definitions in the database. In an OHDSI study, cohort
+definitions are specified in a <code>json</code> file format following
+the specifications of <a href="https://github.com/OHDSI/circe-be" class="external-link"><code>circe-be</code></a>. We
+suggest placing cohorts used in the analysis in the cohort folder in
+order for the study to be self-contained, meaning it does not rely on
+ATLAS to execute. However, we <strong>highly</strong> recommend that
+users maintain the organization of their cohorts in ATLAS as a source of
+truth for both cohort definition and generation. The <code>sql</code>
+folder is created to store sql files used to build cohort definitions.
+This is a good location for cohort definitions that do not follow the
+<code>circe-be</code> structure.</p>
+<p>Keeping track of cohorts can be a bit tricky. <code>Ulysses</code>
+provides a helper function to track json files in the cohorts folder
+called <code>cohortManifest</code>. This function will list the name of
+the json file and its corresponding id. By default, the cohort Id
+assigned to the cohort json is in alphabetical order starting with 1.
+<code>Ulysses</code> also creates a file called the
+<code>CohortDetails.qmd</code> which prints the human-readable rendering
+of the json expression using <a href="https://github.com/OHDSI/CirceR" class="external-link"><code>CirceR</code></a>.
+<strong>These functions are still in development as of
+v0.0.4</strong>.</p>
+</div>
+<div class="section level4">
+<h4 id="documentation">
+<code>documentation</code><a class="anchor" aria-label="anchor" href="#documentation"></a>
+</h4>
+<p>Study repositories should not only contain code, they should also
+contain documentation about the design of the study and how to run the
+study. Study repo’s should be self-contained, meaning we can go to one
+location to get all code and human-readable documentation about the
+study. <code>Ulysses</code> builds this into its repository structure
+with a <code>hub</code> folder and a <code>misc</code> folder. The
+<code>hub</code> folder contains files that are specific to the study
+hub, an html website that provides all information about the study. The
+<code>misc</code> folder is a place-holder to store word documents,
+excel files, slide decks or other important documentation needed for the
+study.</p>
+<div class="section level5">
+<h5 id="study-hub">Study Hub<a class="anchor" aria-label="anchor" href="#study-hub"></a>
+</h5>
+<p>The study hub is a website that a user can generate through
+<code>Ulysses</code> that provides information about the design of a
+study and its results. The study hub is generated using
+<code>quarto</code>. The study hub can be generated using the function
+<code>buildStudyHub</code>. The study hub relies on the generation and
+maintenance of 4 files: README.md, NEWS.md, AnalysisPlan.qmd and
+ResultsReport.qmd.</p>
+<div class="float">
+<img src="images/ulysses_study_hub.png" alt="Ulysses Study Hub"><div class="figcaption">Ulysses Study Hub</div>
+</div>
+</div>
+<div class="section level5">
+<h5 id="suggested-files">Suggested Files<a class="anchor" aria-label="anchor" href="#suggested-files"></a>
+</h5>
+<p><code>Ulysses</code> has functions to initialize some suggested files
+for a study:</p>
+<ul>
+<li>
+<code>AnalysisPlan.qmd</code>: the statistical analysis plan for the
+study, which specifies the study design and analytical methods. This
+file can be templated in <code>Ulysses</code> using the command
+<code>makeAnalysisPlan</code>.</li>
+<li>
+<code>ResultsReport.qmd</code>: the report summarizing results from
+the study following its execution. This file can be templated in
+<code>Ulysses</code> using the command
+<code>makeResultsReport</code>.</li>
+<li>
+<code>ContributionGuidelines.qmd</code>: if the study is a network
+studies, maintainers should provide resources on how others can
+contribute to the study. Topics ranges from how to file issues, how to
+send results to the study host, and how to collaborate in a positive
+environment. This file can be templated in <code>Ulysses</code> using
+the command <code>makeContributionGuidelines</code>.</li>
+<li>
+<code>HowToRun.qmd</code>: a document that explains how to execute
+the study code to study nodes or interested parties. Should describe
+technical requirements needed prior to running the study, local setup,
+and execution. This file can be templated in <code>Ulysses</code> using
+the command <code>makeHowToRun</code>.</li>
+</ul>
+</div>
+</div>
+<div class="section level3">
+<h3 id="exec">
+<code>exec</code><a class="anchor" aria-label="anchor" href="#exec"></a>
+</h3>
+<p>The <code>exec</code> folder is a location to store output files that
+result from the study execution. This includes results and logs from the
+study run and a folder to store post-processed data called
+<code>export</code>. The <code>exec</code> folder is always ignored in
+git.</p>
+</div>
+<div class="section level3">
+<h3 id="extras">
+<code>extras</code><a class="anchor" aria-label="anchor" href="#extras"></a>
+</h3>
+<p>Sometimes studies have files that don’t have a natural location from
+those specified above. The <code>extras</code> folder is a location to
+store any additional files needed to run or support the execution of the
+study. This is also a good location to store internal setup scripts, but
+remember to ignore them in git.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="adding-repository-documentation">Adding Repository Documentation<a class="anchor" aria-label="anchor" href="#adding-repository-documentation"></a>
+<h2 id="additional-repository-files">Additional Repository Files<a class="anchor" aria-label="anchor" href="#additional-repository-files"></a>
 </h2>
-<div class="section level3">
-<h3 id="the-readme-file">The <em>README</em> file<a class="anchor" aria-label="anchor" href="#the-readme-file"></a>
-</h3>
-<p>With your new OHDSI study created, you need to begin adding
-documentation for the repository. The first file we usually create is
-the repository README. For those unfamiliar with code development, the
-README file is a standard file used to introduce a describe the the
-project. Think of the README as your cover page. It is the first file
-users see when they navigate to the github page. All OHDSI projects
-require a README file, thus <code>Ulysses</code> provides a function
-(<code>makeReadMe</code>) that initializes it.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">Ulysses</span><span class="fu">::</span><span class="fu"><a href="../reference/makeReadMe.html">makeReadMe</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>The readme file is initailized using information found in the
-<code>_study.yml</code> file. A typical OHDSI study readme has a section
-of meta information as seen below:</p>
+<p>In addition to the pre-generated folders in the new study repository,
+<code>Ulysses</code> also helps generate additional files that should be
+in the repository. Some of these key files are described below.</p>
+<div class="section level4">
+<h4 id="study-yml">
+<code>_study.yml</code><a class="anchor" aria-label="anchor" href="#study-yml"></a>
+</h4>
+<p>A file unique to directories initialized using <code>Ulysses</code>
+is a metadata file called <code>_study.yml</code>. Using the inputs
+specified in the <code>newOhdsiStudy</code> function, a metadata file is
+populated. As mentioned this file store information about the study
+directory and also uses it as inputs to templated files generated in
+<code>Ulysses</code>. It is important to maintain this file during the
+development of a study, whether that is to update default fields in the
+yaml file or add information. Below is a snapshot of a
+<code>_study.yml</code> file with the essential metadata fields.</p>
+<div class="float">
+<img src="images/ulysses_meta.png" alt="Ulysses MetaData"><div class="figcaption">Ulysses MetaData</div>
+</div>
+<div class="section level5">
+<h5 id="fields">Fields<a class="anchor" aria-label="anchor" href="#fields"></a>
+</h5>
+<p>Below we describe the key fields in this file.</p>
 <ul>
-<li>
-<strong>Study Lead</strong>: Ulysses S. Grant</li>
-<li>
-<strong>Analytics Use Case</strong>: Characterization</li>
-<li>
-<strong>Study Start Date</strong>: 04-27-1822</li>
-<li>
-<strong>Study End Date</strong>: 07-23-1885</li>
-<li>
-<strong>Study Tags</strong>: None</li>
-<li>
-<strong>Protocol</strong>: Unavailable</li>
-<li>
-<strong>Publications</strong>: Unavailable</li>
-<li>
-<strong>Results Explorer</strong>: Unavailable</li>
+<li>id: an identifier for the study which is the same as the directory
+name. Use either a study id or acronym</li>
+<li>title: a full title for the study, more thorough than the id. If no
+title is provided, the input defaults to the id.</li>
+<li>type: a keyword describing the type of study being conducted. Could
+be a <strong>Characterization</strong>, <strong>Population-Level
+Estimation</strong>, <strong>Patient-Level Prediction</strong>, or
+<strong>Database Assessment</strong>, for example.</li>
+<li>version: a value that represents the version of the study. Suggest
+using semantic versioning logic.</li>
+<li>authors: stores the name and email of the developer (person
+in-charge of code development) and the lead (person in-charge of the
+study). You may add other authors who are designated as
+<em>members</em>
+</li>
+<li>timeline: a list of information relating to the development timeline
+of the study. This includes the study start and end dates. The study
+status is also listed here, where acceptable values are
+<strong>Started</strong>, <strong>In-Progress</strong>,
+<strong>Stopped</strong> and <strong>Completed</strong>.</li>
+<li>about: a short description about the study, the therapeutic area it
+covers and data sources used.</li>
+<li>links: a listing of hyperlinks to guide people to key documentation
+such as the analysis plan, report, dashboard and other resources.</li>
+<li>tags: a list of keyword identifiers for the project</li>
 </ul>
-<p>Following the Meta section, the user will need to provide a
-description of the study and information on the databases used in the
-study. Finally, the README provides links to important study information
-including the protocol, how to run and contributions files. Users can
-add as much as they please to the README file, <code>Ulysses</code>
-offers suggested guidance for starting it.</p>
+</div>
+<div class="section level5">
+<h5 id="maintenance">Maintenance<a class="anchor" aria-label="anchor" href="#maintenance"></a>
+</h5>
+<p><code>Ulysses</code> provides functions to maintain the
+<code>_study.yml</code> file.</p>
+<ul>
+<li>Add Fields
+<ul>
+<li><code><a href="../reference/addStudyMember.html">addStudyMember()</a></code></li>
+<li><code><a href="../reference/addTags.html">addTags()</a></code></li>
+<li><code><a href="../reference/addDataSources.html">addDataSources()</a></code></li>
+<li><code><a href="../reference/addLinks.html">addLinks()</a></code></li>
+</ul>
+</li>
+<li>Update Fields
+<ul>
+<li><code><a href="../reference/updateStudyEndDate.html">updateStudyEndDate()</a></code></li>
+<li><code>updateSutdyStatus()</code></li>
+<li><code><a href="../reference/updateStudyTitle.html">updateStudyTitle()</a></code></li>
+<li><code>updatStudyVersion()</code></li>
+<li><code><a href="../reference/updateStudyDescription.html">updateStudyDescription()</a></code></li>
+<li><code><a href="../reference/updateTherapeuticArea.html">updateTherapeuticArea()</a></code></li>
+<li><code><a href="../reference/updateDeveloperInfo.html">updateDeveloperInfo()</a></code></li>
+<li><code><a href="../reference/updateLeadInfo.html">updateLeadInfo()</a></code></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section level4">
+<h4 id="readme-md">
+<code>README.md</code><a class="anchor" aria-label="anchor" href="#readme-md"></a>
+</h4>
+<p>For those unfamiliar with code development, the
+<strong>README</strong> file is a standard file used to introduce the
+contents of a repository, like a cover-page. It is the first file users
+see when they navigate to the repository page in your repository hosting
+service (i.e. BitBucket or Github). Therefore a strong README file is
+essential for a study. <code>Ulysses</code> provides the function
+<code><a href="../reference/makeReadMe.html">makeReadMe()</a></code> which initializes the README using inputs from
+the metadata stored in the <code>_study.yml</code>.</p>
 <p>Another feature offered by <code>Ulysses</code> is support for svg
 badges. These simple badges appear at the top of the README and provide
 useful information about the study. Badges seen in OHDSI studies include
@@ -215,9 +422,10 @@ a study status badge and badges versioning the CDM and OMOP vocabulary.
 <code>Ulysses</code> will provide more support and documentation for
 badges in the future.</p>
 </div>
-<div class="section level3">
-<h3 id="the-news-file">The <em>NEWS</em> file<a class="anchor" aria-label="anchor" href="#the-news-file"></a>
-</h3>
+<div class="section level4">
+<h4 id="news-md">
+<code>NEWS.md</code><a class="anchor" aria-label="anchor" href="#news-md"></a>
+</h4>
 <p>Another common file in software repositories is the NEWS file. The
 purpose of the NEWS file is to track changes to the software over time.
 Of course, version control software such as github keeps a record of the
@@ -227,19 +435,18 @@ has developed over time. NEWS files are often maintained via a <a href="https://
 are not entirely software, however it is important to maintain order
 over the development of the technical pieces of the study.
 <code>Ulysses</code> offers a simple function that initiates this file,
-<code>makeNews</code>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">Ulysses</span><span class="fu">::</span><span class="fu"><a href="../reference/makeNews.html">makeNews</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code><a href="../reference/makeNews.html">makeNews()</a></code>.</p>
 </div>
-</div>
-<div class="section level2">
-<h2 id="handling-database-credentials">Handling database credentials<a class="anchor" aria-label="anchor" href="#handling-database-credentials"></a>
-</h2>
+<div class="section level4">
+<h4 id="config-yml">
+<code>config.yml</code><a class="anchor" aria-label="anchor" href="#config-yml"></a>
+</h4>
 <p>An important aspect of running an OHDSI study is handling credentials
 to connect to the Database Management System (DBMS) that hosts the OMOP
 data. Security of these credentials is very important.
-<code>Ulysses</code> offers support on handling these credentials.
-Credentials needed to run a study are as follows:</p>
+<code>Ulysses</code> offers support on handling these credentials
+through the <code>config.yml</code> file. Credentials needed to run a
+study are as follows:</p>
 <ul>
 <li>
 <strong>dbms</strong>: the name of the dbms used to host the OMOP
@@ -300,8 +507,8 @@ protected via <a href="https://github.com/r-lib/keyring" class="external-link"><
 users do not accidentally expose passwords when working on a study.
 <code>Ulysses</code> provides a function that initializes the
 <em>config.yml</em> file:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">Ulysses</span><span class="fu">::</span><span class="fu"><a href="../reference/makeConfig.html">makeConfig</a></span><span class="op">(</span>block <span class="op">=</span> <span class="st">"example"</span>, database <span class="op">=</span> <span class="st">"synpuf_110k"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">Ulysses</span><span class="fu">::</span><span class="fu">makeConfig</span><span class="op">(</span>block <span class="op">=</span> <span class="st">"example"</span>, database <span class="op">=</span> <span class="st">"synpuf_110k"</span><span class="op">)</span></span></code></pre></div>
 <p>When a user creates a new <code>config.yml</code> file it is added to
 <code>.gitignore</code> to ensure it is not committed to a github
 repository. The config file shows each credential connected to the block
@@ -329,97 +536,8 @@ indentation and add an extra space after. To set up the keyrings,
 <code>Ulysses</code> also supplies a helper script to set this up.
 Follow the script to set up the keyring credentials so that the
 <em>config.yml</em> can be properly used.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">Ulysses</span><span class="fu">::</span><span class="fu"><a href="../reference/makeKeyringSetup.html">makeKeyringSetup</a></span><span class="op">(</span>configBlock <span class="op">=</span> <span class="st">"example"</span>, database <span class="op">=</span> <span class="st">"synpuf_110k"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="adding-r-scripts">Adding R scripts<a class="anchor" aria-label="anchor" href="#adding-r-scripts"></a>
-</h2>
-<p>One way we can add analytical scripts to <code>Ulysses</code> is by
-using the line below</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">Ulysses</span><span class="fu">::</span><span class="fu"><a href="../reference/makeAnalysisScript.html">makeAnalysisScript</a></span><span class="op">(</span>scriptName <span class="op">=</span> <span class="st">"buildCohorts"</span><span class="op">)</span></span></code></pre></div>
-<p>This function will create a new R script written to the folder
-<code>analysis/studyTasks</code>. The R script will have a prefix of a
-number indicating the order in which the script should be executed. The
-first script for example will follow the syntax
-<strong>01_<taskname></taskname></strong>. <code>Ulysses</code> will automatically
-open this file to begin editing.</p>
-<p>Each analytical task is formatted with the following sections:</p>
-<ol style="list-style-type: upper-alpha">
-<li>File Info -&gt; includes information about the file</li>
-<li>Dependencies -&gt; a list of libraries, options and source files
-required to run script</li>
-<li>Connection -&gt; set up connection to dbms</li>
-<li>Variables -&gt; set variables (parameters) needed for the
-script</li>
-<li>Script -&gt; the script to run</li>
-<li>Session Info -&gt; a summary of the session info and clean up</li>
-</ol>
-<p>To complement the analysis scripts, we can also create internal
-files. These are R files that contain functions or other code that needs
-to be sourced in the analysis. These files are saved in the
-<code>analysis/private</code> folder. Making an internal function can be
-done by the following:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">Ulysses</span><span class="fu">::</span><span class="fu"><a href="../reference/makeInternals.html">makeInternals</a></span><span class="op">(</span>internalsName <span class="op">=</span> <span class="st">"buildCohorts"</span><span class="op">)</span></span></code></pre></div>
-<p>The R package <a href="https://github.com/OHDSI/Strategus" class="external-link"><code>Strategus</code></a>
-helps execute OHDSI analytics. Analytical modules are executed via
-<code>Strategus</code>. This paradigm to OHDSI studies can also be
-handled by <code>Ulysses</code>. More support for using
-<code>Strategus</code> with <code>Ulysses</code> will be explored in
-future releases.</p>
-</div>
-<div class="section level2">
-<h2 id="adding-documenation">Adding Documenation<a class="anchor" aria-label="anchor" href="#adding-documenation"></a>
-</h2>
-<p>An important part of a study repository is communicating its contents
-to study nodes. A study node in a network study must understand the
-scientific components of the study, how to run the study locally and how
-to contribute towards the study. <code>Ulysses</code> provides functions
-to help develop documentation to communicate the study to participants
-in the OHDSI network.</p>
-<div class="section level3">
-<h3 id="analysis-specification">Analysis Specification<a class="anchor" aria-label="anchor" href="#analysis-specification"></a>
-</h3>
-<p>A study requires a protocol or a study analysis plan (SAP),
-specifying the scientific components of the study. These documents
-specify the study design, definition of the target, exposure and outcome
-cohorts and how the data analysis is conducted. This documentation is
-important because it provides guidance and rationale for the study. Many
-study nodes also require submission of documentation to an institutional
-review board to justify execution of the study. <code>Ulysses</code>
-provides templates for an OHDSI protocol, PASS protocols and a suggested
-format for a SAP. Below are examples of building these templates:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">Ulysses</span><span class="fu">::</span><span class="fu"><a href="../reference/makeOhdsiProtocol.html">makeOhdsiProtocol</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">Ulysses</span><span class="fu">::</span><span class="fu"><a href="../reference/makePassProtocol.html">makePassProtocol</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">Ulysses</span><span class="fu">::</span><span class="fu"><a href="../reference/makeStudySAP.html">makeStudySAP</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="how-to-run">How to Run<a class="anchor" aria-label="anchor" href="#how-to-run"></a>
-</h3>
-<p>Next, a repository needs to communicate how to run the study. This
-document informs study nodes on technical requirements needed to run the
-study, provides instructions on installations, and the process of
-running the study. OHDSI studies are designed in several different ways,
-so it is important that the developer explains how this study should be
-run. Below is an example of how to create the <code>howToRun.md</code>
-file:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">Ulysses</span><span class="fu">::</span><span class="fu"><a href="../reference/makeHowToRun.html">makeHowToRun</a></span><span class="op">(</span>org <span class="op">=</span> <span class="st">"Ohdsi"</span>, repo <span class="op">=</span> <span class="st">"my_ohdsi_study"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
-</h3>
-<p>Finally, the repository needs to communicate how study nodes can
-contribute to the study. This include information on posting results,
-asking for help and code of conduct. Contribution guidelines are
-standard documentation of software and would be helpful additions to
-OHDSI studies. To create a template contribution guideline follow the
-example below:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">Ulysses</span><span class="fu">::</span><span class="fu"><a href="../reference/makeContributionGuidelines.html">makeContributionGuidelines</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
   </div>

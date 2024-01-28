@@ -1,16 +1,45 @@
 #' Function that initializes a new ohdsi study project environment
 #' @param path the path where the project sits
 #' @param projectName the name of the project
-#' @param studySettings a list of study settings
+#' @param studyInfo a list object identifying the title, type and study version,
+#' defaults to `setStudyInfo`, see documentation
+#' @param authors a list object identifying the lead and developer authors names and emails,
+#' defaults to `setStudyAuthors`, see documentation.
+#' @param timeline a list object identifying the study status, start and end date,
+#' defaults to `setStudyTimeline`, see documentation
+#' @param about a list object identifying the study description, therapeutic area and databases,
+#' defaults to `setStudyDescription`, see documentation
+#' @param links a list object identifying the linked resources of the study,
+#' defaults to `setStudyLinks`, see documentation
+#' @param tags a list object identifying tags to the study,
+#' defauls to `setStudyTags`, see documentation
 #' @param verbose whether the function should provide steps, default TRUE
 #' @param openProject should the project be opened if created
 #' @import rlang usethis fs
 #' @export
 newOhdsiStudy <- function(path,
                           projectName = basename(path),
-                          studySettings = makeStudySettings(title = basename(path)),
+                          studyInfo = setStudyInfo(id = basename(path)),
+                          authors = setStudyAuthors(),
+                          timeline = setStudyTimeline(),
+                          about = setStudyDescription(),
+                          links = setStudyLinks(),
+                          tags = setStudyTags(),
                           verbose = TRUE,
                           openProject = TRUE) {
+
+
+  # Step 0: Bind study meta
+  studyMeta <- studyInfo %>%
+    append(authors) %>%
+    append(timeline) %>%
+    append(about) %>%
+    append(links) %>%
+    append(tags)
+
+  studyMeta2 <- list(
+    'study' = studyMeta
+  )
 
   # Step 1: create project directory
   if (verbose) {
@@ -33,12 +62,7 @@ newOhdsiStudy <- function(path,
   addDefaultFolders(projectPath = dir_path, verbose = verbose)
 
   # Step 3: create _study.yml file
-  convert_to_yml(studySettings = studySettings, savePath = dir_path)
-  # addStudyMeta(projectName = projectName,
-  #              author = author,
-  #              type = type,
-  #              projectPath = dir_path,
-  #              verbose = verbose)
+  convert_to_yml(studySettings = studyMeta2, savePath = dir_path)
 
 
   # Step 4: create gitignore
@@ -70,7 +94,7 @@ isOhdsiStudy <- function(basePath) {
   check1 <- fs::file_exists("_study.yml") %>% unname()
 
   #check if has subfolders
-  folders <- c("analysis", "cohortsToCreate", "exec", "extras", "documentation")
+  folders <- c("analysis", "cohorts", "exec", "extras", "documentation")
 
   ff <- fs::dir_ls(basePath, type = "directory") %>%
     basename()
@@ -100,14 +124,17 @@ addDefaultFolders <- function(projectPath, verbose = TRUE) {
                     bullet_col = "yellow", bullet = "info")
   }
 
-  analysisFolders <- c("R", "tasks", "migrations")
+  analysisFolders <- c("src", "tasks", "migrations")
   execFolders <- c('logs', 'results', "export")
+  cohortFolders <- c("json", "sql")
+  documentationFolders <- c("hub", "misc")
+
   folders <- c(
-    'cohorts/json',
+    paste('cohorts', cohortFolders, sep = "/"),
     paste('analysis', analysisFolders, sep = "/"),
     paste('exec', execFolders, sep = "/"),
-    'extras',
-    'documentation'
+    paste('documentation', documentationFolders, sep = "/"),
+    'extras'
   )
 
   pp <- fs::path("./", folders) %>%
@@ -117,37 +144,4 @@ addDefaultFolders <- function(projectPath, verbose = TRUE) {
 
 
 
-
-
-# addStudyMeta <- function(projectName,
-#                          author,
-#                          type = c("Characterization", "Population-Level Estimation", "Patient-Level Prediction"),
-#                          projectPath,
-#                          verbose = TRUE){
-#
-#   if (verbose) {
-#     cli::cat_bullet("Step 3: Adding _study.yml file",
-#                     bullet_col = "yellow", bullet = "info")
-#   }
-#
-#
-#
-#   # projName <- basename(projectPath) %>%
-#   #   snakecase::to_title_case()
-#   date <- lubridate::today()
-#
-#   data <- rlang::list2(
-#     'Title' = projectName,
-#     'Author' = author,
-#     'Type' = type,
-#     'Date' = date
-#   )
-#
-#   template_contents <- render_template("_study.yml", data = data)
-#   save_as <- fs::path(projectPath, "_study.yml")
-#   new <- write_utf8(save_as, template_contents)
-#   invisible(new)
-#
-#
-# }
 

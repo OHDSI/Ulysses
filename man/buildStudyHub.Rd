@@ -4,10 +4,22 @@
 \alias{buildStudyHub}
 \title{Function to build study hub}
 \usage{
-buildStudyHub(projectPath = here::here())
+buildStudyHub(
+  projectPath = here::here(),
+  logoPath = NULL,
+  footer = NULL,
+  backgroundColor = "#336B91"
+)
 }
 \arguments{
 \item{projectPath}{path to ohdsi study}
+
+\item{logoPath}{a path to a logo png to use in the quarto website, defaults to
+ohdsi logo from Ulysses inst.}
+
+\item{footer}{add a footer to the study Hub}
+
+\item{backgroundColor}{change background color, defaults to OHDSI blue #336B91}
 }
 \value{
 builds a _site folder in documenation that holds the html website

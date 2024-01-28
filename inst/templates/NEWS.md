@@ -1,4 +1,4 @@
-# {{{ Project }}} v0.0.1
+# {{{ ID }}} {{{ Version }}}
 
-* Initialize OHDSI study
-* Add `NEWS.md` to track changes to OHDSI study
+* Initialize study using `Ulysses`
+* Add `NEWS.md` to track changes of study

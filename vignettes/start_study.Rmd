@@ -37,57 +37,138 @@ In this vignette we walk-through how to build an OHDSI study using the `Ulysses`
 Once you have downloaded the `Ulysses` package, you can begin creating an OHDSI study. To do this, you can run code as shown in the block below:
 
 ```{r initStudy, echo=TRUE, eval=FALSE}
-Ulysses::newOhdsiStudy(
+newOhdsiStudy(
   path = here::here("my_ohdsi_study"),
-  author = "Ulysses S. Grant",
-  type = "Characterization",
-  directory = "[my_directory]",
-  open = TRUE
+  studyInfo = setStudyInfo(id = basename(here::here("my_ohdsi_study")),
+                           title = "My OHDSI Study"),
+  authors = setStudyAuthors(
+    developer = "John Smith",
+    developerEmail = "john.smith@ohdsi.org"
+  ),
+  about = setStudyDescription(
+    desc = "This is an OHDSI study for characterizing a population. This is an example.",
+    ta = "Cardiovascular",
+    dataSources = list("Synthea", "Synpuf")
+  ),
+  tags = setStudyTags("OHDSI", "OMOP")
 )
 ```
 
 This function will print some information to your console about start-up tasks and open an R project in a new session, for details on Rstudio projects see [link](https://r-pkgs.org/workflow101.html#sec-workflow101-rstudio-projects).
 
-In the new R session, we are directed to a clean R studio session. In the files pane you will see a directory structure as depicted in the image below. For more details about the directory structure refer to the *Introduction to Ulysses Directory* vignette in this package. Congratulations! You have started an OHDSI study!
+The additional inputs of the `newOhdsiStudy` function build meta data for the study repository that will be stored in a `_study.yml` file. This meta data serves two purposes: 1) provides human-readable information about the study and 2) serves as a source of information to populate fields for templated files generated using `Ulysses`. For example, if we were to generate a `README` file using `Ulysses` it would be built using this meta information. 
 
-![Ulysses Style OHDSI Study Directory](images/ulysses_directory.png)
+# Ulysses Directory structure
 
-# Adding Repository Documentation
+In a new R session, users will notice a pre-populated directory structure in their project folder. This directory structure contains specific folders and files that are important for a study to be self-contained within the new R project. 
 
-## The *README* file
+![Ulysses Directory Structure](images/ulysses_directory.png)
 
-With your new OHDSI study created, you need to begin adding documentation for the repository. The first file we usually create is the repository README. For those unfamiliar with code development, the README file is a standard file used to introduce a describe the the project. Think of the README as your cover page. It is the first file users see when they navigate to the github page. All OHDSI projects require a README file, thus `Ulysses` provides a function (`makeReadMe`) that initializes it.
 
-```{r readMeStart, echo=TRUE, eval=FALSE}
-Ulysses::makeReadMe()
-```
+`Ulysses` builds the following folders:
 
-The readme file is initailized using information found in the `_study.yml` file. A typical OHDSI study readme has a section of meta information as seen below:
+### `analysis`
 
--   **Study Lead**: Ulysses S. Grant
--   **Analytics Use Case**: Characterization
--   **Study Start Date**: 04-27-1822
--   **Study End Date**: 07-23-1885
--   **Study Tags**: None
--   **Protocol**: Unavailable
--   **Publications**: Unavailable
--   **Results Explorer**: Unavailable
+The analysis folder contains files that correspond to study analysis. There are three main folders created. 
 
-Following the Meta section, the user will need to provide a description of the study and information on the databases used in the study. Finally, the README provides links to important study information including the protocol, how to run and contributions files. Users can add as much as they please to the README file, `Ulysses` offers suggested guidance for starting it.
+* `src` - contains the underlying functions that execute the analysis. These files can be R scripts, sql files or python scripts, for example. With `Ulysses`, users can generate templated internal R files using the command `makeInternals`.
+* `tasks` - hold the executing scripts that generate the results of the study. With `Ulysses`, we think of studies as a series of tasks implemented in a specific order, like a pipeline. The `tasks` folder organizes these individual tasks. With `Ulysses`, users can generate templated internal R files using the command `makeAnalysisScript`.
+* `migrations` - contain post-processing scripts to move and prepare data from a series of results to a format that is "presentation ready". When conducting studies in OMOP, it is common to run the same analysis on different databases. Migration scripts help bind the results of all databases run in the study and format tables to present in a quarto report or shiny app. With `Ulysses`, users can generate templated internal R files using the command `makeMigrationScript`.
+
+
+### `cohorts`
+
+The cohorts folder is meant to organize files that are used to generate cohort definitions in the database. In an OHDSI study, cohort definitions are specified in a `json` file format following the specifications of [`circe-be`](https://github.com/OHDSI/circe-be). We suggest placing cohorts used in the analysis in the cohort folder in order for the study to be self-contained, meaning it does not rely on ATLAS to execute. However, we **highly** recommend that users maintain the organization of their cohorts in ATLAS as a source of truth for both cohort definition and generation. The `sql` folder is created to store sql files used to build cohort definitions. This is a good location for cohort definitions that do not follow the `circe-be` structure. 
+
+Keeping track of cohorts can be a bit tricky. `Ulysses` provides a helper function to track json files in the cohorts folder called `cohortManifest`. This function will list the name of the json file and its corresponding id. By default, the cohort Id assigned to the cohort json is in alphabetical order starting with 1. `Ulysses` also creates a file called the `CohortDetails.qmd` which prints the human-readable rendering of the json expression using [`CirceR`](https://github.com/OHDSI/CirceR). **These functions are still in development as of v0.0.4**.
+
+### `documentation`
+
+Study repositories should not only contain code, they should also contain documentation about the design of the study and how to run the study. Study repo's should be self-contained, meaning we can go to one location to get all code and human-readable documentation about the study. `Ulysses` builds this into its repository structure with a `hub` folder and a `misc` folder. The `hub` folder contains files that are specific to the study hub, an html website that provides all information about the study. The `misc` folder is a place-holder to store word documents, excel files, slide decks or other important documentation needed for the study. 
+
+#### Study Hub
+
+The study hub is a website that a user can generate through `Ulysses` that provides information about the design of a study and its results. The study hub is generated using `quarto`. The study hub can be generated using the function `buildStudyHub`. The study hub relies on the generation and maintenance of 4 files: README.md, NEWS.md, AnalysisPlan.qmd and ResultsReport.qmd. 
+
+![Ulysses Study Hub](images/ulysses_study_hub.png)
+
+#### Suggested Files
+
+`Ulysses` has functions to initialize some suggested files for a study:
+
+* `AnalysisPlan.qmd`: the statistical analysis plan for the study, which specifies the study design and analytical methods. This file can be templated in `Ulysses` using the command `makeAnalysisPlan`.
+* `ResultsReport.qmd`: the report summarizing results from the study following its execution. This file can be templated in `Ulysses` using the command `makeResultsReport`.
+* `ContributionGuidelines.qmd`: if the study is a network studies, maintainers should provide resources on how others can contribute to the study. Topics ranges from how to file issues, how to send results to the study host, and how to collaborate in a positive environment. This file can be templated in `Ulysses` using the command `makeContributionGuidelines`.
+* `HowToRun.qmd`: a document that explains how to execute the study code to study nodes or interested parties. Should describe technical requirements needed prior to running the study, local setup, and execution. This file can be templated in `Ulysses` using the command `makeHowToRun`.
+
+
+## `exec` 
+
+The `exec` folder is a location to store output files that result from the study execution. This includes results and logs from the study run and a folder to store post-processed data called `export`. The `exec` folder is always ignored in git. 
+
+## `extras`
+
+Sometimes studies have files that don't have a natural location from those specified above. The `extras` folder is a location to store any additional files needed to run or support the execution of the study. This is also a good location to store internal setup scripts, but remember to ignore them in git. 
+
+# Additional Repository Files
+
+In addition to the pre-generated folders in the new study repository, `Ulysses` also helps generate additional files that should be in the repository. Some of these key files are described below. 
+
+### `_study.yml`
+
+A file unique to directories initialized using `Ulysses` is a metadata file called `_study.yml`. Using the inputs specified in the `newOhdsiStudy` function, a metadata file is populated. As mentioned this file store information about the study directory and also uses it as inputs to templated files generated in `Ulysses`. It is important to maintain this file during the development of a study, whether that is to update default fields in the yaml file or add information. Below is a snapshot of a `_study.yml` file with the essential metadata fields.
+
+![Ulysses MetaData](images/ulysses_meta.png)
+
+#### Fields
+
+Below we describe the key fields in this file. 
+
+* id: an identifier for the study which is the same as the directory name. Use either a study id or acronym
+* title: a full title for the study, more thorough than the id. If no title is provided, the input defaults to the id.
+* type: a keyword describing the type of study being conducted. Could be a **Characterization**, **Population-Level Estimation**, **Patient-Level Prediction**, or **Database Assessment**, for example.
+* version: a value that represents the version of the study. Suggest using semantic versioning logic. 
+* authors: stores the name and email of the developer (person in-charge of code development) and the lead (person in-charge of the study). You may add other authors who are designated as *members*
+* timeline: a list of information relating to the development timeline of the study. This includes the study start and end dates. The study status is also listed here, where acceptable values are **Started**, **In-Progress**, **Stopped** and **Completed**. 
+* about: a short description about the study, the therapeutic area it covers and data sources used.
+* links: a listing of hyperlinks to guide people to key documentation such as the analysis plan, report, dashboard and other resources.
+* tags: a list of keyword identifiers for the project
+
+#### Maintenance 
+
+`Ulysses` provides functions to maintain the `_study.yml` file.
+
+* Add Fields
+    - `addStudyMember()`
+    - `addTags()`
+    - `addDataSources()`
+    - `addLinks()`
+
+* Update Fields
+    - `updateStudyEndDate()`
+    - `updateSutdyStatus()`
+    - `updateStudyTitle()`
+    - `updatStudyVersion()`
+    - `updateStudyDescription()`
+    - `updateTherapeuticArea()`
+    - `updateDeveloperInfo()`
+    - `updateLeadInfo()`
+
+### `README.md`
+
+For those unfamiliar with code development, the **README** file is a standard file used to introduce the contents of a repository, like a cover-page. It is the first file users see when they navigate to the repository page in your repository hosting service (i.e. BitBucket or Github). Therefore a strong README file is essential for a study. `Ulysses` provides the function `makeReadMe()` which initializes the README using inputs from the metadata stored in the `_study.yml`. 
+
 
 Another feature offered by `Ulysses` is support for svg badges. These simple badges appear at the top of the README and provide useful information about the study. Badges seen in OHDSI studies include a study status badge and badges versioning the CDM and OMOP vocabulary. `Ulysses` will provide more support and documentation for badges in the future.
 
-## The *NEWS* file
+### `NEWS.md`
 
-Another common file in software repositories is the NEWS file. The purpose of the NEWS file is to track changes to the software over time. Of course, version control software such as github keeps a record of the iterations of the study as it is developed, however it is helpful to have a "plain english" file that explains what has happened as the study has developed over time. NEWS files are often maintained via a [semantic versioning](https://semver.org/) system. OHDSI studies are not entirely software, however it is important to maintain order over the development of the technical pieces of the study. `Ulysses` offers a simple function that initiates this file, `makeNews`.
+Another common file in software repositories is the NEWS file. The purpose of the NEWS file is to track changes to the software over time. Of course, version control software such as github keeps a record of the iterations of the study as it is developed, however it is helpful to have a "plain english" file that explains what has happened as the study has developed over time. NEWS files are often maintained via a [semantic versioning](https://semver.org/) system. OHDSI studies are not entirely software, however it is important to maintain order over the development of the technical pieces of the study. `Ulysses` offers a simple function that initiates this file, `makeNews()`.
 
-```{r newsStart, echo=TRUE, eval=FALSE}
-Ulysses::makeNews()
-```
 
-# Handling database credentials
+### `config.yml` 
 
-An important aspect of running an OHDSI study is handling credentials to connect to the Database Management System (DBMS) that hosts the OMOP data. Security of these credentials is very important. `Ulysses` offers support on handling these credentials. Credentials needed to run a study are as follows:
+An important aspect of running an OHDSI study is handling credentials to connect to the Database Management System (DBMS) that hosts the OMOP data. Security of these credentials is very important. `Ulysses` offers support on handling these credentials through the `config.yml` file. Credentials needed to run a study are as follows:
 
 -   **dbms**: the name of the dbms used to host the OMOP data
 -   **user**: your user name needed to access the data in the dbms
@@ -133,60 +214,3 @@ If we wanted to add another credential in this block we can add new line beneath
 Ulysses::makeKeyringSetup(configBlock = "example", database = "synpuf_110k")
 ```
 
-# Adding R scripts
-
-One way we can add analytical scripts to `Ulysses` is by using the line below
-
-```{r analysisScript, echo=TRUE, eval=FALSE}
-Ulysses::makeAnalysisScript(scriptName = "buildCohorts")
-```
-
-This function will create a new R script written to the folder `analysis/studyTasks`. The R script will have a prefix of a number indicating the order in which the script should be executed. The first script for example will follow the syntax **01_<taskName>**. `Ulysses` will automatically open this file to begin editing. 
-
-Each analytical task is formatted with the following sections:
-
-A) File Info -> includes information about the file
-B) Dependencies -> a list of libraries, options and source files required to run script
-C) Connection -> set up connection to dbms
-D) Variables -> set variables (parameters) needed for the script
-E) Script -> the script to run
-F) Session Info -> a summary of the session info and clean up
-
-To complement the analysis scripts, we can also create internal files. These are R files that contain functions or other code that needs to be sourced in the analysis. These files are saved in the `analysis/private` folder. Making an internal function can be done by the following:
-
-```{r internalScript, echo=TRUE, eval=FALSE}
-Ulysses::makeInternals(internalsName = "buildCohorts")
-```
-
-The R package [`Strategus`](https://github.com/OHDSI/Strategus) helps execute OHDSI analytics. Analytical modules are executed via `Strategus`. This paradigm to OHDSI studies can also be handled by `Ulysses`. More support for using `Strategus` with `Ulysses` will be explored in future releases. 
-
-# Adding Documenation
-
-An important part of a study repository is communicating its contents to study nodes. A study node in a network study must understand the scientific components of the study, how to run the study locally and how to contribute towards the study. `Ulysses` provides functions to help develop documentation to communicate the study to participants in the OHDSI network. 
-
-## Analysis Specification
-
-A study requires a protocol or a study analysis plan (SAP), specifying the scientific components of the study. These documents specify the study design, definition of the target, exposure and outcome cohorts and how the data analysis is conducted. This documentation is important because it provides guidance and rationale for the study. Many study nodes also require submission of documentation to an institutional review board to justify execution of the study. `Ulysses` provides templates for an OHDSI protocol, PASS protocols and a suggested format for a SAP. Below are examples of building these templates:
-
-```{r doc1, echo=TRUE, eval=FALSE}
-Ulysses::makeOhdsiProtocol()
-Ulysses::makePassProtocol()
-Ulysses::makeStudySAP()
-```
-
-## How to Run
-
-Next, a repository needs to communicate how to run the study. This document informs study nodes on technical requirements needed to run the study, provides instructions on installations, and the process of running the study. OHDSI studies are designed in several different ways, so it is important that the developer explains how this study should be run. Below is an example of how to create the `howToRun.md` file:
-
-```{r doc2, echo=TRUE, eval=FALSE}
-Ulysses::makeHowToRun(org = "Ohdsi", repo = "my_ohdsi_study")
-```
-
-
-## Contributing
-
-Finally, the repository needs to communicate how study nodes can contribute to the study. This include information on posting results, asking for help and code of conduct. Contribution guidelines are standard documentation of software and would be helpful additions to OHDSI studies. To create a template contribution guideline follow the example below:
-
-```{r doc3, echo=TRUE, eval=FALSE}
-Ulysses::makeContributionGuidelines()
-```
