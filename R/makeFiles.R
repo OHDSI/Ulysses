@@ -190,33 +190,7 @@ makeHowToRun <- function(projectPath = here::here(),
 
 }
 
-#' Function to create a HowToRun file
-#' @param projectPath the path to the project
-#' @param open toggle on whether the file should be opened
-#' @export
-makeTechSpecs <- function(
-    projectPath = here::here(),
-    open = TRUE) {
 
-  # retrieve study meta
-  studyMeta <- retrieveStudySettings(projectPath = projectPath)$study
-
-  # make list of vars for template
-  data <- rlang::list2(
-    'Title' = replaceTitleColon(studyMeta$title)
-  )
-
-
-  usethis::use_template(
-    template = "TechSpecs.qmd",
-    save_as = fs::path("documentation/hub", "TechSpecs.qmd"),
-    data = data,
-    open = open,
-    package = "Ulysses")
-
-  invisible(data)
-
-}
 
 # TODO update this to quarto
 
