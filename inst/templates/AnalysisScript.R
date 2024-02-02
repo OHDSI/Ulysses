@@ -43,7 +43,7 @@ executionSettings <- config::get(config = configBlock) %>%
   purrr::discard_at(c("dbms", "user", "password", "connectionString"))
 
 outputFolder <- here::here("exec/results") %>%
-  fs::path(executionSettings$databaseName, "miscTasks/{{{ FileName }}}") %>%
+  fs::path(executionSettings$databaseName, "{{{ FileName }}}") %>%
   fs::dir_create()
 
 ### Add study variables or load from settings
