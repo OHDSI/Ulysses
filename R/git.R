@@ -58,5 +58,39 @@ publishStudyToRepository <- function(repoUrl,
   invisible(TRUE)
 }
 
+check_clone_has_folders <- function(projectPath) {
+
+  defaultFolders <- listDefaultFolders()
+
+  currentFolders <- fs::dir_ls(path = projectPath,
+                               type = "dir",
+                               recurse = TRUE) |>
+    fs::path_rel(start = projectPath)
+
+  idx <- defaultFolders %in% currentFolders
+  return(idx)
+}
 
 
+hydrateAfterClone <- function(projectPath = here::here()) {
+
+  # check which folders are missing following git clone
+  ii <- check_clone_has_folders(projectPath)
+
+  #list folders that need to be added
+  ff <- listDefaultFolders()[!ii]
+
+  # make the console print
+  txt <- ff |>
+    paste(collapse = ", ")
+
+  cli::cat_bullet(
+    glue::glue("Adding folders to study: {crayon::green(txt)}")
+  )
+  # create folders missing following clone
+  pp <- fs::path(projectPath, ff) %>%
+    fs::dir_create(recurse = TRUE)
+
+  invisible(pp)
+
+}
