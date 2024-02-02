@@ -117,13 +117,7 @@ isOhdsiStudy <- function(basePath) {
 
 }
 
-
-addDefaultFolders <- function(projectPath, verbose = TRUE) {
-  if (verbose) {
-    cli::cat_bullet("Step 2: Adding OHDSI Study Project Folders",
-                    bullet_col = "yellow", bullet = "info")
-  }
-
+listDefaultFolders <- function() {
   analysisFolders <- c("src", "tasks", "migrations")
   execFolders <- c('logs', 'results', "export")
   cohortFolders <- c("json", "sql")
@@ -136,6 +130,17 @@ addDefaultFolders <- function(projectPath, verbose = TRUE) {
     paste('documentation', documentationFolders, sep = "/"),
     'extras'
   )
+  return(folders)
+}
+
+
+addDefaultFolders <- function(projectPath, verbose = TRUE) {
+  if (verbose) {
+    cli::cat_bullet("Step 2: Adding OHDSI Study Project Folders",
+                    bullet_col = "yellow", bullet = "info")
+  }
+
+  folders <- listDefaultFolders()
 
   pp <- fs::path("./", folders) %>%
     fs::dir_create(recurse = TRUE)

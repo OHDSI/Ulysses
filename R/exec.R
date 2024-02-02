@@ -64,6 +64,7 @@ runTaskInBackground <- function(taskFile, configBlock, projectPath = here::here(
   readr::write_lines(newLines, file = tempFile)
 
   # run task as a background job
+  # TODO change this to callr or processx...better control than the api
   rstudioapi::jobRunScript(
     path = tempFile,
     name = taskName,
