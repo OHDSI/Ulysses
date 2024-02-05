@@ -94,6 +94,7 @@ setStrategusInstantiatedFolder <- function(folderName, root = NULL) {
 }
 
 
+
 listStrategusModules <- function() {
   c("SelfControlledCaseSeriesModule",
     "EvidenceSynthesisModule",
@@ -117,7 +118,7 @@ listModuleVersions <- function(module) {
   return(modVersions)
 }
 
-
+#
 getLatestModules <- function(modules = listStrategusModules()) {
 
   latestModules <- purrr::map(modules, ~listModuleVersions(.x)[1]) %>%
@@ -125,18 +126,16 @@ getLatestModules <- function(modules = listStrategusModules()) {
   return(latestModules)
 }
 
-#' Function to retrieve table of modules
-#' @param projectPath the path to the project
-#' @export
-moduleTable <- function(projectPath = here::here()){
 
-  strategusMods <- retrieveStudySettings(projectPath = projectPath)$Strategus
-
-  tb <- tibble::tibble(
-    'module' = names(strategusMods),
-    'version' = purrr::map_chr(strategusMods, ~.x),
-    'remoteRepo' = "github.com",
-    'remoteUserName' = "ohdsi"
-  )
-  return(tb)
-}
+# moduleTable <- function(projectPath = here::here()){
+#
+#   strategusMods <- retrieveStudySettings(projectPath = projectPath)$Strategus
+#
+#   tb <- tibble::tibble(
+#     'module' = names(strategusMods),
+#     'version' = purrr::map_chr(strategusMods, ~.x),
+#     'remoteRepo' = "github.com",
+#     'remoteUserName' = "ohdsi"
+#   )
+#   return(tb)
+# }
