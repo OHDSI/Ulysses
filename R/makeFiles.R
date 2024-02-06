@@ -454,13 +454,13 @@ makeWebApiScript <- function(keyringName = NULL,
 
 
 #' Function to create a pipeline task as a Rmd file
-#' @param scriptName The name of the analysis script
+#' @param taskName The name of the analysis script
 #' @param configBlock the name of the config block to use for the script
 #' @param date the date the script was built, default to today's date
 #' @param projectPath the path to the project
 #' @param open toggle on whether the file should be opened
 #' @export
-makeAnalysisScript <- function(scriptName,
+makeAnalysisTask <- function(taskName,
                                configBlock = NULL,
                                date = lubridate::today(),
                                projectPath = here::here(),
@@ -480,13 +480,13 @@ makeAnalysisScript <- function(scriptName,
     'Title' = replaceTitleColon(studyMeta$title),
     'Author' = studyMeta$authors$developer$name,
     'Date' = date,
-    'FileName' = scriptName,
+    'FileName' = taskName,
     'Block' = configBlock
   )
 
   usethis::use_template(
-    template = "AnalysisScript.R",
-    save_as = fs::path("analysis/tasks", scriptName, ext = "R"),
+    template = "AnalysisTask.R",
+    save_as = fs::path("analysis/tasks", taskName, ext = "R"),
     data = data,
     open = open,
     package = "Ulysses")
@@ -496,7 +496,70 @@ makeAnalysisScript <- function(scriptName,
 
 }
 
+#' Function to create a pipeline task as a Rmd file
+#' @param taskName The name of the analysis script
+#' @param configBlock the name of the config block to use for the script
+#' @param date the date the script was built, default to today's date
+#' @param projectPath the path to the project
+#' @param open toggle on whether the file should be opened
+#' @export
+makeStrategusTask <- function(taskName,
+                               configBlock = NULL,
+                               date = lubridate::today(),
+                               projectPath = here::here(),
+                               open = TRUE) {
 
+
+  if (is.null(configBlock)) {
+    configBlock <- "[Add config block]"
+  }
+
+
+  # retrieve study meta
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)$study
+
+  # Step 1 make strategus src files
+  fs::path_package("Ulysses", "templates/StrategusInternals.R") |>
+    fs::file_copy(
+      new_path = fs::path(projectPath, "analysis/src/_strategusSrc.R")
+    )
+  cli::cat_bullet(
+    glue::glue("Place {crayon::blue('_strategusSrc.R')} file in {crayon::green('analysis/src')}"),
+    bullet = "tick",
+    bullet_col = "green"
+  )
+
+  #Step 2 add settings builder file
+  fs::path_package("Ulysses", "templates/StrategusSetup.R") |>
+    fs::file_copy(
+      new_path = fs::path(projectPath, "analysis/src/_strategusSetup.R")
+    )
+  cli::cat_bullet(
+    glue::glue("Place {crayon::blue('_strategusSetup.R')} file in {crayon::green('analysis/src')}"),
+    bullet = "tick",
+    bullet_col = "green"
+  )
+
+  # Step 2 make the analysis task for strategus
+  data <- rlang::list2(
+    'Title' = replaceTitleColon(studyMeta$title),
+    'Author' = studyMeta$authors$developer$name,
+    'Date' = date,
+    'FileName' = taskName,
+    'Block' = configBlock
+  )
+
+  usethis::use_template(
+    template = "StrategusTask.R",
+    save_as = fs::path("analysis/tasks", taskName, ext = "R"),
+    data = data,
+    open = open,
+    package = "Ulysses")
+
+  invisible(data)
+
+
+}
 
 
 #' Function to create a migration script
