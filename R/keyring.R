@@ -185,3 +185,23 @@ setStudyKeyring <- function(keyringName, keyringPassword) {
   invisible(keyringName)
 }
 
+maybeUnlockKeyring <- function(keyringName = NULL, keyringPassword = NULL, silent = TRUE) {
+
+  # list keyrings
+  allKeyrings <- keyring::keyring_list()$keyring
+
+  #error if keyring name not in list
+  if (!is.null(keyringName) && !(keyringName %in% allKeyrings)) {
+    stop(sprintf("keyring %s does not exist", keyringName))
+  }
+
+  # check if keyring is locked
+  keyringLocked <- keyring::keyring_is_locked(keyring = keyringName)
+
+  #unlock if locked
+  if (keyringLocked) {
+    keyring::keyring_unlock(keyring = keyringName, password = keyringPassword)
+  }
+
+  invisible(keyringLocked)
+}
