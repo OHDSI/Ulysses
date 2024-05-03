@@ -120,7 +120,7 @@ isOhdsiStudy <- function(basePath) {
 listDefaultFolders <- function() {
   analysisFolders <- c("src", "tasks", "migrations")
   execFolders <- c('logs', 'results', "export")
-  cohortFolders <- c("json", "sql")
+  cohortFolders <- c("json", "sql", "conceptSets/json")
   documentationFolders <- c("hub", "misc")
 
   folders <- c(
