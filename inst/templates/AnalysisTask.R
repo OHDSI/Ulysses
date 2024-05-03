@@ -40,27 +40,18 @@ con <- DatabaseConnector::connect(connectionDetails)
 # D. Variables -----------------------
 
 # make execution settings
-executionSettings <- config::get(config = configBlock) %>%
+executionSettings <- config::get(config = configBlock) |>
   purrr::discard_at(c("dbms", "user", "password", "connectionString"))
 
 #make output folder
 outputFolder <- here::here("exec/results") %>%
-  fs::path(executionSettings$databaseName, "{{{ FileName }}}") %>%
+  fs::path(executionSettings$databaseName, "{{{ FileName }}}") |>
   fs::dir_create()
 
 ### Add study variables or load from settings
 
 # E. Script --------------------
 
-# Execute Analysis
-executeAnalysis(
-  analysisFile = file.path(resourceDirectory, strategusSpecFileName),
-  executionSettings = executionSettings,
-  analysisName = "poc",
-  outputLocation = outputLocation,
-  resultsLocation = resultsLocation,
-  keyringName = keyringName
-)
 
 # F. Session Info ------------------------
 
