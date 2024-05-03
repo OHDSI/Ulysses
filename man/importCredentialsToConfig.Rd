@@ -4,7 +4,11 @@
 \alias{importCredentialsToConfig}
 \title{Function to import credentials in stored csv to study config.yml}
 \usage{
-importCredentialsToConfig(credFile, projectPath = here::here(), open = TRUE)
+importCredentialsToConfig(
+  credFile = fs::path_home("shhh.csv"),
+  projectPath = here::here(),
+  open = TRUE
+)
 }
 \arguments{
 \item{credFile}{a credential.csv file stored in a secure location}

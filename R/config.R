@@ -40,17 +40,6 @@ checkConfig <- function() {
 
 }
 
-#TODO keep this list up to date
-knownDataSourceTable <- function() {
-
-  dt <- tibble::tibble(
-    databaseName = c("Optum Clinformatics", "Optum Market Clarity", "Merative MarketScan",
-                     "German DA", "CPRD Gold", "CPRD Aurum", "THIN Belgium", "JMDC", "MDV"),
-    blockId = c("optumClaims", "optumEHR", "mktscan", "da", "gold", "aurum", "thin", "jmdc", "mdv")
-  )
-  return(dt)
-}
-
 
 
 config_block_text <- function(block, database, title, dbms, user,
@@ -74,12 +63,85 @@ config_block_text <- function(block, database, title, dbms, user,
   \n\n")
   return(txt)
 }
+
+#' Function to start a credential table
+#' @param db_id an id or shortName for a database. Please use snakecase
+#' @param db_full_name the full name of the database. If not specified defaults to db_id
+#' @param dbms the dbms for your database. Can be either redshift, postgres, snowflake, sql server or oracle
+#' @param user the user name to connect to the database
+#' @param password the password to connect to the databse
+#' @param connection_string a jdbc connection string to use with DatabaseConnector
+#' @param cdm_database_schema the cdm database schema of the datbase you want to use
+#' @param work_database_schema a scratch schema the user has read and write access to in order to build cohort tables
+#' @param temp_emulation_schema a schema required for oracle and snowflake to make temp tables.
+#' @return writes a csv to your home directory called shhh.csv storing your database credentials
+#' @export
+initCredentials <- function(
+    db_id,
+    db_full_name = db_id,
+    dbms,
+    user,
+    password,
+    connection_string,
+    cdm_database_schema,
+    work_database_schema,
+    temp_emulation_schema = work_database_schema) {
+
+
+  checkmate::check_choice(dbms, choices = c("redshift", "postgres", "snowflake", "sql server", "oracle"))
+
+
+  tb <- tibble::tibble(
+    'db_id' = db_id,
+    'db_full_name' = db_full_name,
+    'dbms' = dbms,
+    'user' = user,
+    'password' = password,
+    'connection_string' = connection_string,
+    'cdm_database_schema' = cdm_database_schema,
+    'work_database_schema' = work_database_schema,
+    'temp_emulation_schema' = temp_emulation_schema
+  )
+
+  pth <- fs::path_home()
+
+  readr::write_csv(
+    x = tb,
+    file = fs::path(pth, "shhh.csv")
+  )
+
+  cli::cat_bullet(
+    glue::glue("Initialized credentials file. Saved to: {crayon::cyan(pth)}"),
+    bullet = "pointer",
+    bullet_col = "yellow"
+  )
+
+}
+
+#' Function to open the credentials table to edit or peak
+#' @param credsPath the path to shhh.csv
+#' @return tibble of credentials
+#' @export
+openCredentials <- function(credsPath = fs::path_home("shhh.csv")) {
+
+  creds <- readr::read_csv(credsPath, show_col_types = FALSE)
+  cli::cat_bullet(
+    glue::glue("Opening credentials in {crayon::cyan(credsPath)}"),
+    bullet = "pointer",
+    bullet_col = "yellow"
+  )
+  return(creds)
+
+}
+
+
 #' Function to import credentials in stored csv to study config.yml
 #' @param credFile a credential.csv file stored in a secure location
 #' @param projectPath the path to the project
 #' @param open toggle on whether the file should be opened
 #' @export
-importCredentialsToConfig <- function(credFile, projectPath = here::here(), open = TRUE) {
+importCredentialsToConfig <- function(credFile = fs::path_home("shhh.csv"),
+                                      projectPath = here::here(), open = TRUE) {
 
   # import credentials
   creds <- readr::read_csv(file = credFile, show_col_types = FALSE)
