@@ -14,6 +14,19 @@ set_cred <- function(cred, db, keyringName) {
   invisible(key_name)
 }
 
+set_cred2 <- function(cred, db) {
+
+ prompt_txt <- glue::glue("Set {cred} for {db}: ")
+
+  keyring::key_set(
+    service = cred,
+    keyring = db,
+    prompt = prompt_txt
+  )
+  invisible(cred)
+}
+
+
 blurCreds <- function(item,  keyringName) {
   cred <- keyring::key_get(service = item, keyring = keyringName)
   txt <- glue::glue(item, ": ", crayon::blurred(cred))
