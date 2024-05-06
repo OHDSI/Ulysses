@@ -30,6 +30,34 @@ Before getting into pulling ATLAS assets into your study, lets quickly review ho
 
 Ulysses standardizes the directory structure of a study to make it easier to pull files within tasks. By storing all cohort and concept set assets in a consistent location, it makes it easier to be organized and build automation around this structure.
 
+# Set up connection with ATLAS
+
+Before you import you need to set up a connection to webApi. We do this using keyring. Use the following code to do this:
+
+```{r}
+keyringName <- "atlas"
+keyringPassword <- "ohdsi"
+# setup a study keyring if it hasnt already been done
+setStudyKeyring(keyringName, keyringPassword)
+
+# add credentials for webapi
+creds <- c("baseurl", "authMethod", "user", "password")
+db <- 'webapi'
+setMultipleCredentials(
+  creds = creds,
+  db = db,
+  keyringName = keyringName,
+  keyringPassword = keyringPassword
+)
+
+credNames <- paste(db, creds, sep = "_")
+
+baseUrl <- keyring::key_get(service = credNames[1], keyring = keyringName)
+```
+
+
+
+
 # Importing from ATLAS
 
 Ulysses offers some helper functions that allow users to import assets into the study directory. These helper functions will evolve over time and offer better services such as searches by tags and regular expressions. Ulysses builds wrappers around a software called `ROhdsiWebApi` which helps interface with the ATLAS api. 
