@@ -14,6 +14,19 @@ set_cred <- function(cred, db, keyringName) {
   invisible(key_name)
 }
 
+set_cred2 <- function(cred, db) {
+
+ prompt_txt <- glue::glue("Set {cred} for {db}: ")
+
+  keyring::key_set(
+    service = cred,
+    keyring = db,
+    prompt = prompt_txt
+  )
+  invisible(cred)
+}
+
+
 blurCreds <- function(item,  keyringName) {
   cred <- keyring::key_get(service = item, keyring = keyringName)
   txt <- glue::glue(item, ": ", crayon::blurred(cred))
@@ -185,3 +198,23 @@ setStudyKeyring <- function(keyringName, keyringPassword) {
   invisible(keyringName)
 }
 
+maybeUnlockKeyring <- function(keyringName = NULL, keyringPassword = NULL, silent = TRUE) {
+
+  # list keyrings
+  allKeyrings <- keyring::keyring_list()$keyring
+
+  #error if keyring name not in list
+  if (!is.null(keyringName) && !(keyringName %in% allKeyrings)) {
+    stop(sprintf("keyring %s does not exist", keyringName))
+  }
+
+  # check if keyring is locked
+  keyringLocked <- keyring::keyring_is_locked(keyring = keyringName)
+
+  #unlock if locked
+  if (keyringLocked) {
+    keyring::keyring_unlock(keyring = keyringName, password = keyringPassword)
+  }
+
+  invisible(keyringLocked)
+}

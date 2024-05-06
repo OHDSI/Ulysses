@@ -12,7 +12,6 @@
 ## include R libraries
 library(tidyverse, quietly = TRUE)
 library(DatabaseConnector)
-library(config)
 
 ## set options Ex. options(connectionObserver = NULL)
 
@@ -22,7 +21,9 @@ library(config)
 # C. Connection ----------------------
 
 # set connection Block
+# <<<
 configBlock <- "{{{ Block }}}"
+# >>>
 
 # provide connection details
 connectionDetails <- DatabaseConnector::createConnectionDetails(
@@ -38,19 +39,19 @@ con <- DatabaseConnector::connect(connectionDetails)
 
 # D. Variables -----------------------
 
-### Administrative Variables
-executionSettings <- config::get(config = configBlock) %>%
+# make execution settings
+executionSettings <- config::get(config = configBlock) |>
   purrr::discard_at(c("dbms", "user", "password", "connectionString"))
 
+#make output folder
 outputFolder <- here::here("exec/results") %>%
-  fs::path(executionSettings$databaseName, "miscTasks/{{{ FileName }}}") %>%
+  fs::path(executionSettings$databaseName, "{{{ FileName }}}") |>
   fs::dir_create()
 
 ### Add study variables or load from settings
 
 # E. Script --------------------
 
-# Add script here
 
 # F. Session Info ------------------------
 

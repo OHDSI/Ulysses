@@ -36,6 +36,8 @@ Documentation can be found on the [package website](https://ohdsi.github.io/Ulys
 PDF versions of the documentation are available:
 
 - Vignette: [Ulysses Intro](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/pdf_vignette/start_study.pdf)
+- Vignette: [Setup Credentials](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/pdf_vignette/credentials.pdf)
+- Vignette: [Import Atlas](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/pdf_vignette/atlas.pdf)
 - [Package manual](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/Ulysses.pdf)
 
 # Support

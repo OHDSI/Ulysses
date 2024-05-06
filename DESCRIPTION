@@ -1,6 +1,6 @@
 Package: Ulysses
 Title: Automate OHDSI Study Setup
-Version: 0.0.4
+Version: 0.0.5
 Authors@R: 
     person("Martin", "Lavallee", , "martin.lavallee@odysseusinc.com", role = c("aut", "cre"))
 Description: Automates setup of OHDSI study and provides functions to assist on improving organization
@@ -8,7 +8,7 @@ Description: Automates setup of OHDSI study and provides functions to assist on 
 License: Apache License (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Imports: 
     cli,
     crayon,

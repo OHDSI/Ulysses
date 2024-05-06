@@ -43,6 +43,21 @@ rmarkdown::render("vignettes/start_study.Rmd",
 unlink("extras/pdf_vignette/start_study.tex")
 
 
+### credentials
+rmarkdown::render("vignettes/credentials.Rmd",
+                  output_file = "../extras/pdf_vignette/credentials.pdf",
+
+                  rmarkdown::pdf_document(latex_engine = "pdflatex", toc = TRUE, number_sections = TRUE))
+unlink("extras/pdf_vignette/credentials.tex")
+
+
+### atlas
+rmarkdown::render("vignettes/atlas.Rmd",
+                  output_file = "../extras/pdf_vignette/atlas.pdf",
+
+                  rmarkdown::pdf_document(latex_engine = "pdflatex", toc = TRUE, number_sections = TRUE))
+unlink("extras/pdf_vignette/atlas.tex")
+
 # 4) build site ------------------------
 pkgdown::build_site()
 OhdsiRTools::fixHadesLogo()

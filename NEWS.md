@@ -1,3 +1,10 @@
+Ulysses 0.0.5
+=============
+* Add functions to import credentials
+* Add functions to import ATLAS assets
+* Write vignettes to creds and ATLAS 
+* add folder cohorts/conceptSets/json
+
 Ulysses 0.0.4
 =============
 * Finalize Directory
