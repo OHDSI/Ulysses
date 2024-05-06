@@ -4,6 +4,12 @@
     <loc>/404.html</loc>
   </url>
   <url>
+    <loc>/articles/atlas.html</loc>
+  </url>
+  <url>
+    <loc>/articles/credentials.html</loc>
+  </url>
+  <url>
     <loc>/articles/index.html</loc>
   </url>
   <url>
@@ -61,6 +67,15 @@
     <loc>/reference/defaultCredentials.html</loc>
   </url>
   <url>
+    <loc>/reference/getHadesWideLock.html</loc>
+  </url>
+  <url>
+    <loc>/reference/importAtlasCohorts.html</loc>
+  </url>
+  <url>
+    <loc>/reference/importAtlasConceptSets.html</loc>
+  </url>
+  <url>
     <loc>/reference/importCredentialsToConfig.html</loc>
   </url>
   <url>
@@ -73,6 +88,18 @@
     <loc>/reference/initConfig.html</loc>
   </url>
   <url>
+    <loc>/reference/initConfigUsingKeyring.html</loc>
+  </url>
+  <url>
+    <loc>/reference/initConfigUsingTable.html</loc>
+  </url>
+  <url>
+    <loc>/reference/initCredentialsKeyring.html</loc>
+  </url>
+  <url>
+    <loc>/reference/initCredentialsTable.html</loc>
+  </url>
+  <url>
     <loc>/reference/isOhdsiStudy.html</loc>
   </url>
   <url>
@@ -80,6 +107,9 @@
   </url>
   <url>
     <loc>/reference/makeAnalysisScript.html</loc>
+  </url>
+  <url>
+    <loc>/reference/makeAnalysisTask.html</loc>
   </url>
   <url>
     <loc>/reference/makeCaprScript.html</loc>
@@ -127,6 +157,9 @@
     <loc>/reference/makeResultsReport.html</loc>
   </url>
   <url>
+    <loc>/reference/makeStrategusTask.html</loc>
+  </url>
+  <url>
     <loc>/reference/makeStudySAP.html</loc>
   </url>
   <url>
@@ -137,6 +170,9 @@
   </url>
   <url>
     <loc>/reference/newOhdsiStudy.html</loc>
+  </url>
+  <url>
+    <loc>/reference/openCredentials.html</loc>
   </url>
   <url>
     <loc>/reference/pipe.html</loc>
@@ -160,10 +196,19 @@
     <loc>/reference/retrieveStudySettings.html</loc>
   </url>
   <url>
+    <loc>/reference/runTaskInBackground.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setAtlasCredentials.html</loc>
+  </url>
+  <url>
     <loc>/reference/setCredential.html</loc>
   </url>
   <url>
     <loc>/reference/setMultipleCredentials.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setStrategusInstantiatedFolder.html</loc>
   </url>
   <url>
     <loc>/reference/setStudyAuthors.html</loc>
