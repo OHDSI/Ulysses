@@ -183,7 +183,7 @@ Often times sites require additional credentials such as database roles or other
 Now that you have collected your credentials we need to store them somewhere secure to be accessed continuely within the study. `Ulysses` does this using a *config.yml* file. [Yaml](https://yaml.org/) is a simple, readable data-serialization language used to provide settings or configurations for applications. For those familiar with R, the *config.yml* file works similarly to an `.Renviron` file. But wait, there is more to the *config.yml* file! The credentials are further protected via [`keyring`](https://github.com/r-lib/keyring) API. `keyring` stores your credentials behind a password. We use `keyring` and `config` together to ensure that users do not accidentally expose passwords when working on a study. `Ulysses` provides a function that initializes the *config.yml* file:
 
 ```{r configSetup, echo=TRUE, eval=FALSE}
-Ulysses::makeConfig(block = "example", database = "synpuf_110k")
+Ulysses::initConfig(block = "example", database = "synpuf_110k", withKeyring = TRUE)
 ```
 
 When a user creates a new `config.yml` file it is added to `.gitignore` to ensure it is not committed to a github repository. The config file shows each credential connected to the block name.
@@ -197,7 +197,7 @@ default:
 # Config block for example
 
 example:
-  databaseName: example
+  databaseName: synpuf_110k
   cohortTable: my_ohdsi_study_example
   dbms: !expr keyring::key_get('example_dbms', keyring = 'my_ohdsi_study')
   user: !expr keyring::key_get('example_user', keyring = 'my_ohdsi_study')

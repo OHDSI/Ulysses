@@ -1,3 +1,9 @@
+Ulysses 0.0.6
+=============
+
+* correct start_study vignette
+* add fix in initConfig
+
 Ulysses 0.0.5
 =============
 * Add functions to import credentials
