@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Ulysses</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.6</span>
       </span>
     </div>
 
@@ -514,7 +514,7 @@ users do not accidentally expose passwords when working on a study.
 <code>Ulysses</code> provides a function that initializes the
 <em>config.yml</em> file:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">Ulysses</span><span class="fu">::</span><span class="fu">makeConfig</span><span class="op">(</span>block <span class="op">=</span> <span class="st">"example"</span>, database <span class="op">=</span> <span class="st">"synpuf_110k"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">Ulysses</span><span class="fu">::</span><span class="fu"><a href="../reference/initConfig.html">initConfig</a></span><span class="op">(</span>block <span class="op">=</span> <span class="st">"example"</span>, database <span class="op">=</span> <span class="st">"synpuf_110k"</span>, withKeyring <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>When a user creates a new <code>config.yml</code> file it is added to
 <code>.gitignore</code> to ensure it is not committed to a github
 repository. The config file shows each credential connected to the block
@@ -527,7 +527,7 @@ default:
 # Config block for example
 
 example:
-  databaseName: example
+  databaseName: synpuf_110k
   cohortTable: my_ohdsi_study_example
   dbms: !expr keyring::key_get('example_dbms', keyring = 'my_ohdsi_study')
   user: !expr keyring::key_get('example_user', keyring = 'my_ohdsi_study')
