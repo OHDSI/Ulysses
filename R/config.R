@@ -61,7 +61,7 @@ initConfig <- function(block = "BlockName",
   data <- rlang::list2(
     'Title' = studyMeta$title,
     'ID' = studyMeta$id,
-    'Cohort' = paste(studyMeta$id, database, sep = "_"),
+    'Cohort' = snakecase::to_snake_case(paste(studyMeta$id, block, sep = "_")),
     'Block' = block,
     'Database' = database
   )
