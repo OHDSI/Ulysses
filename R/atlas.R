@@ -34,7 +34,6 @@ setAtlasCredentials <- function(keyringName = "atlas",
     creds,
     ~checkDatabaseCredential(
       cred = .x,
-      db = db,
       keyringName = keyringName,
       verbose = FALSE)
   )
