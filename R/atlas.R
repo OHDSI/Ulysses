@@ -66,19 +66,11 @@ format_cohort_expression <- function(expression) {
     circe$EndStrategy <- NULL
   }
 
-  circeJson <- jsonlite::toJSON(circe, pretty = TRUE, auto_unbox = TRUE) |>
-    as.character()
-  return(circeJson)
-}
-
-
-format_cs_expression <- function(expression) {
-
-  circeJson <- jsonlite::toJSON(expression, pretty = TRUE, auto_unbox = TRUE) |>
-    as.character()
+  circeJson <- RJSONIO::toJSON(circe)
 
   return(circeJson)
 }
+
 
 # Function to get a cohort from atlas by Id
 get_cohort_from_atlas <- function(cohortId,
@@ -88,10 +80,8 @@ get_cohort_from_atlas <- function(cohortId,
   # check to unlock keyring
   maybeUnlockKeyring(keyringName = keyringName, keyringPassword = keyringPassword)
 
-  baseUrl <- keyring::key_get(
-    service = "baseUrl",
-    keyring = keyringName
-  )
+  baseUrl <- keyring::key_get("baseUrl", keyring = keyringName)
+
 
   if (authFirst) {
 
@@ -156,7 +146,7 @@ get_cs_from_atlas <- function(id,
   tb <- tibble::tibble(
     id = cs$id,
     name = cs$name,
-    expression = format_cs_expression(cs$expression),
+    expression = RJSONIO::toJSON(cs$expression),
     saveName = glue::glue("{id}_{name}") |> snakecase::to_snake_case()
   )
 
