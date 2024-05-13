@@ -8,7 +8,7 @@
 #' @export
 setAtlasCredentials <- function(keyringName = "atlas",
                                 keyringPassword = "ohdsi") {
-  creds <- c("baseurl", "authMethod", "user", "password")
+  creds <- c("baseUrl", "authMethod", "user", "password")
 
   keyringFn <- purrr::safely(maybeUnlockKeyring)
   tt <- keyringFn(keyringName = keyringName, keyringPassword)
@@ -24,10 +24,9 @@ setAtlasCredentials <- function(keyringName = "atlas",
   # set credentials
   purrr::walk(
     creds,
-    ~set_cred(
+    ~set_cred2(
       cred = .x,
-      db = db,
-      keyringName = keyringName)
+      db = keyringName)
   )
 
   # check credentials
@@ -89,7 +88,10 @@ get_cohort_from_atlas <- function(cohortId,
   # check to unlock keyring
   maybeUnlockKeyring(keyringName = keyringName, keyringPassword = keyringPassword)
 
-  baseUrl <- keyring::key_get("atlas_baseurl", keyring = "atlas")
+  baseUrl <- keyring::key_get(
+    service = "baseUrl",
+    keyring = keyringName
+  )
 
   if (authFirst) {
 
@@ -101,9 +103,9 @@ get_cohort_from_atlas <- function(cohortId,
 
     ROhdsiWebApi::authorizeWebApi(
       baseUrl = baseUrl,
-      authMethod = keyring::key_get("atlas_authMethod", keyring = "atlas"),
-      webApiUsername = keyring::key_get("atlas_user", keyring = "atlas"),
-      webApiPassword = keyring::key_get("atlas_password", keyring = "atlas")
+      authMethod = keyring::key_get("authMethod", keyring = keyringName),
+      webApiUsername = keyring::key_get("user", keyring = keyringName),
+      webApiPassword = keyring::key_get("password", keyring = keyringName)
     )
   }
 
@@ -127,7 +129,10 @@ get_cs_from_atlas <- function(id,
   # check to unlock keyring
   maybeUnlockKeyring(keyringName = keyringName, keyringPassword = keyringPassword)
 
-  baseUrl <- keyring::key_get("atlas_baseurl", keyring = "atlas")
+  baseUrl <- keyring::key_get(
+    service = "baseUrl",
+    keyring = keyringName
+  )
 
   if (authFirst) {
 
@@ -139,9 +144,9 @@ get_cs_from_atlas <- function(id,
 
     ROhdsiWebApi::authorizeWebApi(
       baseUrl = baseUrl,
-      authMethod = keyring::key_get("atlas_authMethod", keyring = "atlas"),
-      webApiUsername = keyring::key_get("atlas_user", keyring = "atlas"),
-      webApiPassword = keyring::key_get("atlas_password", keyring = "atlas")
+      authMethod = keyring::key_get("authMethod", keyring = keyringName),
+      webApiUsername = keyring::key_get("user", keyring = keyringName),
+      webApiPassword = keyring::key_get("password", keyring = keyringName)
     )
   }
 
