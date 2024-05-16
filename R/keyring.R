@@ -136,7 +136,7 @@ setCredential <- function(cred, db, keyringName, keyringPassword, forceCheck = T
   set_cred(cred = cred, db = db, keyringName = keyringName)
 
   if (forceCheck) {
-    checkDatabaseCredential(cred = cred, db = db, keyringName = keyringName)
+    checkDatabaseCredential(cred = glue::glue("{cred}_{db}"), keyringName = keyringName)
   }
   invisible(cred)
 }
