@@ -1,9 +1,11 @@
 Ulysses 0.0.7
 =============
 
-* fix importAtlasCohorts => use RJSONIO
+* fix importAtlasCohorts => use RJSONIO with digits
 * change all keyring fns to use only db. 
 * update function to review credentials
+* fix and simplify cohortManifest function #26
+* fix migration bug #25
 
 # Ulysses 0.0.6
 
