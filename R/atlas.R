@@ -65,7 +65,7 @@ format_cohort_expression <- function(expression) {
     circe$EndStrategy <- NULL
   }
 
-  circeJson <- RJSONIO::toJSON(circe)
+  circeJson <- RJSONIO::toJSON(circe, digits = 23)
 
   return(circeJson)
 }
@@ -145,7 +145,7 @@ get_cs_from_atlas <- function(id,
   tb <- tibble::tibble(
     id = cs$id,
     name = cs$name,
-    expression = RJSONIO::toJSON(cs$expression),
+    expression = RJSONIO::toJSON(cs$expression, digits = 23),
     saveName = glue::glue("{id}_{name}") |> snakecase::to_snake_case()
   )
 
