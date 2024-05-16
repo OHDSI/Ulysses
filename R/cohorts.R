@@ -1,25 +1,5 @@
 # Functions to work with cohorts to create
 
-
-
-
-cohortHash <- function(projectPath = here::here()) {
-
-  #get cohort file paths
-  cohortFolder <- fs::path(projectPath, "cohorts/json")
-
-  #get cohort file paths
-  cohortFiles <- fs::dir_ls(cohortFolder, type = "file", glob = "*.json")
-
-  #future addition of hash
-  hash <- purrr::map(cohortFiles, ~readr::read_file(.x)) %>%
-    purrr::map_chr(~digest::digest(.x, algo = "sha1")) %>%
-    unname()
-
-  return(hash)
-
-}
-
 setCohortManifest <- function(projectPath = here::here()) {
 
   #get cohort file paths
@@ -28,44 +8,38 @@ setCohortManifest <- function(projectPath = here::here()) {
   cohortFiles <- fs::dir_ls(cohortFolder, type = "file", glob = "*.json")
 
   if (length(cohortFiles) == 0) {
-    cli::cli_abort("There are no cohorts in this study. Please add circe json to the cohortsToCreate Folder")
+    cli::cli_abort("There are no circe cohorts in this study.")
   }
 
   #get cohort names
   cohortNames <- fs::path_file(cohortFiles) %>%
     fs::path_ext_remove()
 
-  #future addition of hash
-  hash <- cohortHash(projectPath = projectPath)
+  cohortIds <- cohortNames |>
+    stringr::str_rank(numeric = TRUE)
 
+  # todo add modification time
+  # modDat <- fs::file_info(cohortFiles) |>
+  #   dplyr::pull(modification_time)
+
+  # TODO add lable names
+  # TODO add order precedence
 
   #return tibble with info
   tb <- tibble::tibble(
-    name = cohortNames,
-    hash = hash,
-    version = 1L,
-  ) %>%
-    dplyr::mutate(
-      id = dplyr::row_number(), .before = 1
+    cohortId = cohortIds,
+    cohortName = cohortNames
     )
 
   return(tb)
 }
 
-updateCohortManifest <- function(cm, hash, idx) {
-
-  # identifiy the cohorts that changed
-  cohortsThatChanged <- fs::path("cohorts/json", cm$name[idx], ext = "json")
-  newVersion <- cm$version[idx] + 1L
-  cli::cat_bullet("Update ", crayon::green(cohortsThatChanged), " to version ", crayon::magenta(newVersion),
-                  bullet = "pointer", bullet_col = "yellow")
-
-  #update version
-  cm$hash[idx] <- hash[idx]
-  cm$version[idx] <- newVersion
-
-  return(cm)
+check_cm_dif <- function(cm, cmNew) {
+  hsh1 <- digest::digest(cm |> dplyr::select(cohortId, cohortName))
+  hsh2 <- digest::digest(cmNew |> dplyr::select(cohortId, cohortName))
+  return(hsh1 != hsh2)
 }
+
 
 #' Function that lists all cohort definitions loaded into the study
 #' @param projectPath the path to the project
@@ -78,24 +52,23 @@ cohortManifest <- function(projectPath = here::here()) {
 
   if (check) {
     cm <- readr::read_csv(file = cohortManifestPath,
-                          show_col_types = FALSE)
-    # check for any changes
-    # check cohort hash of files
-    hash <- cohortHash(projectPath = projectPath)
-    #check if any are different
-    changedCohorts <- which(cm$hash != hash)
+                          show_col_types = FALSE) |>
+      dplyr::mutate(
+        cohortId = as.integer(cohortId)
+      )
 
-    if (sum(changedCohorts) > 0) {
-      cli::cat_bullet("Circe Cohorts have changed since last check",
-                      bullet = "warning", bullet_col = "yellow")
-      cm <- updateCohortManifest(cm = cm, hash = hash, idx = changedCohorts)
-      cli::cat_bullet("Updating CohortManifest.csv", bullet = "tick", bullet_col = "green")
-      readr::write_csv(cm, file = cohortManifestPath)
+    cmNew <- setCohortManifest(projectPath = projectPath)
+
+    if (check_cm_dif(cm, cmNew)) {
+      cli::cat_bullet("Cohort Manifest has changed", bullet = "warning", bullet_col = "yellow")
+      cli::cat_bullet("Overwriting CohortManifest.csv", bullet = "pointer", bullet_col = "yellow")
+      cm <- cmNew
+      readr::write_csv(cmNew, file = cohortManifestPath)
     }
 
   } else{
     cm <- setCohortManifest(projectPath = projectPath)
-    cli::cat_bullet("Initializing CohortManifest.csv", bullet = "tick", bullet_col = "green")
+    cli::cat_bullet("Initializing CohortManifest.csv", bullet = "pointer", bullet_col = "yellow")
     readr::write_csv(cm, file = cohortManifestPath)
     usethis::use_git_ignore(ignores = "cohorts/CohortManifest.csv")
   }
@@ -189,3 +162,40 @@ toc-depth: 2
 
   invisible(cohortDetails)
 }
+
+
+# Archive -----------------
+
+
+# cohortHash <- function(projectPath = here::here()) {
+#
+#   #get cohort file paths
+#   cohortFolder <- fs::path(projectPath, "cohorts/json")
+#
+#   #get cohort file paths
+#   cohortFiles <- fs::dir_ls(cohortFolder, type = "file", glob = "*.json")
+#
+#   #future addition of hash
+#   hash <- purrr::map(cohortFiles, ~readr::read_file(.x)) %>%
+#     purrr::map_chr(~digest::digest(.x, algo = "sha1")) %>%
+#     unname()
+#
+#   return(hash)
+#
+# }
+
+
+# updateCohortManifest <- function(cm, hash, idx) {
+#
+#   # identifiy the cohorts that changed
+#   cohortsThatChanged <- fs::path("cohorts/json", cm$name[idx], ext = "json")
+#   newVersion <- cm$version[idx] + 1L
+#   cli::cat_bullet("Update ", crayon::green(cohortsThatChanged), " to version ", crayon::magenta(newVersion),
+#                   bullet = "pointer", bullet_col = "yellow")
+#
+#   #update version
+#   cm$hash[idx] <- hash[idx]
+#   cm$version[idx] <- newVersion
+#
+#   return(cm)
+# }
