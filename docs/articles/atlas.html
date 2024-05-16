@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Ulysses</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.7</span>
       </span>
     </div>
 
@@ -148,24 +148,10 @@ build automation around this structure.</p>
 <p>Before you import you need to set up a connection to webApi. We do
 this using keyring. Use the following code to do this:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">keyringName</span> <span class="op">&lt;-</span> <span class="st">"atlas"</span></span>
-<span><span class="va">keyringPassword</span> <span class="op">&lt;-</span> <span class="st">"ohdsi"</span></span>
-<span><span class="co"># setup a study keyring if it hasnt already been done</span></span>
-<span><span class="fu"><a href="../reference/setStudyKeyring.html">setStudyKeyring</a></span><span class="op">(</span><span class="va">keyringName</span>, <span class="va">keyringPassword</span><span class="op">)</span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="../reference/setAtlasCredentials.html">setAtlasCredentials</a></span><span class="op">(</span>keyringName <span class="op">=</span> <span class="st">"atlas"</span>, keyringPassword <span class="op">=</span> <span class="st">"ohdsi"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># add credentials for webapi</span></span>
-<span><span class="va">creds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"baseurl"</span>, <span class="st">"authMethod"</span>, <span class="st">"user"</span>, <span class="st">"password"</span><span class="op">)</span></span>
-<span><span class="va">db</span> <span class="op">&lt;-</span> <span class="st">'webapi'</span></span>
-<span><span class="fu"><a href="../reference/setMultipleCredentials.html">setMultipleCredentials</a></span><span class="op">(</span></span>
-<span>  creds <span class="op">=</span> <span class="va">creds</span>,</span>
-<span>  db <span class="op">=</span> <span class="va">db</span>,</span>
-<span>  keyringName <span class="op">=</span> <span class="va">keyringName</span>,</span>
-<span>  keyringPassword <span class="op">=</span> <span class="va">keyringPassword</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">credNames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">db</span>, <span class="va">creds</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">baseUrl</span> <span class="op">&lt;-</span> <span class="fu">keyring</span><span class="fu">::</span><span class="fu"><a href="https://keyring.r-lib.org/reference/key_get.html" class="external-link">key_get</a></span><span class="op">(</span>service <span class="op">=</span> <span class="va">credNames</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, keyring <span class="op">=</span> <span class="va">keyringName</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">baseUrl</span> <span class="op">&lt;-</span> <span class="fu">keyring</span><span class="fu">::</span><span class="fu"><a href="https://keyring.r-lib.org/reference/key_get.html" class="external-link">key_get</a></span><span class="op">(</span>service <span class="op">=</span> <span class="st">"baseUrl"</span>, keyring <span class="op">=</span> <span class="st">"atlas"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="importing-from-atlas">Importing from ATLAS<a class="anchor" aria-label="anchor" href="#importing-from-atlas"></a>

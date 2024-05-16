@@ -8,7 +8,7 @@
 #' @export
 setAtlasCredentials <- function(keyringName = "atlas",
                                 keyringPassword = "ohdsi") {
-  creds <- c("baseurl", "authMethod", "user", "password")
+  creds <- c("baseUrl", "authMethod", "user", "password")
 
   keyringFn <- purrr::safely(maybeUnlockKeyring)
   tt <- keyringFn(keyringName = keyringName, keyringPassword)
@@ -24,10 +24,9 @@ setAtlasCredentials <- function(keyringName = "atlas",
   # set credentials
   purrr::walk(
     creds,
-    ~set_cred(
+    ~set_cred2(
       cred = .x,
-      db = db,
-      keyringName = keyringName)
+      db = keyringName)
   )
 
   # check credentials
@@ -35,7 +34,6 @@ setAtlasCredentials <- function(keyringName = "atlas",
     creds,
     ~checkDatabaseCredential(
       cred = .x,
-      db = db,
       keyringName = keyringName,
       verbose = FALSE)
   )
@@ -67,19 +65,11 @@ format_cohort_expression <- function(expression) {
     circe$EndStrategy <- NULL
   }
 
-  circeJson <- jsonlite::toJSON(circe, pretty = TRUE, auto_unbox = TRUE) |>
-    as.character()
-  return(circeJson)
-}
-
-
-format_cs_expression <- function(expression) {
-
-  circeJson <- jsonlite::toJSON(expression, pretty = TRUE, auto_unbox = TRUE) |>
-    as.character()
+  circeJson <- RJSONIO::toJSON(circe, digits = 23)
 
   return(circeJson)
 }
+
 
 # Function to get a cohort from atlas by Id
 get_cohort_from_atlas <- function(cohortId,
@@ -89,7 +79,8 @@ get_cohort_from_atlas <- function(cohortId,
   # check to unlock keyring
   maybeUnlockKeyring(keyringName = keyringName, keyringPassword = keyringPassword)
 
-  baseUrl <- keyring::key_get("atlas_baseurl", keyring = "atlas")
+  baseUrl <- keyring::key_get("baseUrl", keyring = keyringName)
+
 
   if (authFirst) {
 
@@ -101,9 +92,9 @@ get_cohort_from_atlas <- function(cohortId,
 
     ROhdsiWebApi::authorizeWebApi(
       baseUrl = baseUrl,
-      authMethod = keyring::key_get("atlas_authMethod", keyring = "atlas"),
-      webApiUsername = keyring::key_get("atlas_user", keyring = "atlas"),
-      webApiPassword = keyring::key_get("atlas_password", keyring = "atlas")
+      authMethod = keyring::key_get("authMethod", keyring = keyringName),
+      webApiUsername = keyring::key_get("user", keyring = keyringName),
+      webApiPassword = keyring::key_get("password", keyring = keyringName)
     )
   }
 
@@ -127,7 +118,10 @@ get_cs_from_atlas <- function(id,
   # check to unlock keyring
   maybeUnlockKeyring(keyringName = keyringName, keyringPassword = keyringPassword)
 
-  baseUrl <- keyring::key_get("atlas_baseurl", keyring = "atlas")
+  baseUrl <- keyring::key_get(
+    service = "baseUrl",
+    keyring = keyringName
+  )
 
   if (authFirst) {
 
@@ -139,9 +133,9 @@ get_cs_from_atlas <- function(id,
 
     ROhdsiWebApi::authorizeWebApi(
       baseUrl = baseUrl,
-      authMethod = keyring::key_get("atlas_authMethod", keyring = "atlas"),
-      webApiUsername = keyring::key_get("atlas_user", keyring = "atlas"),
-      webApiPassword = keyring::key_get("atlas_password", keyring = "atlas")
+      authMethod = keyring::key_get("authMethod", keyring = keyringName),
+      webApiUsername = keyring::key_get("user", keyring = keyringName),
+      webApiPassword = keyring::key_get("password", keyring = keyringName)
     )
   }
 
@@ -151,7 +145,7 @@ get_cs_from_atlas <- function(id,
   tb <- tibble::tibble(
     id = cs$id,
     name = cs$name,
-    expression = format_cs_expression(cs$expression),
+    expression = RJSONIO::toJSON(cs$expression, digits = 23),
     saveName = glue::glue("{id}_{name}") |> snakecase::to_snake_case()
   )
 

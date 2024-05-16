@@ -4,12 +4,10 @@
 \alias{checkDatabaseCredential}
 \title{Function to check the database credential}
 \usage{
-checkDatabaseCredential(cred, db, keyringName, verbose = TRUE)
+checkDatabaseCredential(cred, keyringName, verbose = TRUE)
 }
 \arguments{
 \item{cred}{the credential to set (i.e dbms, user, connectionString)}
-
-\item{db}{the database prefix for the credential}
 
 \item{keyringName}{the name of the keyringName for the credential check, this will be the keyring namec}
 

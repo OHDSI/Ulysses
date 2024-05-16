@@ -98,14 +98,13 @@ defaultCredentials <- function() {
 
 #' Function to check the database credential
 #' @param cred the credential to set (i.e dbms, user, connectionString)
-#' @param db the database prefix for the credential
 #' @param keyringName the name of the keyringName for the credential check, this will be the keyring namec
 #' @param verbose toggle option to print console message
 #' @export
-checkDatabaseCredential <- function(cred, db, keyringName, verbose = TRUE) {
+checkDatabaseCredential <- function(cred, keyringName, verbose = TRUE) {
 
   #paste name to set full credential
-  key_name <- paste(db, cred, sep = "_")
+  key_name <- cred
 
   if (verbose) {
     cli::cat_bullet("Check that credential ", crayon::green(key_name), " is correct.",
