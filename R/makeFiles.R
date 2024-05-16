@@ -589,7 +589,7 @@ makeMigrationScript <- function(scriptName,
 
   usethis::use_template(
     template = "MigrationScript.R",
-    save_as = fs::path("analysis/migration", migrationScriptName, ext = "R"),
+    save_as = fs::path("analysis/migrations", migrationScriptName, ext = "R"),
     data = data,
     open = open,
     package = "Ulysses")
