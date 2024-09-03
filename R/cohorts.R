@@ -56,6 +56,16 @@
   .setInteger(private = private, key = key, value = value)
 }
 
+md_to_viewer <- function(txt) {
+  #create a temp dir for md file
+  tempDir <- tempfile()
+  dir.create(tempDir)
+  tmpRmd <- file.path(tempDir, "clinChar.md")
+  #write file to tmp
+  readr::write_lines(txt, file = tmpRmd)
+  tmpHtml <- rmarkdown::render(tmpRmd, params = "ask", quiet = TRUE)
+  rstudioapi::viewer(tmpHtml)
+}
 
 
 # R6 class for the cohort manifest
@@ -78,19 +88,15 @@ CohortManifest <- R6::R6Class(
       .setCharacter(private = private, key = ".circeJson", value = circeJson)
       .setCharacter(private = private, key = ".ohdsiSql", value = ohdsiSql)
     },
+    #show the manifest table
     showTable = function() {
-      tb = tibble::tibble(
-        cohortId = self$cohortId,
-        cohortName = self$cohortName,
-        cohortPrettyName = self$cohortPrettyName,
-        cohortHash = self$cohortHash,
-        circeJson = self$circeJson,
-        ohdsiSql = self$ohdsiSql
-      ) |>
-        dplyr::arrange(
-          cohortId
-        )
+      tb <- private$.cohortsToCreate()
       return(tb)
+    },
+
+    describeCohort = function(idx) {
+      cdRead <- private$.getCohortPrintFriendly(idx)
+      md_to_viewer(cdRead)
     }
   ),
   private = list(
@@ -99,7 +105,53 @@ CohortManifest <- R6::R6Class(
     .cohortPrettyName = NULL,
     .cohortHash = NULL,
     .circeJson = NULL,
-    .ohdsiSql = NULL
+    .ohdsiSql = NULL,
+
+    .cohortsToCreate = function() {
+      tb = tibble::tibble(
+        cohortId = private$.cohortId,
+        cohortName = private$.cohortName,
+        cohortPrettyName = private$.cohortPrettyName,
+        cohortHash = private$.cohortHash,
+        circeJson = private$.circeJson,
+        ohdsiSql = private$.ohdsiSql
+      ) |>
+        dplyr::arrange(
+          cohortId
+        )
+      return(tb)
+    },
+
+    .retrieveCohortDetails = function(idx) {
+      singleCohort <- private$.cohortsToCreate() |>
+        dplyr::filter(
+          cohortId == idx
+        )
+      return(singleCohort)
+    },
+
+    #internal functions
+    .getCohortPrintFriendly = function(idx) {
+      # retrieve cohort
+      singleCohort <- private$.retrieveCohortDetails(idx)
+      #get cohort header
+      cohortName <- snakecase::to_title_case(singleCohort$cohortPrettyName)
+      cohortId <- singleCohort$cohortId
+      cohortHeader <- glue::glue("% Cohort Description for: {cohortName} (id: {cohortId}) \n")
+      # get readable cohort logic
+      # turn into print friendly
+      cdRead <- CirceR::cohortPrintFriendly(singleCohort$circeJson)
+      cdRead <- paste(cohortHeader, "## Cohort Definition", cdRead, sep = "\n\n")
+      # get readable concept set
+      csRead <- RJSONIO::fromJSON(singleCohort$circeJson)$ConceptSets |>
+        CirceR::conceptSetListPrintFriendly()
+      csRead <- paste("## Concept Sets", csRead, sep = "\n\n")
+      #bind to get full read
+      readFull <- paste(cdRead, csRead, sep = "\n\n")
+      return(readFull)
+    }
+
+
   ),
 
   active = list(
@@ -129,7 +181,7 @@ CohortManifest <- R6::R6Class(
 )
 
 
-
+# function to make the cohortManifest
 makeCohortManifest <- function(cohortFolder = here::here("cohorts")) {
   #get cohort file paths
   cohortJsonFiles <- fs::dir_ls(
@@ -223,28 +275,7 @@ makeCohortManifest <- function(cohortFolder = here::here("cohorts")) {
 
 
 # Function to get full print logic from circe
-# getCohortPrint <- function(cohort) {
-#   #get cohort header
-#   cohortName <- snakecase::to_title_case(cohort$name)
-#   cohortId <- cohort$id
-#   cohortHeader <- glue::glue("# {cohortName} (id: {cohortId}) \n")
-#   # get readable cohort logic
-#   # get file path
-#   cohortFile <- fs::path("cohorts/json", cohort$name, ext = "json")
-#   # read json file
-#   json <- readr::read_file(cohortFile)
-#   # turn into print friendly
-#   cdRead <- CirceR::cohortPrintFriendly(json)
-#   cdRead <- paste(cohortHeader, "## Cohort Definition", cdRead, sep = "\n\n")
-#   # get readable concept set
-#   csRead <- RJSONIO::fromJSON(json)$ConceptSets |>
-#     CirceR::conceptSetListPrintFriendly()
-#   csRead <- paste("## Concept Sets", csRead, sep = "\n\n")
-#
-#   #bind to get full read
-#   readFull <- paste(cdRead, csRead, sep = "\n\n")
-#   return(readFull)
-# }
+
 
 
 # cohortReadBySection <- function(cm, type) {
