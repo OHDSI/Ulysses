@@ -99,10 +99,16 @@ get_cohort_from_atlas <- function(cohortId,
   }
 
   cohort <- ROhdsiWebApi::getCohortDefinition(cohortId = cohortId, baseUrl = baseUrl)
+  jsonExpression <- format_cohort_expression(cohort$expression)
+  ohdsiSql <- CirceR::buildCohortQuery(
+    expression = CirceR::cohortExpressionFromJson(jsonExpression),
+    options = CirceR::createGenerateOptions(generateStats = FALSE)
+  )
   tb <- tibble::tibble(
     id = cohort$id,
     name = cohort$name,
-    expression = format_cohort_expression(cohort$expression),
+    jsonExpression = jsonExpression,
+    ohdsiSql = ohdsiSql,
     saveName = glue::glue("{id}_{name}") |> snakecase::to_snake_case()
   )
 
@@ -153,17 +159,30 @@ get_cs_from_atlas <- function(id,
 }
 
 
-write_cohorts_to_ulysses <- function(circeJson, saveName, savePath = here::here("cohorts/json")) {
+write_cohorts_to_ulysses <- function(circeJson, ohdsiSql, saveName, savePath = here::here("cohorts")) {
 
-  file_name <- fs::path(savePath, saveName, ext = "json")
-
-  readr::write_file(circeJson, file = file_name)
   cli::cat_bullet(
-    glue::glue("Circe Cohort Json {crayon::magenta(saveName)} saved to: {crayon::cyan(savePath)}"),
+    glue::glue("Save Cohort to Ulysses: {crayon::green(saveName)}"),
     bullet = "pointer",
     bullet_col = "yellow"
   )
-  invisible(file_name)
+  # do json first
+  json_path <- fs::path(savePath, "json")
+  json_file <- fs::path(json_path, saveName, ext = "json")
+  readr::write_file(circeJson, file = json_file)
+  cli::cat_line(
+    glue::glue("\t- Circe Cohort Json saved as: {crayon::cyan(json_file)}")
+  )
+
+  # do ohdsisql second
+  sql_path <- fs::path(savePath, "sql")
+  sql_file <- fs::path(sql_path, saveName, ext = "sql")
+  readr::write_file(ohdsiSql, file = sql_file)
+  cli::cat_line(
+    glue::glue("\t- Circe Ohdsi-Sql saved as: {crayon::cyan(sql_file)}")
+  )
+
+  invisible(savePath)
 }
 
 
@@ -217,7 +236,8 @@ importAtlasCohorts <- function(
     cohort_tb,
     ~write_cohorts_to_ulysses(
       circeJson = ..3,
-      saveName = ..4
+      ohdsiSql = ..4,
+      saveName = ..5
     )
   )
   invisible(cohortIds)
