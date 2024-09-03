@@ -1,61 +1,5 @@
 # Functions to work with cohorts to create
 
-# set the full string vector
-.setCharacter <- function(private, key, value) {
-  checkmate::assert_character(x = value, min.chars = 1, null.ok = FALSE)
-  private[[key]] <- value
-  invisible(private)
-}
-
-# set the full integer vector
-.setInteger <- function(private, key, value) {
-  checkmate::assert_integer(x = value, null.ok = FALSE)
-  private[[key]] <- value
-  invisible(private)
-}
-
-
-#set a single item in string vector
-.setString <- function(private, key, value, idx) {
-  checkmate::assert_string(x = value, na.ok = FALSE, min.chars = 1, null.ok = FALSE)
-  private[[key]][idx] <- value
-  invisible(private)
-}
-
-
-.setActiveString <- function(private, key, value, idx) {
-  # return the value if nothing added
-  if(missing(value)) {
-    vv <- private[[key]][idx]
-    return(vv)
-  }
-  # replace the value if value assigned
-  .setSingleString(private = private, key = key, value = value, idx = idx)
-}
-
-
-.setActiveCharacter <- function(private, key, value) {
-  # return the value if nothing added
-  if(missing(value)) {
-    vv <- private[[key]]
-    return(vv)
-  }
-  # replace the value if value assigned
-  .setCharacter(private = private, key = key, value = value)
-}
-
-
-
-.setActiveInteger <- function(private, key, value) {
-  # return the value if nothing added
-  if(missing(value)) {
-    vv <- private[[key]]
-    return(vv)
-  }
-  # replace the value if value assigned
-  .setInteger(private = private, key = key, value = value)
-}
-
 md_to_viewer <- function(txt) {
   #create a temp dir for md file
   tempDir <- tempfile()
@@ -93,10 +37,31 @@ CohortManifest <- R6::R6Class(
       tb <- private$.cohortsToCreate()
       return(tb)
     },
-
+    # function to describe the cohorts
     describeCohort = function(idx) {
       cdRead <- private$.getCohortPrintFriendly(idx)
       md_to_viewer(cdRead)
+    },
+
+    # function to generate the cohorts
+    generateCohorts = function(executionSettings) {
+      cli::cat_bullet(
+        glue::glue_col("{yellow Building Circe Cohorts in Ulysses directory}"),
+        bullet = "pointer",
+        bullet_col = "yellow"
+      )
+
+      CohortGenerator::generateCohortSet(
+        connection = connection,
+        cdmDatabaseSchema = executionSettings$cdmDatabaseSchema,
+        cohortDatabaseSchema =  executionSettings$workDatabaseSchema,
+        tempEmulationSchema = executionSettings$tempEmulationSchema,
+        cohortTable = cohortTableNms,
+        cohortDefinitionSet = cohortsToCreate,
+        incremental = TRUE,
+        incrementalFolder = incrementalFolder
+      )
+
     }
   ),
   private = list(
