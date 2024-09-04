@@ -159,7 +159,9 @@ get_cs_from_atlas <- function(id,
 }
 
 
-write_cohorts_to_ulysses <- function(circeJson, ohdsiSql, saveName, savePath = here::here("cohorts")) {
+write_cohorts_to_ulysses <- function(circeJson, ohdsiSql,
+                                     saveName,
+                                     savePath = here::here("cohorts")) {
 
   cli::cat_bullet(
     glue::glue("Save Cohort to Ulysses: {crayon::green(saveName)}"),
@@ -203,12 +205,14 @@ write_cs_to_ulysses <- function(circeJson, saveName, savePath = here::here("coho
 
 #' Function to import Atlas cohorts into Ulysses
 #' @param cohortIds the atlas ids of the cohorts you want to import
+#' @param savePath location to save the cohorts within Ulysses. Defaults to here::here("cohorts")
 #' @param keyringName the name of the keyring to save credentials. Defaults to atlas
 #' @param keyringPassword the password for the keyring to save credentials. Defaults to ohdsi
 #' @return saves circe json of ids given to the cohorts/json folder of Ulysses
 #' @export
 importAtlasCohorts <- function(
     cohortIds,
+    savePath = here::here("cohorts"),
     keyringName = "atlas",
     keyringPassword = "ohdsi"
 ) {
@@ -237,7 +241,8 @@ importAtlasCohorts <- function(
     ~write_cohorts_to_ulysses(
       circeJson = ..3,
       ohdsiSql = ..4,
-      saveName = ..5
+      saveName = ..5,
+      savePath = savePath
     )
   )
   invisible(cohortIds)
