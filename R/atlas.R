@@ -191,7 +191,8 @@ write_cs_to_ulysses <- function(circeJson, saveName, savePath = here::here("coho
 importAtlasCohorts <- function(
     cohortIds,
     keyringName = "atlas",
-    keyringPassword = "ohdsi"
+    keyringPassword = "ohdsi",
+    savePath = here::here("cohorts/json")
 ) {
 
   first_cohort <- get_cohort_from_atlas(cohortId = cohortIds[1],
@@ -217,7 +218,8 @@ importAtlasCohorts <- function(
     cohort_tb,
     ~write_cohorts_to_ulysses(
       circeJson = ..3,
-      saveName = ..4
+      saveName = ..4,
+      savePath = savePath
     )
   )
   invisible(cohortIds)
@@ -234,7 +236,8 @@ importAtlasCohorts <- function(
 importAtlasConceptSets <- function(
     conceptSetIds,
     keyringName = "atlas",
-    keyringPassword = "ohdsi"
+    keyringPassword = "ohdsi",
+    savePath = here::here("cohorts/conceptSets/json")
 ) {
 
   first_concept_set <- get_cs_from_atlas(id = conceptSetIds[1],
@@ -260,7 +263,8 @@ importAtlasConceptSets <- function(
     cs_tb,
     ~write_cs_to_ulysses(
       circeJson = ..3,
-      saveName = ..4
+      saveName = ..4,
+      savePath = savePath
     )
   )
   invisible(conceptSetIds)
