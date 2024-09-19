@@ -7,7 +7,8 @@
 importAtlasConceptSets(
   conceptSetIds,
   keyringName = "atlas",
-  keyringPassword = "ohdsi"
+  keyringPassword = "ohdsi",
+  savePath = here::here("cohorts/conceptSets/json")
 )
 }
 \arguments{
@@ -16,6 +17,8 @@ importAtlasConceptSets(
 \item{keyringName}{the name of the keyring to save credentials. Defaults to atlas}
 
 \item{keyringPassword}{the password for the keyring to save credentials. Defaults to ohdsi}
+
+\item{savePath}{the location in the repo to save the concept set json files to. Defaults to cohorts/conceptSets/json}
 }
 \value{
 saves circe json of ids given to the cohorts/conceptSets/json folder of Ulysses

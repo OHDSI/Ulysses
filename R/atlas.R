@@ -42,7 +42,7 @@ setAtlasCredentials <- function(keyringName = "atlas",
 
 }
 
- # helpers -----------------
+# helpers -----------------
 format_cohort_expression <- function(expression) {
   # reformat to standard circe
   circe <- list(
@@ -73,9 +73,9 @@ format_cohort_expression <- function(expression) {
 
 # Function to get a cohort from atlas by Id
 get_cohort_from_atlas <- function(cohortId,
-                               authFirst = FALSE,
-                               keyringName = "atlas",
-                               keyringPassword = "ohdsi") {
+                                  authFirst = FALSE,
+                                  keyringName = "atlas",
+                                  keyringPassword = "ohdsi") {
   # check to unlock keyring
   maybeUnlockKeyring(keyringName = keyringName, keyringPassword = keyringPassword)
 
@@ -186,12 +186,14 @@ write_cs_to_ulysses <- function(circeJson, saveName, savePath = here::here("coho
 #' @param cohortIds the atlas ids of the cohorts you want to import
 #' @param keyringName the name of the keyring to save credentials. Defaults to atlas
 #' @param keyringPassword the password for the keyring to save credentials. Defaults to ohdsi
-#' @return saves circe json of ids given to the cohorts/json folder of Ulysses
+#' @param savePath the location in the repo to save the cohort json files to. Defaults to cohorts/json
+#' @return saves circe json of ids given to the specified folder of Ulysses
 #' @export
 importAtlasCohorts <- function(
     cohortIds,
     keyringName = "atlas",
-    keyringPassword = "ohdsi"
+    keyringPassword = "ohdsi",
+    savePath = here::here("cohorts/json")
 ) {
 
   first_cohort <- get_cohort_from_atlas(cohortId = cohortIds[1],
@@ -217,7 +219,8 @@ importAtlasCohorts <- function(
     cohort_tb,
     ~write_cohorts_to_ulysses(
       circeJson = ..3,
-      saveName = ..4
+      saveName = ..4,
+      savePath = savePath
     )
   )
   invisible(cohortIds)
@@ -229,12 +232,14 @@ importAtlasCohorts <- function(
 #' @param conceptSetIds the atlas ids of the cconcept sets you want to import
 #' @param keyringName the name of the keyring to save credentials. Defaults to atlas
 #' @param keyringPassword the password for the keyring to save credentials. Defaults to ohdsi
+#' @param savePath the location in the repo to save the concept set json files to. Defaults to cohorts/conceptSets/json
 #' @return saves circe json of ids given to the cohorts/conceptSets/json folder of Ulysses
 #' @export
 importAtlasConceptSets <- function(
     conceptSetIds,
     keyringName = "atlas",
-    keyringPassword = "ohdsi"
+    keyringPassword = "ohdsi",
+    savePath = here::here("cohorts/conceptSets/json")
 ) {
 
   first_concept_set <- get_cs_from_atlas(id = conceptSetIds[1],
@@ -247,9 +252,9 @@ importAtlasConceptSets <- function(
     remaining_cs <- purrr::map_dfr(
       remaining_ids,
       ~get_cs_from_atlas(id = .x,
-                             authFirst = FALSE, # already open
-                             keyringName = keyringName,
-                             keyringPassword = keyringPassword)
+                         authFirst = FALSE, # already open
+                         keyringName = keyringName,
+                         keyringPassword = keyringPassword)
     )
     cs_tb <- dplyr::bind_rows(first_concept_set, remaining_cs)
   } else {
@@ -260,7 +265,8 @@ importAtlasConceptSets <- function(
     cs_tb,
     ~write_cs_to_ulysses(
       circeJson = ..3,
-      saveName = ..4
+      saveName = ..4,
+      savePath = savePath
     )
   )
   invisible(conceptSetIds)
