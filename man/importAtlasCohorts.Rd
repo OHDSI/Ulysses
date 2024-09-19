@@ -4,7 +4,12 @@
 \alias{importAtlasCohorts}
 \title{Function to import Atlas cohorts into Ulysses}
 \usage{
-importAtlasCohorts(cohortIds, keyringName = "atlas", keyringPassword = "ohdsi")
+importAtlasCohorts(
+  cohortIds,
+  keyringName = "atlas",
+  keyringPassword = "ohdsi",
+  savePath = here::here("cohorts/json")
+)
 }
 \arguments{
 \item{cohortIds}{the atlas ids of the cohorts you want to import}
@@ -12,9 +17,11 @@ importAtlasCohorts(cohortIds, keyringName = "atlas", keyringPassword = "ohdsi")
 \item{keyringName}{the name of the keyring to save credentials. Defaults to atlas}
 
 \item{keyringPassword}{the password for the keyring to save credentials. Defaults to ohdsi}
+
+\item{savePath}{the location in the repo to save the cohort json files to. Defaults to cohorts/json}
 }
 \value{
-saves circe json of ids given to the cohorts/json folder of Ulysses
+saves circe json of ids given to the specified folder of Ulysses
 }
 \description{
 Function to import Atlas cohorts into Ulysses
