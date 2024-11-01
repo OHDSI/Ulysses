@@ -79,7 +79,78 @@ CohortManifest <- R6::R6Class(
     },
 
     # function to generate the cohorts
-    generateCohorts = function(executionSettings) {
+    generateCohorts = function(executionSettings, cohortFolder = here::here("cohorts")) {
+      cgTb <- private$.haveCohortsBeenGenerated(cohortFolder)
+      if (is.null(cgTb)) {
+        private$.cohortBuilder(executionSettings, cohortFolder)
+      } else {
+        cmFiles <- cgTb |>
+          dplyr::select(cohortId, cohortHash) |>
+          dplyr::full_join(
+            .cm(cohortFolder) |>
+              dplyr::select(cohortId, cohortHash),
+            by = c("cohortId"),
+            suffix = c("_gen", "_file")
+          ) |>
+          dplyr::rowwise() |>
+          dplyr::mutate(
+            diff = dplyr::if_else(cohortHash_gen != cohortHash_file, TRUE, FALSE, FALSE)
+          )
+      }
+
+    }
+  ),
+  private = list(
+    .cohortId = NULL,
+    .cohortName = NULL,
+    .cohortPrettyName = NULL,
+    .cohortHash = NULL,
+    .cohortType = NULL,
+    .circeJson = NULL,
+    .ohdsiSql = NULL,
+    generatedCohorts = NULL,
+    #internal functions
+
+    # private function to pull the cohort manifest as a table
+    .pullManifest = function() {
+      tb = tibble::tibble(
+        cohortId = private$.cohortId,
+        cohortName = private$.cohortName,
+        cohortPrettyName = private$.cohortPrettyName,
+        cohortHash = private$.cohortHash,
+        cohortType = private$.cohortType,
+        circeJson = private$.circeJson,
+        ohdsiSql = private$.ohdsiSql
+      ) |>
+        dplyr::mutate(
+          orderId = dplyr::row_number(), .before = 1
+        )
+      return(tb)
+    },
+
+
+    .haveCohortsBeenGenerated = function(cohortFolder = here::here("cohorts")) {
+      generatedCohortsFile <- fs::path(cohortFolder, "GeneratedCohorts.csv")
+      check <- fs::file_exists(generatedCohortsFile)
+      if (check) {
+        tb <- readr::read_csv(
+          generatedCohortsFile,
+          show_col_types = FALSE
+        )
+        return(tb)
+      } else {
+        cli::cat_bullet(
+          "GeneratedCohorts.csv does not exist. User must build cohorts in Ulysses",
+          bullet = "warning",
+          bullet_col = "yellow"
+        )
+        return(NULL)
+      }
+    },
+
+    # build cohorts
+    .cohortBuilder = function(executionSettings, cohortFolder = here::here("cohorts")) {
+
       cli::cat_bullet(
         glue::glue_col("{yellow Building Circe Cohorts in Ulysses directory}"),
         bullet = "pointer",
@@ -158,59 +229,15 @@ CohortManifest <- R6::R6Class(
         cdmSourceName = executionSettings$cdmSourceName,
         cohortTableName = executionSettings$targetCohortTable
       )
+
       tb <- genCohorts$showTable()
 
+      .saveGeneratedCohorts(tb, cohortFolder)
+
       private$.addGeneratedCohorts(genCohorts)
-
-      return(tb)
-    }
-  ),
-  private = list(
-    .cohortId = NULL,
-    .cohortName = NULL,
-    .cohortPrettyName = NULL,
-    .cohortHash = NULL,
-    .cohortType = NULL,
-    .circeJson = NULL,
-    .ohdsiSql = NULL,
-    generatedCohorts = NULL,
-    #internal functions
-
-    # private function to pull the cohort manifest as a table
-    .pullManifest = function() {
-      tb = tibble::tibble(
-        cohortId = private$.cohortId,
-        cohortName = private$.cohortName,
-        cohortPrettyName = private$.cohortPrettyName,
-        cohortHash = private$.cohortHash,
-        cohortType = private$.cohortType,
-        circeJson = private$.circeJson,
-        ohdsiSql = private$.ohdsiSql
-      ) |>
-        dplyr::mutate(
-          orderId = dplyr::row_number(), .before = 1
-        )
-      return(tb)
+      invisible(tb)
     },
 
-    .updateManifest = function() {
-
-      changeIds <- private$.checkHash()
-
-      circeJson <- circeJson <- purrr::map_chr(cohortJsonFiles, ~readr::read_file(.x))
-
-
-    },
-
-    # check hash
-    .checkHash = function() {
-      ohdsiSqlFile <- names(self$cohortHash)
-      hash <- unname(self$cohortHash)
-      newHash <- purrr::map(ohdsiSqlFile, ~readr::read_file(file = .x)) |>
-        purrr::map_chr(~digest::digest(object = .x, algo = "md5", serialize = FALSE))
-      check <- which(hash != newHash)
-      return(check)
-    },
 
     .addGeneratedCohorts = function(generatedCohorts) {
       .setClass(private = private, key = "generatedCohorts",
@@ -320,13 +347,14 @@ GeneratedCohorts <- R6::R6Class(
       tb <- tibble::tibble(
         cohortId = private$cohortId,
         cohortHash = private$cohortHash,
-        generationTimeStamp = private$endTime,
-        timeLapse = private$endTime - private$startTime,
+        genStartTime = private$startTime,
+        genEndTime = private$endTime,
         cohortSubjects = private$cohortSubjects,
         cohortEntries = private$cohortEntries
       ) |>
         dplyr::mutate(
           databaseId = tolower(private$cdmSourceName),
+          cohortTable = tolower(private$cohortTableName),
           .before = 1
         )
       return(tb)
