@@ -1,8 +1,24 @@
 ---
-title: Evidence Generation Plan 
-subtitle: {{{ Title }}} 
-author: {{ Developer }}
-number-sections: true
+title: {{{ Title }}}
+subtitle: Evidence Generation Plan 
+author: 
+  - {{ Developer }}
+date: Feburary 2, 1922
+format:
+  html:
+    fontsize: 14pt
+    number-sections: true
+    number-depth: 3
+    toc: true
+    toc-location: left
+    toc-depth: 2
+    toc-title: Contents
+    theme: cosmo
+    grid:
+      body-width: 2200px
+      sidebar-width: 200px
+      margin-width: 200px
+      gutter-width: 50px
 ---
 
 ```{r setup, include=FALSE}
@@ -10,7 +26,6 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 # Guidance Text [DELETE ME]
-
 
 **PLEASE DELETE PRIOR TO PUBLISHING**
 
@@ -25,20 +40,27 @@ The purpose of the Evidence Generation Plan (EGP) is to lay out the assumptions 
 - **Analysis**: this section outlines the analytics that will be conducted in a study
 - **Vulnerabilities**: this section outlines limitations and obstacles that would hinder the execution of the study.
 
-# Background
+# Background {#sec-background}
 
-## Rationale
+## Rationale {#sec-rationale}
 
-The purpose of this study is to...
+**EXAMPLES PLEASE MODIFY**
 
-## Research Questions
+The purpose of this study is to characterize patients with disease x for an internal analysis.
+
+## Research Questions {#sec-questions}
+
+**EXAMPLES PLEASE MODIFY**
+
+- How many people can we identify with cohort 1?
+- How do we characterize patients in cohort 1 at baseline (-365 days to -1 day before the index date)?
+
+## Data Sources {#sec-data}
 
 
-## Data Sources
+# Cohort Definitions {#sec-cohorts}
 
-# Cohort Definitions
-
-## Cohort 1: Disease X
+## Cohort 1: Disease X {#sec-cohort1}
 
 ### Cohort Entry
 
@@ -46,16 +68,53 @@ The purpose of this study is to...
 
 ### Cohort Exit
 
-# Feasibility Assessment
+# Feasibility Assessment {#sec-feasibility}
 
 ## Cohort Counts
 
+Our first feasibility for this analysis is to report the number of unique patients and occurrences identified among the cohorts listed in @sec-cohorts.  
 
-# Analysis
+# Analysis {#sec-analysis}
 
-## Characterization
+## Characterization {#sec-characterization}
 
-### Demographics
+The first portion of our analysis is to characterize the cohorts listed in @sec-cohorts. We describe demographics and baseline comorbidities where the baseline window is -365 days to -1 days prior to the index date of the cohort.
+
+We report categorical variables by count and percentage and continuous variables by the mean, standard deviation, min, max, median, 25th and 75th percentiles.
+
+### Demographics {#sec-demographics}
+
+We report the following demographics for the cohorts listed in @sec-cohorts:
+
+- Age (continuous and in 10 year groups)
+- Gender
+- Race (if available in the database)
+- Year of index date
+- Time in Cohort 
+
+### Baseline Comorbidities {#sec-comorb}
+
+For baseline comorbidities, we report the charlson comorbidity score and the proportion of patient with each category in the score. Below we show the comorbidities used in the Charlson with its accompanying point value:
+
+- Acute Myocardial Infarction (1 point)  
+- Congestive heart failure (1 point)   
+- Peripheral vascular disease (1 point)   
+- Cerebrovascular Disease (1 point)  
+- Dementia (1 point)   
+- Chronic pulmonary disease (1 point) 
+- Mild liver disease (1 point)
+- Rheumatologic disease (1 point)   
+- Peptic ulcer disease (1 point)
+- Diabetes (mild to moderate) (1 point)
+- Hemiplegia or paraplegia (2 point)  
+- Diabetes with chronic complications (2 point)
+- Renal disease (2 point) 
+- Any Malignancy (2 point)
+- Moderate to severe liver disease (2 point)
+- Metastatic solid tumor (6 point)
+- AIDS (6 point)
 
 
-# Vulnerabilities
+# Vulnerabilities {#sec-vulnerabilities}
+
+
