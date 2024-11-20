@@ -106,6 +106,34 @@ makeAnalysisPlan <- function(projectPath = here::here(), open = TRUE) {
 
 }
 
+#' Function to create a EGP
+#' @param projectPath the path to the project
+#' @param open toggle on whether the file should be opened
+#' @export
+makeEvidenceGenerationPlan <- function(projectPath = here::here(), open = TRUE) {
+
+
+  # retrieve study meta
+  studyMeta <- retrieveStudySettings(projectPath = projectPath)$study
+
+  # make list of vars for template
+  data <- rlang::list2(
+    'Title' = replaceTitleColon(studyMeta$title),
+    'Developer' = studyMeta$authors$developer$name
+  )
+
+  #create templated output
+  usethis::use_template(
+    template = "EGP.qmd",
+    save_as = fs::path("documentation/hub", "EGP.qmd"),
+    data = data,
+    open = open,
+    package = "Ulysses")
+
+  invisible(data)
+
+}
+
 
 #' R Markdown file to make the contribution guidelines
 #' @param projectPath the path to the project

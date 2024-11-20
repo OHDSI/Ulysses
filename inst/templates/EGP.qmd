@@ -1,0 +1,61 @@
+---
+title: Evidence Generation Plan 
+subtitle: {{{ Title }}} 
+author: {{ Developer }}
+number-sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Guidance Text [DELETE ME]
+
+
+**PLEASE DELETE PRIOR TO PUBLISHING**
+
+The purpose of the Evidence Generation Plan (EGP) is to lay out the assumptions of the data extraction and analysis strategy for a study. The EGP has five primary sections:
+
+- **Background**: sets the scene for the analysis taking place; why is the study being conducted, what questions do we want to ask and on which data sources.
+    - **Rationale**: the study rationale describes why the study is being executed. Is the study for a internal business purpose or is the intent to run a network safety study? The developer should describe the primary intent of the study within a paragraph. 
+    - **Research Questions**: here we outline the high-level questions we wish to answer over the course of the analysis. Research questions should be written in bullets in a form of a question. 
+    - **Data Sources**: which data sources are used in the analysis and why were they chosen. Provide a brief description of the date range of data capture, number of lives covered, geographic location and data type (e.g. claims, EHR, registry)
+- **Cohort Definitions**: this section outlines the clinical logic needed to identify different patient populations. Cohorts can include the study population, drug exposure groups or study outcomes. 
+- **Feasibility Assessment**: this section outlines assessments required to prior to the execution of the analysis. Examples include assessment of minimum study size or number of persons with a lab measure.
+- **Analysis**: this section outlines the analytics that will be conducted in a study
+- **Vulnerabilities**: this section outlines limitations and obstacles that would hinder the execution of the study.
+
+# Background
+
+## Rationale
+
+The purpose of this study is to...
+
+## Research Questions
+
+
+## Data Sources
+
+# Cohort Definitions
+
+## Cohort 1: Disease X
+
+### Cohort Entry
+
+### Inclusion/Exclusion Criteria
+
+### Cohort Exit
+
+# Feasibility Assessment
+
+## Cohort Counts
+
+
+# Analysis
+
+## Characterization
+
+### Demographics
+
+
+# Vulnerabilities
