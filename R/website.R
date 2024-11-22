@@ -41,7 +41,7 @@ makeWebsiteYaml <- function(footer = NULL,
     'Title' = replaceTitleColon(studyMeta$title),
     'Footer' = footer,
     'Color' = backgroundColor,
-    'Logo' = logo
+    'Logo' = logoPath
   )
 
   check <- checkWebsiteYml(projectPath = projectPath)
@@ -54,7 +54,6 @@ makeWebsiteYaml <- function(footer = NULL,
       open = FALSE,
       package = "Ulysses")
   }
-
 
   invisible(data)
 
