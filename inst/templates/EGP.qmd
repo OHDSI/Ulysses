@@ -1,9 +1,10 @@
 ---
-title: {{{ Title }}}
+title: {studyTitle}
 subtitle: Evidence Generation Plan 
+draft: TRUE
 author: 
-  - {{ Developer }}
-date: Feburary 2, 1922
+{authors}
+date: last-modified
 format:
   html:
     fontsize: 14pt
@@ -21,7 +22,7 @@ format:
       gutter-width: 50px
 ---
 
-```{r setup, include=FALSE}
+```{{r setup, include=FALSE}}
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
@@ -40,49 +41,40 @@ The purpose of the Evidence Generation Plan (EGP) is to lay out the assumptions 
 - **Analysis**: this section outlines the analytics that will be conducted in a study
 - **Vulnerabilities**: this section outlines limitations and obstacles that would hinder the execution of the study.
 
-# Background {#sec-background}
+# Background {{#sec-background}}
 
-## Rationale {#sec-rationale}
+## Rationale {{#sec-rationale}}
 
 **EXAMPLES PLEASE MODIFY**
 
 The purpose of this study is to characterize patients with disease x for an internal analysis.
 
-## Research Questions {#sec-questions}
+## Research Questions {{#sec-questions}}
 
 **EXAMPLES PLEASE MODIFY**
 
 - How many people can we identify with cohort 1?
 - How do we characterize patients in cohort 1 at baseline (-365 days to -1 day before the index date)?
 
-## Data Sources {#sec-data}
+## Data Sources {{#sec-data}}
 
 
-# Cohort Definitions {#sec-cohorts}
+# Cohort Definitions {{#sec-cohorts}}
 
-## Cohort 1: Disease X {#sec-cohort1}
 
-### Cohort Entry
-
-### Inclusion/Exclusion Criteria
-
-### Cohort Exit
-
-# Feasibility Assessment {#sec-feasibility}
+# Analysis {{#sec-analysis}}
 
 ## Cohort Counts
 
 Our first feasibility for this analysis is to report the number of unique patients and occurrences identified among the cohorts listed in @sec-cohorts.  
 
-# Analysis {#sec-analysis}
-
-## Characterization {#sec-characterization}
+## Characterization 
 
 The first portion of our analysis is to characterize the cohorts listed in @sec-cohorts. We describe demographics and baseline comorbidities where the baseline window is -365 days to -1 days prior to the index date of the cohort.
 
 We report categorical variables by count and percentage and continuous variables by the mean, standard deviation, min, max, median, 25th and 75th percentiles.
 
-### Demographics {#sec-demographics}
+### Demographics 
 
 We report the following demographics for the cohorts listed in @sec-cohorts:
 
@@ -92,7 +84,7 @@ We report the following demographics for the cohorts listed in @sec-cohorts:
 - Year of index date
 - Time in Cohort 
 
-### Baseline Comorbidities {#sec-comorb}
+### Charlson 
 
 For baseline comorbidities, we report the charlson comorbidity score and the proportion of patient with each category in the score. Below we show the comorbidities used in the Charlson with its accompanying point value:
 
@@ -114,7 +106,5 @@ For baseline comorbidities, we report the charlson comorbidity score and the pro
 - Metastatic solid tumor (6 point)
 - AIDS (6 point)
 
-
-# Vulnerabilities {#sec-vulnerabilities}
 
 

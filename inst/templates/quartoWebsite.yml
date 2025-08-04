@@ -2,24 +2,29 @@ project:
   type: website
 
 website:
-  title: '{{{ Title }}}'
+  title: '{studyTitle}'
   navbar:
-    background: '{{{ Color }}}'
-    logo: 'images/{{{ Logo }}}'
+    background: '{backgroundColor}'
+    foreground: '{foregroundColor}'
     left:
       - href: index.qmd
         text: Home
-      - text: Analysis Plan
-        href: AnalysisPlan.qmd
-      - text: Results Report
-        href: ResultsReport.qmd
+      - text: Documents
+        menu:
+         - text: Evidence Generation Plan
+           href: egp.qmd
+      - text: Results
+        menu:
+         - text: Cohort Counts
+           href: report/counts.qmd
       - href: news.qmd
         text: Changelog
-  page-footer: '{{{ Footer }}}'
+  page-footer: '{footer}'
 
 format:
   html:
     theme: cosmo
+    css: style.css
     toc: true
     fig-cap-location: "top"
     tbl-cap-location: "top"

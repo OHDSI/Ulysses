@@ -15,3 +15,17 @@ actionItem <- function(txt) {
   )
   invisible(txt)
 }
+
+
+writeFileAndNotify <- function(x, repoPath, fileName) {
+
+  filePath <- fs::path(repoPath, fileName)
+
+  readr::write_lines(
+    x = x,
+    file = filePath
+  )
+
+  actionItem(glue::glue_col("Write {green {fileName}} to: {cyan {filePath}}"))
+  invisible(filePath)
+}

@@ -71,6 +71,27 @@ format_cohort_expression <- function(expression) {
 }
 
 
+maybeUnlockKeyring <- function(keyringName = NULL, keyringPassword = NULL, silent = TRUE) {
+
+  # list keyrings
+  allKeyrings <- keyring::keyring_list()$keyring
+
+  #error if keyring name not in list
+  if (!is.null(keyringName) && !(keyringName %in% allKeyrings)) {
+    stop(sprintf("keyring %s does not exist", keyringName))
+  }
+
+  # check if keyring is locked
+  keyringLocked <- keyring::keyring_is_locked(keyring = keyringName)
+
+  #unlock if locked
+  if (keyringLocked) {
+    keyring::keyring_unlock(keyring = keyringName, password = keyringPassword)
+  }
+
+  invisible(keyringLocked)
+}
+
 # Function to get a cohort from atlas by Id
 get_cohort_from_atlas <- function(cohortId,
                                   authFirst = FALSE,
@@ -270,6 +291,76 @@ importAtlasConceptSets <- function(
     )
   )
   invisible(conceptSetIds)
+}
+
+
+
+loadCohorts <- function(cohortsToLoadPath, repoPath) {
+
+  barFileExec <- fs::path_package("Ulysses", "templates/initCohortBarista.R") |>
+    readr::read_file() |>
+    glue::glue()
+  cohortsToLoadPath2 <- cohortsToLoadPath
+  cohortsToLoadPath <- 'extras/cohortsToLoad.csv'
+  barFileSave <- fs::path_package("Ulysses", "templates/initCohortBarista.R") |>
+    readr::read_file() |>
+    glue::glue()
+
+
+  exprs <- rlang::parse_exprs(barFileExec)
+  res <- NULL
+  for (i in seq_along(exprs)) {
+    res <- eval(exprs[[i]], env = rlang::caller_env())
+  }
+
+  # read init barista to extras
+  readr::write_file(barFileSave, file = fs::path(repoPath, "extras/initCohortBarista.R"))
+  actionItem(glue::glue_col("Save initCohortBarista: {cyan {fs::path(repoPath, 'extras/initCohortBarista.R')}}"))
+
+  # move temp to repo
+  #fs::file_create(fs::path(repoPath, "extras/cohortsToLoad.csv"))
+  fs::file_copy(
+    path = cohortsToLoadPath2,
+    new_path = fs::path(repoPath, "extras/cohortsToLoad.csv")
+  )
+  actionItem(glue::glue_col("Copy {cyan cohortsToLoad.csv} into Ulysses {cyan extras/}"))
+
+  invisible(res)
+}
+
+
+
+loadConceptSets <- function(conceptSetsToLoadPath, repoPath) {
+
+  barFileExec <- fs::path_package("Ulysses", "templates/initConceptSetBarista.R") |>
+    readr::read_file() |>
+    glue::glue()
+  conceptSetsToLoadPath2 <- conceptSetsToLoadPath
+  conceptSetsToLoadPath <- 'extras/conceptSetsToLoad.csv'
+  barFileSave <- fs::path_package("Ulysses", "templates/initConceptSetBarista.R") |>
+    readr::read_file() |>
+    glue::glue()
+
+
+  exprs <- rlang::parse_exprs(barFileExec)
+  res <- NULL
+  for (i in seq_along(exprs)) {
+    res <- eval(exprs[[i]], env = rlang::caller_env())
+  }
+
+  # update news
+  readr::write_file(barFileSave, file = fs::path(repoPath, "extras/initConceptSetBarista.R"))
+  actionItem(glue::glue_col("Save initConceptSetBarista: {cyan {fs::path(repoPath, 'extras/initConceptSetBarista.R')}}"))
+
+  # move temp to repo
+  fs::file_copy(
+    path = conceptSetsToLoadPath2,
+    new_path = fs::path(repoPath, "extras/conceptSetsToLoad.csv")
+  )
+  actionItem(glue::glue_col("Copy {cyan conceptSetsToLoad.csv} into Ulysses {cyan extras/}"))
+
+
+  invisible(res)
 }
 
 

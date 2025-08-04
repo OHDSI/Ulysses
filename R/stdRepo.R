@@ -3,8 +3,12 @@ newUlyssesRepo <- function(
     repoFolder = NULL,
     studyMeta,
     dbOptions = NULL,
-    gitOptions = NULL,
-    renvOptions = NULL,
+    cohortsToLoadPath = NULL,
+    conceptSetsToLoadPath = NULL,
+    fileLoadOptions = NULL,
+    gitRemote = NULL,
+    renvLock = NULL,
+    aesOptions = NULL,
     verbose = TRUE,
     openProject = TRUE
 ) {
@@ -12,7 +16,7 @@ newUlyssesRepo <- function(
   if (verbose) {
     notification("Step 1: Creating R Project")
   }
-
+  # if repoFolder is null use current wd
   if (is.null(repoFolder)) {
     repoFolder <- here::here()
   }
@@ -23,7 +27,7 @@ newUlyssesRepo <- function(
 
   ## Make local project
   usethis::local_project(repoPath, force = TRUE)
-  usethis::use_rstudio()
+  initRProj(studyId = repoName, repoPath = repoPath)
 
 
   # Step 2: add standard ulysses folders
@@ -41,11 +45,81 @@ newUlyssesRepo <- function(
     notification("Step 3: Adding Standard Ulysses Files")
   }
 
-  folders <- makeReadMe()
+  #init read me
+  initReadMe(studyMeta = studyMeta, studyId = repoName, repoPath = repoPath)
+  # init news
+  initNews(studyId = repoName, repoPath = repoPath)
 
-  pp <- fs::path("./", folders) %>%
-    fs::dir_create(recurse = TRUE)
 
+  # Step 4: Run additional Setup steps
+
+  #Init config Block if not null
+  if (!is.null(dbOptions)) {
+    if (verbose) {
+      notification("Init config.yml")
+      initConfigFile(studyId = repoName, repoPath = repoPath, dbOptions = dbOptions)
+    }
+  }
+
+  #Load cohorts
+  if (!is.null(cohortsToLoadPath)) {
+    if (verbose) {
+      notification("Add Atlas cohorts to Ulysses Repo")
+      loadCohorts(cohortsToLoadPath = cohortsToLoadPath, repoPath = repoPath)
+    }
+  }
+
+  #Load concept sets if any
+  if (!is.null(conceptSetsToLoadPath)) {
+    if (verbose) {
+      notification("Add Atlas concept sets to Ulysses Repo")
+      loadConceptSets(conceptSetsToLoadPath = conceptSetsToLoadPath, repoPath = repoPath)
+    }
+  }
+
+
+  #Init documentation
+  if (!is.null(aesOptions)) {
+    if (verbose) {
+      notification("Initialize Study Hub")
+      initStudyHub(studyMeta = studyMeta, aesOptions = aesOptions, repoPath = repoPath)
+    }
+  }
+
+  #Init analysis
+  if (!is.null(fileLoadOptions)) {
+    if (verbose) {
+      notification("Add files to Ulysses Repo")
+      loadFilesToFolder(folder = "analysis", files = fileLoadOptions$taskFiles, repoPath = repoPath)
+      loadFilesToFolder(folder = "analysis", files = fileLoadOptions$srcFiles, repoPath = repoPath)
+      loadFilesToFolder(folder = "documentation", files = fileLoadOptions$hubFiles, repoPath = repoPath)
+      loadFilesToFolder(folder = "documentation", files = fileLoadOptions$reportFiles, repoPath = repoPath)
+    }
+  }
+
+  #Init renv
+  if (!is.null(renvLock)) {
+    if (verbose) {
+      notification("Set renv.lock")
+      loadRenvLock(renvOptions = renvOptions, repoPath = repoPath)
+    }
+  }
+
+  #Init git
+  if (!is.null(gitRemote)) {
+    if (verbose) {
+      notification("Init local git and set remote url")
+      initGit(gitRemoteUrl = gitRemote, repoPath = repoPath)
+    }
+  }
+
+
+  if (openProject) {
+    notification("Opening project in new session")
+    rstudioapi::openProject(repoPath, newSession = TRUE)
+  }
+
+  invisible(repoPath)
 }
 
 
@@ -68,6 +142,3 @@ listDefaultFolders <- function() {
   return(folders)
 }
 
-listDefaultFiles <- function() {
-
-}

@@ -1,15 +1,16 @@
+
 # check if yml exists
-checkWebsiteYml <- function(projectPath = here::here()) {
-
-  #create yml path
-  ymlPath <- fs::path(projectPath, "documentation/hub/_quarto.yml")
-  check <- fs::file_exists(ymlPath)
-  if (check) {
-    cli::cat_bullet("_quarto.yml already exists for study hub", bullet = "pointer", bullet_col = "yellow")
-  }
-
-  return(check)
-}
+# checkWebsiteYml <- function(projectPath = here::here()) {
+#
+#   #create yml path
+#   ymlPath <- fs::path(projectPath, "documentation/hub/_quarto.yml")
+#   check <- fs::file_exists(ymlPath)
+#   if (check) {
+#     cli::cat_bullet("_quarto.yml already exists for study hub", bullet = "pointer", bullet_col = "yellow")
+#   }
+#
+#   return(check)
+# }
 
 
 # Function to create quarto yml

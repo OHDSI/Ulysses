@@ -57,3 +57,57 @@ initStudyMeta <- function(studyDescription, studyContributors, tags, links) {
   class(sm) <- "studyMeta"
   return(sm)
 }
+
+
+
+dbBlock <- function(configBlockName, dbName, dbms, cdm, vocab) {
+  ll <- list(
+    configBlockName = configBlockName,
+    databaseName = dbName,
+    cdm = cdm,
+    vocab = vocab
+  )
+  class(ll) <- "dbBlock"
+  return(ll)
+}
+
+
+initDbOptions <- function(..., dbms, workDatabaseSchema, tempEmulationSchema) {
+  ll <- list(
+    dbms = dbms,
+    workDatabaseSchema = workDatabaseSchema,
+    tempEmulationSchema = tempEmulationSchema,
+    dbBlocks = rlang::list2(...)
+  )
+  #checkmate::assertClass(ll, classes = c("dbBlock"))
+  class(ll) <- "dbOptions"
+  return(ll)
+}
+
+
+setAesOptions <- function(foregroundColor,
+                          backgroundColor,
+                          footerText,
+                          egpTemplate = TRUE) {
+  ll <- list(
+    foregroundColor = foregroundColor,
+    backgroundColor = backgroundColor,
+    footerText = footerText,
+    egpTemplate = egpTemplate
+  )
+  class(ll) <- "aesOptions"
+  return(ll)
+}
+
+
+
+setFileLoadOptions <- function(taskFiles,
+                               srcFiles) {
+  ll <- list(
+    taskFiles = taskFiles,
+    srcFiles = srcFiles
+  )
+
+  class(ll) <- "fileLoadOptions"
+  return(ll)
+}
