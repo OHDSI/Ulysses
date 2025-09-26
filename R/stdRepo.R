@@ -49,16 +49,20 @@ newUlyssesRepo <- function(
   initReadMe(studyMeta = studyMeta, studyId = repoName, repoPath = repoPath)
   # init news
   initNews(studyId = repoName, repoPath = repoPath)
-
+  # init execution config
+  initExecutionConfigFile(studyId = repoName, repoPath = repoPath)
 
   # Step 4: Run additional Setup steps
 
   #Init config Block if not null
   if (!is.null(dbOptions)) {
     if (verbose) {
-      notification("Init config.yml")
-      initConfigFile(studyId = repoName, repoPath = repoPath, dbOptions = dbOptions)
+      notification("Init sourceConfig.yml")
+      initSourceConfigFile(studyId = repoName, repoPath = repoPath, dbOptions = dbOptions)
+      initConnectionRFile()
     }
+  } else{
+    notification("No sourceConfig.yml was initialized. Please add one to the settings folder.")
   }
 
   #Load cohorts
@@ -127,17 +131,19 @@ newUlyssesRepo <- function(
 
 
 listDefaultFolders <- function() {
-  analysisFolders <- c("src", "tasks", "migrations")
+  analysisFolders <- c("src", "tasks")
   execFolders <- c('logs', 'results', "export")
   cohortFolders <- c("json", "sql", "conceptSets/json")
-  documentationFolders <- c("hub", "misc")
+  disseminationFolders <- c("migration", "studyHub")
+
 
   folders <- c(
     paste('cohorts', cohortFolders, sep = "/"),
     paste('analysis', analysisFolders, sep = "/"),
-    paste('exec', execFolders, sep = "/"),
-    paste('documentation', documentationFolders, sep = "/"),
-    'extras'
+    paste('execution', execFolders, sep = "/"),
+    paste('dissemination', disseminationFolders, sep = "/"),
+    'extras',
+    'settings'
   )
   return(folders)
 }

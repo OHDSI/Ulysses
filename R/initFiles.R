@@ -126,6 +126,7 @@ initNews <- function(studyId, repoPath) {
 
 }
 
+# function to make source blocks in source config
 configBlockSection <- function(studyId, dbBlock) {
   blockSec <- glue::glue(
   "# Config block for {dbBlock$configBlockName}
@@ -134,24 +135,21 @@ configBlockSection <- function(studyId, dbBlock) {
   databaseName: {dbBlock$databaseName}
   cdmDatabaseSchema: {dbBlock$cdm}
   vocabDatabaseSchema: {dbBlock$vocab}
-  cohortTable: {studyId}_{dbBlock$configBlockName}
+  cohortTable: {studyId}_{dbBlock$configBlockName}_001
   "
   )
   return(blockSec)
 }
 
+# initialize the source config file in Ulysses repo in settings folder
+initSourceConfigFile <- function(studyId, repoPath, dbOptions) {
 
-initConfigFile <- function(studyId, repoPath, dbOptions) {
-
-  header <- glue::glue("# Config File for Ulysses Repo: {studyId}")
+  header <- glue::glue("# Source Config File for Ulysses Repo: {studyId}")
   defaultBlock <- glue::glue( # DO NOT TOUCH SPACING
-  "
+    "
 default:
-  projectName: {studyId}
   dbms: {dbOptions$dbms}
-  user: !expr Sys.getenv('omopDbUser')
-  password: !expr Sys.getenv('omopDbPw')
-  connectionString: !expr Sys.getenv('omopDbConnectionString')
+  databaseRole: {dbOptions$databaseRole}
   workDatabaseSchema: {dbOptions$workDatabaseSchema}
   tempEmulationSchema: {dbOptions$tempEmulationSchema}
   ")
@@ -162,17 +160,42 @@ default:
   ) |>
     glue::glue_collapse("\n\n")
 
-
   configFile <- c(header, defaultBlock, conBlocks) |>
-                    glue::glue_collapse(sep = "\n\n")
-  ##cat(configFile)
+    glue::glue_collapse(sep = "\n\n")
 
   readr::write_lines(
     x = configFile,
-    file = fs::path(repoPath, "config.yml")
+    file = fs::path(repoPath, "settings/sourceConfig.yml")
   )
 
-  actionItem(glue::glue_col("Initialize config: {green {fs::path(repoPath, 'config.yml')}}"))
+  actionItem(glue::glue_col("Initialize config: {green {fs::path(repoPath, 'settings/sourceConfig.yml')}}"))
+  invisible(configFile)
+
+}
+# function to create the inital execution config file
+initExecutionConfigFile <- function(studyId, repoPath) {
+
+  header <- glue::glue("# Execution Config File for Ulysses Repo: {studyId}")
+  defaultBlock <- glue::glue( # DO NOT TOUCH SPACING
+    "
+default:
+  projectName: {studyId}
+  connectionConfigPath: !expr Sys.getenv('connectionConfigPath')
+
+release:
+  version: v0.0.1
+  runDate: {lubridate::today()}"
+  )
+
+  configFile <- c(header, defaultBlock) |>
+    glue::glue_collapse(sep = "\n\n")
+
+  readr::write_lines(
+    x = configFile,
+    file = fs::path(repoPath, "executionConfig.yml")
+  )
+
+  actionItem(glue::glue_col("Initialize Execution Config: {green {fs::path(repoPath, 'settings/executionConfig.yml')}}"))
   invisible(configFile)
 
 }
@@ -194,7 +217,7 @@ initStudyHub <- function(studyMeta, aesOptions, repoPath) {
 
   writeFileAndNotify(
     x = hubQuarto,
-    repoPath = fs::path(repoPath, "documentation/hub"),
+    repoPath = fs::path(repoPath, "dissemination/studyHub"),
     fileName = "_quarto.yml"
   )
   # setup quarto css file
@@ -204,7 +227,7 @@ initStudyHub <- function(studyMeta, aesOptions, repoPath) {
 
   writeFileAndNotify(
     x = cssFile,
-    repoPath = fs::path(repoPath, "documentation/hub"),
+    repoPath = fs::path(repoPath, "dissemination/studyHub"),
     fileName = "style.css"
   )
 
@@ -215,7 +238,7 @@ initStudyHub <- function(studyMeta, aesOptions, repoPath) {
 
   writeFileAndNotify(
     x = readMeQmd,
-    repoPath = fs::path(repoPath, "documentation/hub"),
+    repoPath = fs::path(repoPath, "dissemination/studyHub"),
     fileName = "index.qmd"
   )
 
@@ -225,7 +248,7 @@ initStudyHub <- function(studyMeta, aesOptions, repoPath) {
   )
   writeFileAndNotify(
     x = newsQmd,
-    repoPath = fs::path(repoPath, "documentation/hub"),
+    repoPath = fs::path(repoPath, "dissemination/studyHub"),
     fileName = "news.qmd"
   )
 
@@ -243,7 +266,7 @@ initStudyHub <- function(studyMeta, aesOptions, repoPath) {
 
     writeFileAndNotify(
       x = egp,
-      repoPath = fs::path(repoPath, "documentation/hub"),
+      repoPath = fs::path(repoPath, "dissemination/studyHub"),
       fileName = "egp.qmd"
     )
 
@@ -253,11 +276,11 @@ initStudyHub <- function(studyMeta, aesOptions, repoPath) {
       readr::read_file() |>
       glue::glue()
 
-    fs::dir_create(fs::path(repoPath, "documentation/hub/report"))
+    fs::dir_create(fs::path(repoPath, "dissemination/studyHub/report"))
     actionItem(glue::glue("Create report folder in documentation"))
     writeFileAndNotify(
       x = cohortCounts,
-      repoPath = fs::path(repoPath, "documentation/hub/report"),
+      repoPath = fs::path(repoPath, "dissemination/studyHub/report"),
       fileName = "cohortCounts.qmd"
     )
 
