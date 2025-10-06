@@ -72,9 +72,10 @@ dbBlock <- function(configBlockName, dbName, dbms, cdm, vocab) {
 }
 
 
-initDbOptions <- function(..., dbms, workDatabaseSchema, tempEmulationSchema) {
+initDbOptions <- function(..., dbms, databaseRole, workDatabaseSchema, tempEmulationSchema) {
   ll <- list(
     dbms = dbms,
+    databaseRole = databaseRole,
     workDatabaseSchema = workDatabaseSchema,
     tempEmulationSchema = tempEmulationSchema,
     dbBlocks = rlang::list2(...)

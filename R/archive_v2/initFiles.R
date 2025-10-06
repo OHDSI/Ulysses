@@ -27,7 +27,7 @@ initReadMe <- function(studyMeta, studyId, repoPath) {
     "<!-- badge: start -->
 
       ![Study Status: Started](https://img.shields.io/badge/Study%20Status-Started-blue.svg)
-      ![Version: v0.0.1](https://img.shields.io/badge/Version-v0.0.0.9999-yellow.svg)
+      ![Version: v0.0.1](https://img.shields.io/badge/Version-v0.0.1-yellow.svg)
 
     <!-- badge: end -->"
   )
@@ -105,7 +105,7 @@ initReadMe <- function(studyMeta, studyId, repoPath) {
 
 initNews <- function(studyId, repoPath) {
 
-  header <- glue::glue("# {studyId} v0.0.0.9999")
+  header <- glue::glue("# {studyId} v0.0.1")
   items <- c(
     glue::glue("  - Run Date: {lubridate::today()}"),
     "  - Initialize Ulysses Repo"
@@ -173,14 +173,27 @@ default:
 
 }
 # function to create the inital execution config file
-initExecutionConfigFile <- function(studyId, repoPath) {
+initExecConfigFile <- function(studyId,
+                               repoPath,
+                               connectionScriptPath = NULL,
+                               resultsFolderPath = NULL) {
 
-  header <- glue::glue("# Execution Config File for Ulysses Repo: {studyId}")
+  if (is.null(connectionScriptPath)) {
+    connectionScriptPath <- "!expr Sys.getenv('connectionScriptPath')"
+  }
+
+  if (is.null(resultsFolderPath)) {
+    resultsFolderPath <- "!expr Sys.getenv('connectionScriptPath')"
+  }
+
+
+  header <- glue::glue("# Exec Config File for Ulysses Repo: {studyId}")
   defaultBlock <- glue::glue( # DO NOT TOUCH SPACING
     "
 default:
   projectName: {studyId}
-  connectionConfigPath: !expr Sys.getenv('connectionConfigPath')
+  connectionScriptPath: {connectionScriptPath}
+  resultsFolderPath: {resultsFolderPath}
 
 release:
   version: v0.0.1
@@ -192,10 +205,10 @@ release:
 
   readr::write_lines(
     x = configFile,
-    file = fs::path(repoPath, "executionConfig.yml")
+    file = fs::path(repoPath, "settings/execConfig.yml")
   )
 
-  actionItem(glue::glue_col("Initialize Execution Config: {green {fs::path(repoPath, 'settings/executionConfig.yml')}}"))
+  actionItem(glue::glue_col("Initialize Execution Config: {green {fs::path(repoPath, 'settings/execConfig.yml')}}"))
   invisible(configFile)
 
 }

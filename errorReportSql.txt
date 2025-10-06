@@ -1,0 +1,29 @@
+DBMS:
+snowflake
+
+Error:
+net.snowflake.client.jdbc.SnowflakeSQLException: SQL compilation error:
+Schema 'PROD_RWESNOW_DB.OASIS_323_RWESNOW_SCHEMA' does not exist or not authorized.
+
+SQL:
+CREATE TABLE oasis_323_rwesnow_schema.tst_secondary AS
+  SELECT person_id, gender_concept_id FROM optum_mc_omop_202504_rwesnow_schema.person LIMIT 100
+
+R version:
+R version 4.3.2 (2023-10-31 ucrt)
+
+Platform:
+x86_64-w64-mingw32
+
+Attached base packages:
+- stats
+- graphics
+- grDevices
+- utils
+- datasets
+- methods
+- base
+
+Other attached packages:
+- Ulysses (0.0.7)
+- testthat (3.2.1.1)

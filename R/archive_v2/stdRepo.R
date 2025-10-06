@@ -3,6 +3,7 @@ newUlyssesRepo <- function(
     repoFolder = NULL,
     studyMeta,
     dbOptions = NULL,
+    connectionScript = NULL,
     cohortsToLoadPath = NULL,
     conceptSetsToLoadPath = NULL,
     fileLoadOptions = NULL,
@@ -50,7 +51,7 @@ newUlyssesRepo <- function(
   # init news
   initNews(studyId = repoName, repoPath = repoPath)
   # init execution config
-  initExecutionConfigFile(studyId = repoName, repoPath = repoPath)
+  initExecConfigFile(studyId = repoName, repoPath = repoPath, connectionScriptPath = connectionScriptPath)
 
   # Step 4: Run additional Setup steps
 
@@ -59,7 +60,6 @@ newUlyssesRepo <- function(
     if (verbose) {
       notification("Init sourceConfig.yml")
       initSourceConfigFile(studyId = repoName, repoPath = repoPath, dbOptions = dbOptions)
-      initConnectionRFile()
     }
   } else{
     notification("No sourceConfig.yml was initialized. Please add one to the settings folder.")
@@ -133,14 +133,14 @@ newUlyssesRepo <- function(
 listDefaultFolders <- function() {
   analysisFolders <- c("src", "tasks")
   execFolders <- c('logs', 'results', "export")
-  cohortFolders <- c("json", "sql", "conceptSets/json")
+  inputFolders <- c("barista","cohorts/json", "cohorts/sql", "conceptSets/json")
   disseminationFolders <- c("migration", "studyHub")
 
 
   folders <- c(
-    paste('cohorts', cohortFolders, sep = "/"),
+    paste('inputs', cohortFolders, sep = "/"),
     paste('analysis', analysisFolders, sep = "/"),
-    paste('execution', execFolders, sep = "/"),
+    paste('exec', execFolders, sep = "/"),
     paste('dissemination', disseminationFolders, sep = "/"),
     'extras',
     'settings'

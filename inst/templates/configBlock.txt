@@ -1,0 +1,7 @@
+# Config block for {configBlockName}
+
+{configBlockName}:
+  databaseName: {databaseName}
+  databaseLabel: {databaseLabel}
+  cdmDatabaseSchema: {cdm}
+  cohortTable: {repoName}_{configBlockName}_001
