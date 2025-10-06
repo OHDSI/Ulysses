@@ -82,6 +82,29 @@ UlyssesStudy <- R6::R6Class(
       private$.initExecConfigFile() # init exec config
       private$.initSourceConfigFile() # init source config
 
+      # Step 4: Import additional Assets
+      if (verbose) {
+        notification("Step 4: Import additional Assets")
+      }
+      # cohorts to load
+      if (!is.null(private$.inputOptions$circeCohortsToLoad)) {
+        notification("Step 4a: Import Circe Cohorts To Load")
+        writeCohortsToUlysses(
+          circeCohortsToLoad = private$.inputOptions$circeCohortsToLoad,
+          repoPath = repoPath
+        )
+      }
+
+      # cs to load
+      if (!is.null(private$.inputOptions$circeCohortsToLoad)) {
+        notification("Step 4b: Import Circe Concept Sets To Load")
+        writeConceptSetsToUlysses(
+          circeConceptSetsToLoad = private$.inputOptions$circeConceptSetsToLoad,
+          repoPath = repoPath
+        )
+      }
+
+
       if (openProject) {
         notification("Opening project in new session")
         rstudioapi::openProject(repoPath, newSession = TRUE)
@@ -723,16 +746,299 @@ ExecOptions <- R6::R6Class(
   )
 )
 
+WebApiCreds <- R6::R6Class(
+  classname = "WebApiCreds",
+  public = list(
+    initialize = function(webApiUrl, authMethod, user, password) {
+      # check webApiUrl
+      checkmate::assert_string(x = webApiUrl, min.chars = 1)
+      private[[".webApiUrl"]] <- webApiUrl
+      # check authMethod
+      checkmate::assert_string(x = authMethod, min.chars = 1)
+      private[[".authMethod"]] <- authMethod
+      # check user
+      checkmate::assert_string(x = user, min.chars = 1)
+      private[[".user"]] <- user
+      # check user
+      checkmate::assert_string(x = password, min.chars = 1)
+      private[[".password"]] <- password
+    },
+
+    checkUser = function() {
+      usr <- private$.user
+      cli::cat_line(glue::glue("Web Api User: {crayon::blurred(usr)}"))
+      invisible(usr)
+    },
+
+    checkPassword = function() {
+      pwd <- private$.password
+      cli::cat_line(glue::glue("Web Api Password: {crayon::blurred(pwd)}"))
+      invisible(pwd)
+    },
+
+    checkWebApiUrl = function() {
+      baseUrl <- private$.webApiUrl
+      cli::cat_line(glue::glue("Web Api Url: {crayon::green(baseUrl)}"))
+      invisible(baseUrl)
+    },
+
+    checkAuthMethod = function() {
+      am <- private$.authMethod
+      cli::cat_line(glue::glue("Web Api Auth Method: {crayon::green(am)}"))
+      invisible(am)
+    },
+
+    getWebApiUrl = function() {
+      baseUrl <- private$.webApiUrl
+      return(baseUrl)
+    },
+
+    checkAllCredentials = function() {
+      self$checkWebApiUrl()
+      self$checkAuthMethod()
+      self$checkUser()
+      self$checkPassword()
+    },
+
+    authorizeWebApi = function() {
+      baseUrl <- private$.webApiUrl
+
+      cli::cat_bullet(
+        glue::glue("Authorizing Web Api connection for {crayon::cyan(baseUrl)}"),
+        bullet = "pointer",
+        bullet_col = "yellow"
+      )
+
+      ROhdsiWebApi::authorizeWebApi(
+        baseUrl = baseUrl,
+        authMethod = private$.authMethod,
+        webApiUsername = private$.user,
+        webApiPassword = private$.password
+      )
+      invisible(baseUrl)
+    }
+
+  ),
+  private = list(
+    .webApiUrl = NULL,
+    .authMethod = NULL,
+    .user = NULL,
+    .password = NULL
+  )
+)
+
+
+CirceCohortsToLoad <- R6::R6Class(
+  classname = "CirceCohortsToLoad",
+  public = list(
+    initialize = function(cohortsToLoadTable,
+                          webApiCreds) {
+      # check and init cohortsToLoadTable
+      checkmate::assert_data_frame(
+        x = cohortsToLoadTable,
+        min.rows = 1,
+        ncols = 3
+      )
+      private[[".cohortsToLoadTable"]] <- cohortsToLoadTable
+
+      # check webApi creds
+      checkmate::assert_class(x = webApiCreds, classes = "WebApiCreds")
+      private[[".webApiCreds"]] <- webApiCreds
+    },
+
+    getCirce = function() {
+
+      private$.webApiCreds$authorizeWebApi()
+      circeIds <- private$.cohortsToLoadTable$atlasId
+      circeTb <- vector('list', length = length(circeIds))
+      for (i in seq_along(circeIds)) {
+        circeTb[[i]] <- grabCohortFromWebApi(
+          cohortId = circeIds[i],
+          baseUrl = private$.webApiCreds$getWebApiUrl()
+          )
+      }
+      circeTb2 <- do.call('rbind', circeTb)
+      circeTb3 <- private$.cohortsToLoadTable |>
+        dplyr::left_join(
+          circeTb2, by = c('atlasId' = "id")
+        ) |>
+        dplyr::mutate(
+          savePath = fs::path("inputs/cohorts/json", analysisType, saveName, ext = "json")
+        ) |>
+        dplyr::select(
+          atlasId, assetLabel, analysisType, expression, saveName, savePath
+        )
+
+      return(circeTb3)
+    }
+
+
+  ),
+  private = list(
+    .webApiCreds = NULL,
+    .cohortsToLoadTable = NULL
+  ),
+  active = list(
+    cohortsToLoadTable = function(value) {
+      if(missing(value)) {
+        res <- private$.cohortsToLoadTable
+        return(res)
+      }
+      checkmate::assert_data_frame(
+        x = value,
+        min.rows = 1,
+        ncols = 3
+      )
+      private[[".cohortsToLoadTable"]] <- value
+
+      cli::cat_bullet(
+        glue::glue("Replaced {crayon::cyan('cohortsToLoadTable')} with {crayon::green(value)}"),
+        bullet = "info",
+        bullet_col = "blue"
+      )
+    }
+  )
+)
+
+
+CirceConceptSetsToLoad <- R6::R6Class(
+  classname = "CirceConceptSetsToLoad",
+  public = list(
+    initialize = function(conceptSetsToLoadTable,
+                          webApiCreds) {
+      # check and init cohortsToLoadTable
+      checkmate::assert_data_frame(
+        x = conceptSetsToLoadTable,
+        min.rows = 1,
+        ncols = 3
+      )
+      private[[".conceptSetsToLoadTable"]] <- conceptSetsToLoadTable
+
+      # check webApi creds
+      checkmate::assert_class(x = webApiCreds, classes = "WebApiCreds")
+      private[[".webApiCreds"]] <- webApiCreds
+    },
+
+    getCirce = function() {
+
+      private$.webApiCreds$authorizeWebApi()
+      circeIds <- private$.conceptSetsToLoadTable$atlasId
+      circeTb <- vector('list', length = length(circeIds))
+      for (i in seq_along(circeIds)) {
+        circeTb[[i]] <- grabConceptSetFromWebApi(
+          conceptSetId = circeIds[i],
+          baseUrl = private$.webApiCreds$getWebApiUrl()
+        )
+      }
+      circeTb2 <- do.call('rbind', circeTb)
+      circeTb3 <- private$.conceptSetsToLoadTable |>
+        dplyr::left_join(
+          circeTb2, by = c('atlasId' = "id")
+        ) |>
+        dplyr::mutate(
+          savePath = fs::path("inputs/conceptSets/json", analysisType, saveName, ext = "json")
+        ) |>
+        dplyr::select(
+          atlasId, assetLabel, analysisType, expression, saveName, savePath
+        )
+
+      return(circeTb3)
+    }
+
+
+  ),
+  private = list(
+    .webApiCreds = NULL,
+    .conceptSetsToLoadTable = NULL
+  ),
+  active = list(
+    conceptSetsToLoadTable = function(value) {
+      if(missing(value)) {
+        res <- private$.conceptSetsToLoadTable
+        return(res)
+      }
+      checkmate::assert_data_frame(
+        x = value,
+        min.rows = 1,
+        ncols = 3
+      )
+      private[[".conceptSetsToLoadTable"]] <- value
+
+      cli::cat_bullet(
+        glue::glue("Replaced {crayon::cyan('conceptSetsToLoadTable')} with {crayon::green(value)}"),
+        bullet = "info",
+        bullet_col = "blue"
+      )
+    }
+  )
+)
+
 InputOptions <- R6::R6Class(
   classname = "InputOptions",
-  public = list(),
-  private = list(
-    .cohortsToLoadFilePath = NULL,
-    .conceptSetsToLoadFilePath = NULL,
-    .analysisTaskFiles = NULL,
-    .studyHubFiles = NULL
+  public = list(
+    initialize = function(circeCohortsToLoad = NULL,
+                          circeConceptSetsToLoad = NULL,
+                          analysisTaskFilesToLoad = NULL,
+                          studyHubFilesToLoad = NULL) {
+
+      checkmate::assert_class(x = circeCohortsToLoad, classes = "CirceCohortsToLoad", null.ok = TRUE)
+      if (!is.null(circeCohortsToLoad)) {
+        private[[".circeCohortsToLoad"]] <- circeCohortsToLoad
+      }
+
+      checkmate::assert_class(x = circeConceptSetsToLoad, classes = "CirceConceptSetsToLoad", null.ok = TRUE)
+      if (!is.null(circeConceptSetsToLoad)) {
+        private[[".circeConceptSetsToLoad"]] <- circeConceptSetsToLoad
+      }
+
+      checkmate::assert_class(x = analysisTaskFilesToLoad, classes = "AnalysisTaskFilesToLoad", null.ok = TRUE)
+      if (!is.null(analysisTaskFilesToLoad)) {
+        private[[".analysisTaskFilesToLoad"]] <- analysisTaskFilesToLoad
+      }
+
+      checkmate::assert_class(x = studyHubFilesToLoad, classes = "StudyHubFilesToLoad", null.ok = TRUE)
+      if (!is.null(studyHubFilesToLoad)) {
+        private[[".studyHubFilesToLoad"]] <- studyHubFilesToLoad
+      }
+
+    }
   ),
-  active = list()
+  private = list(
+    .circeCohortsToLoad = NULL,
+    .circeConceptSetsToLoad = NULL,
+    .analysisTaskFilesToLoad = NULL,
+    .studyHubFilesToLoad = NULL
+  ),
+  active = list(
+    circeCohortsToLoad = function(value) {
+      if(missing(value)) {
+        res <- private$.circeCohortsToLoad
+        return(res)
+      }
+      checkmate::assert_class(x = value, classes = "CirceCohortsToLoad")
+      private[[".circeCohortsToLoad"]] <- value
+
+      cli::cat_bullet(
+        glue::glue("Replaced {crayon::cyan('circeCohortsToLoad')} with {crayon::green(value)}"),
+        bullet = "info",
+        bullet_col = "blue"
+      )
+    },
+    circeConceptSetsToLoad = function(value) {
+      if(missing(value)) {
+        res <- private$.circeConceptSetsToLoad
+        return(res)
+      }
+      checkmate::assert_class(x = value, classes = "CirceConceptSetsToLoad")
+      private[[".circeConceptSetsToLoad"]] <- value
+
+      cli::cat_bullet(
+        glue::glue("Replaced {crayon::cyan('circeConceptSetsToLoad')} with {crayon::green(value)}"),
+        bullet = "info",
+        bullet_col = "blue"
+      )
+    }
+  )
 )
 
 

@@ -65,6 +65,48 @@ makeExecOptions <- function(connectionLoadScript,
   return(execOptions)
 }
 
+makeWebApiCredentials <- function(webApiUrl, authMethod, user, password, checkCreds = TRUE) {
+  wac <- WebApiCreds$new(
+    webApiUrl = webApiUrl,
+    authMethod = authMethod,
+    user = user,
+    password = password
+  )
+  if (checkCreds) {
+    wac$checkAllCredentials()
+  }
+  return(wac)
+}
+
+makeCirceCohortsToLoad <- function(cohortsToLoadTable, webApiCreds) {
+  tblObj <- CirceCohortsToLoad$new(
+    cohortsToLoadTable = cohortsToLoadTable,
+    webApiCreds = webApiCreds
+  )
+  return(tblObj)
+}
+
+makeCirceConceptSetsToLoad <- function(conceptSetsToLoadTable, webApiCreds) {
+  tblObj <- CirceConceptSetsToLoad$new(
+    conceptSetsToLoadTable = conceptSetsToLoadTable,
+    webApiCreds = webApiCreds
+  )
+  return(tblObj)
+}
+
+makeInputOptions <- function(circeCohortsToLoad = NULL,
+                             circeConceptSetsToLoad = NULL,
+                             analysisTaskFilesToLoad = NULL,
+                             studyHubFilesToLoad = NULL) {
+  io <- InputOptions$new(
+    circeCohortsToLoad = circeCohortsToLoad,
+    circeConceptSetsToLoad = circeConceptSetsToLoad,
+    analysisTaskFilesToLoad = analysisTaskFilesToLoad,
+    studyHubFilesToLoad = studyHubFilesToLoad
+  )
+  return(io)
+}
+
 
 makeUlyssesStudySettings <- function(repoName,
                                      repoFolder,

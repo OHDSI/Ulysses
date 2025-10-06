@@ -160,3 +160,133 @@ default:
 
 }
 
+grabCohortFromWebApi <- function(cohortId, baseUrl) {
+
+  cohort <- ROhdsiWebApi::getCohortDefinition(cohortId = cohortId, baseUrl = baseUrl)
+  exp <- cohort$expression
+  circe <- list(
+    'ConceptSets' = exp$ConceptSets,
+    'PrimaryCriteria' = exp$PrimaryCriteria,
+    'AdditionalCriteria' = exp$AdditionalCriteria,
+    'QualifiedLimit' = exp$QualifiedLimit,
+    'ExpressionLimit' = exp$ExpressionLimit,
+    'InclusionRules' = exp$InclusionRules,
+    'EndStrategy' = exp$EndStrategy,
+    'CensoringCriteria' = exp$CensoringCriteria,
+    'CollapseSettings' = exp$CollapseSettings,
+    'CensorWindow' = exp$CensorWindow,
+    'cdmVersionRange' = exp$cdmVersionRange
+  )
+  if (is.null(circe$AdditionalCriteria)) {
+    circe$AdditionalCriteria <- NULL
+  }
+  if (is.null(circe$EndStrategy)) {
+    circe$EndStrategy <- NULL
+  }
+
+  circeJson <- RJSONIO::toJSON(circe, digits = 23)
+
+  tb <- tibble::tibble(
+    id = cohort$id,
+    name = cohort$name,
+    expression = circeJson,
+    saveName = glue::glue("{id}_{name}") |> snakecase::to_snake_case()
+  )
+  return(tb)
+}
+
+
+grabConceptSetFromWebApi <- function(conceptSetId, baseUrl) {
+
+  cs <- ROhdsiWebApi::getConceptSetDefinition(conceptSetId = conceptSetId, baseUrl = baseUrl)
+
+  tb <- tibble::tibble(
+    id = cs$id,
+    name = cs$name,
+    expression = RJSONIO::toJSON(cs$expression, digits = 23),
+    saveName = glue::glue("{id}_{name}") |> snakecase::to_snake_case()
+  )
+
+  return(tb)
+}
+
+writeCohortsToUlysses <- function(circeCohortsToLoad, repoPath) {
+
+  checkmate::assert_class(
+    x = circeCohortsToLoad,
+    classes = "CirceCohortsToLoad"
+  )
+
+  tbl <- circeCohortsToLoad$getCirce()
+
+  # make cohort folders
+  cohortFolders <- fs::path(repoPath, tbl$savePath) |>
+    fs::path_dir() |>
+    unique() |>
+    fs::dir_create()
+
+  #import files into inputs/cohrots
+  cohortFiles <- fs::path(repoPath, tbl$savePath)
+  for (i in seq_along(cohortFiles)) {
+    readr::write_file(tbl$expression[i], file = cohortFiles[i])
+    actionItem(
+      glue::glue_col(
+        "Circe Cohort {yellow {tbl$atlasId[i]}}: {green {tbl$assetLabel[i]}} json saved to: {cyan {tbl$savePath[i]}}"
+      )
+    )
+  }
+
+  tblToLoad <- tbl |>
+    dplyr::select(
+      atlasId, assetLabel, analysisType, savePath
+    )
+  chToLoadPath <- fs::path(repoPath, "inputs/cohorts/cohortsToLoad.csv")
+  readr::write_csv(tblToLoad, file = chToLoadPath)
+  actionItem(
+    glue::glue_col("Save cohortsToLoad to: {cyan {chToLoadPath}}")
+  )
+
+  invisible(tbl)
+
+}
+
+
+writeConceptSetsToUlysses <- function(circeConceptSetsToLoad, repoPath) {
+
+  checkmate::assert_class(
+    x = circeConceptSetsToLoad,
+    classes = "CirceConceptSetsToLoad"
+  )
+
+  tbl <- circeConceptSetsToLoad$getCirce()
+
+  # make cs folders
+  csFolders <- fs::path(repoPath, tbl$savePath) |>
+    fs::path_dir() |>
+    unique() |>
+    fs::dir_create()
+
+  #import files into inputs/conceptSets
+  csFiles <- fs::path(repoPath, tbl$savePath)
+  for (i in seq_along(csFiles)) {
+    readr::write_file(tbl$expression[i], file = csFiles[i])
+    actionItem(
+      glue::glue_col(
+        "Circe Concept Set {yellow {tbl$atlasId[i]}}: {green {tbl$assetLabel[i]}} json saved to: {cyan {tbl$savePath[i]}}"
+      )
+    )
+  }
+
+  tblToLoad <- tbl |>
+    dplyr::select(
+      atlasId, assetLabel, analysisType, savePath
+    )
+  csToLoadPath <- fs::path(repoPath, "inputs/conceptSets/conceptSetsToLoad.csv")
+  readr::write_csv(tblToLoad, file = csToLoadPath)
+  actionItem(
+    glue::glue_col("Save conceptSetsToLoad to: {cyan {csToLoadPath}}")
+  )
+
+  invisible(tbl)
+
+}
