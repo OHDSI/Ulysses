@@ -1,8 +1,8 @@
 listDefaultFolders <- function() {
   analysisFolders <- c("src", "tasks")
-  execFolders <- c('logs', 'results', "export")
+  execFolders <- c('logs', 'results')
   inputFolders <- c("barista","cohorts/json", "cohorts/sql", "conceptSets/json")
-  disseminationFolders <- c("migration", "studyHub")
+  disseminationFolders <- c("quarto", "export/excel", "export/merge", "documents")
 
 
   folders <- c(
@@ -15,6 +15,7 @@ listDefaultFolders <- function() {
   )
   return(folders)
 }
+
 
 initReadMeFn <- function(sm, repoName, repoPath) {
   # prep title
@@ -159,6 +160,7 @@ default:
   invisible(configFile)
 
 }
+
 
 grabCohortFromWebApi <- function(cohortId, baseUrl) {
 

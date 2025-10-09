@@ -2,8 +2,6 @@
 title: {studyTitle}
 subtitle: Evidence Generation Plan 
 draft: TRUE
-author: 
-{authors}
 date: last-modified
 format:
   html:
@@ -63,48 +61,6 @@ The purpose of this study is to characterize patients with disease x for an inte
 
 
 # Analysis {{#sec-analysis}}
-
-## Cohort Counts
-
-Our first feasibility for this analysis is to report the number of unique patients and occurrences identified among the cohorts listed in @sec-cohorts.  
-
-## Characterization 
-
-The first portion of our analysis is to characterize the cohorts listed in @sec-cohorts. We describe demographics and baseline comorbidities where the baseline window is -365 days to -1 days prior to the index date of the cohort.
-
-We report categorical variables by count and percentage and continuous variables by the mean, standard deviation, min, max, median, 25th and 75th percentiles.
-
-### Demographics 
-
-We report the following demographics for the cohorts listed in @sec-cohorts:
-
-- Age (continuous and in 10 year groups)
-- Gender
-- Race (if available in the database)
-- Year of index date
-- Time in Cohort 
-
-### Charlson 
-
-For baseline comorbidities, we report the charlson comorbidity score and the proportion of patient with each category in the score. Below we show the comorbidities used in the Charlson with its accompanying point value:
-
-- Acute Myocardial Infarction (1 point)  
-- Congestive heart failure (1 point)   
-- Peripheral vascular disease (1 point)   
-- Cerebrovascular Disease (1 point)  
-- Dementia (1 point)   
-- Chronic pulmonary disease (1 point) 
-- Mild liver disease (1 point)
-- Rheumatologic disease (1 point)   
-- Peptic ulcer disease (1 point)
-- Diabetes (mild to moderate) (1 point)
-- Hemiplegia or paraplegia (2 point)  
-- Diabetes with chronic complications (2 point)
-- Renal disease (2 point) 
-- Any Malignancy (2 point)
-- Moderate to severe liver disease (2 point)
-- Metastatic solid tumor (6 point)
-- AIDS (6 point)
 
 
 

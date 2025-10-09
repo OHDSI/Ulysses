@@ -4,22 +4,24 @@ project:
 website:
   title: '{studyTitle}'
   navbar:
-    background: '{backgroundColor}'
-    foreground: '{foregroundColor}'
     left:
       - href: index.qmd
         text: Home
-      - text: Documents
+      - text: Resources
         menu:
          - text: Evidence Generation Plan
            href: egp.qmd
       - text: Results
         menu:
-         - text: Cohort Counts
-           href: report/counts.qmd
+         - text: Results Guidance
+           href: results/results_guidance.qmd
+      - text: Report
+        menu:
+         - text: Report Guidance
+           href: report/report_guidance.qmd
       - href: news.qmd
         text: Changelog
-  page-footer: '{footer}'
+  page-footer: 'Generated Using Ulysses'
 
 format:
   html:

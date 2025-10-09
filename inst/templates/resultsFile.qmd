@@ -1,5 +1,5 @@
 ---
-title: {studyTitle} - Crude Results
+title: {studyTitle} - Results Report
 draft: TRUE
 date: last-modified
 format:
@@ -22,6 +22,6 @@ format:
 
 # Introduction
 
-Add some guidance text
+This section of the results report covers....
 
 

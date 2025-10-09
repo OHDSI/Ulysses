@@ -94,25 +94,11 @@ makeCirceConceptSetsToLoad <- function(conceptSetsToLoadTable, webApiCreds) {
   return(tblObj)
 }
 
-makeInputOptions <- function(circeCohortsToLoad = NULL,
-                             circeConceptSetsToLoad = NULL,
-                             analysisTaskFilesToLoad = NULL,
-                             studyHubFilesToLoad = NULL) {
-  io <- InputOptions$new(
-    circeCohortsToLoad = circeCohortsToLoad,
-    circeConceptSetsToLoad = circeConceptSetsToLoad,
-    analysisTaskFilesToLoad = analysisTaskFilesToLoad,
-    studyHubFilesToLoad = studyHubFilesToLoad
-  )
-  return(io)
-}
-
 
 makeUlyssesStudySettings <- function(repoName,
                                      repoFolder,
                                      studyMeta,
                                      execOptions,
-                                     inputOptions = NULL,
                                      gitRemote = NULL,
                                      renvLock = NULL) {
 
@@ -121,7 +107,6 @@ makeUlyssesStudySettings <- function(repoName,
     repoFolder = repoFolder,
     studyMeta = studyMeta,
     execOptions = execOptions,
-    inputOptions = inputOptions,
     gitRemote = gitRemote,
     renvLock = renvLock
   )

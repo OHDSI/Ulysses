@@ -18,7 +18,7 @@ UlyssesStudy <- R6::R6Class(
                           repoFolder,
                           studyMeta,
                           execOptions,
-                          inputOptions = NULL,
+                          #inputOptions = NULL,
                           gitRemote = NULL,
                           renvLock = NULL
     ) {
@@ -31,7 +31,7 @@ UlyssesStudy <- R6::R6Class(
 
       .setClass(private = private, key = ".studyMeta", value = studyMeta, class = "StudyMeta")
       .setClass(private = private, key = ".execOptions", value = execOptions, class = "ExecOptions")
-      .setClass(private = private, key = ".inputOptions", value = inputOptions, class = "InputOptions", nullable = TRUE)
+      #.setClass(private = private, key = ".inputOptions", value = inputOptions, class = "InputOptions", nullable = TRUE)
 
 
       checkmate::assert_string(x = gitRemote, null.ok = TRUE)
@@ -81,29 +81,7 @@ UlyssesStudy <- R6::R6Class(
       private$.initNews() # init news
       private$.initExecConfigFile() # init exec config
       private$.initSourceConfigFile() # init source config
-
-      # Step 4: Import additional Assets
-      if (verbose) {
-        notification("Step 4: Import additional Assets")
-      }
-      # cohorts to load
-      if (!is.null(private$.inputOptions$circeCohortsToLoad)) {
-        notification("Step 4a: Import Circe Cohorts To Load")
-        writeCohortsToUlysses(
-          circeCohortsToLoad = private$.inputOptions$circeCohortsToLoad,
-          repoPath = repoPath
-        )
-      }
-
-      # cs to load
-      if (!is.null(private$.inputOptions$circeCohortsToLoad)) {
-        notification("Step 4b: Import Circe Concept Sets To Load")
-        writeConceptSetsToUlysses(
-          circeConceptSetsToLoad = private$.inputOptions$circeConceptSetsToLoad,
-          repoPath = repoPath
-        )
-      }
-
+      private$.initQuarto()
 
       if (openProject) {
         notification("Opening project in new session")
@@ -118,7 +96,6 @@ UlyssesStudy <- R6::R6Class(
     .repoFolder = NULL,
     .studyMeta = NULL,
     .execOptions = NULL,
-    .inputOptions = NULL,
     .gitRemote = NULL,
     .renvLock = NULL,
 
@@ -182,6 +159,101 @@ UlyssesStudy <- R6::R6Class(
       exOp <- private$.execOptions
 
       initSourceConfigFileFn(repoName = repoName, repoPath = repoPath, exOp = exOp)
+    },
+
+    .initQuarto = function() {
+      repoName <- private$.repoName
+      repoFolder <- private$.repoFolder
+      repoPath <- fs::path(repoFolder, repoName) |>
+        fs::path_expand()
+
+      studyTitle <- self$studyMeta$studyTitle
+
+      ## Make folders for quarto
+      foldersToCreate <- c("R", "report", "results", "images")
+      fs::dir_create(
+        fs::path(repoPath, "dissemination/quarto", foldersToCreate)
+      )
+      # add key files
+      egp <- readr::read_file(
+        file = fs::path_package("Ulysses", "templates/EGP.qmd")
+      ) |>
+        glue::glue()
+
+      writeFileAndNotify(
+        x = egp,
+        repoPath = fs::path(repoPath, "dissemination/quarto"),
+        fileName = "egp.qmd"
+      )
+
+      # set upd hub quarto
+      hubQuarto <- fs::path_package("Ulysses", "templates/quartoWebsite.yml") |>
+        readr::read_file() |>
+        glue::glue()
+
+      writeFileAndNotify(
+        x = hubQuarto,
+        repoPath = fs::path(repoPath, "dissemination/quarto"),
+        fileName = "_quarto.yml"
+      )
+      reportFile <- readr::read_file(
+        file = fs::path_package("Ulysses", "templates/reportFile.qmd")
+      ) |>
+        glue::glue()
+
+      writeFileAndNotify(
+        x = reportFile,
+        repoPath = fs::path(repoPath, "dissemination/quarto/report"),
+        fileName = "report_guidance.qmd"
+      )
+
+
+      resultsFile <- readr::read_file(
+        file = fs::path_package("Ulysses", "templates/resultsFile.qmd")
+      ) |>
+        glue::glue()
+
+      writeFileAndNotify(
+        x = resultsFile,
+        repoPath = fs::path(repoPath, "dissemination/quarto/results"),
+        fileName = "results_guidance.qmd"
+      )
+
+
+      # setup quarto css file
+      foregroundColor <- "#00E47C"
+      backgroundColor <- "#08312A"
+      cssFile <- fs::path_package("Ulysses", "templates/style.css") |>
+        readr::read_file() |>
+        glue::glue()
+
+      writeFileAndNotify(
+        x = cssFile,
+        repoPath = fs::path(repoPath, "dissemination/quarto"),
+        fileName = "style.css"
+      )
+
+      # copy readme to index file
+      readMeQmd <- readr::read_lines(
+        file = fs::path(repoPath, "README.md")
+      )
+
+      writeFileAndNotify(
+        x = readMeQmd,
+        repoPath = fs::path(repoPath, "dissemination/quarto"),
+        fileName = "index.qmd"
+      )
+
+      # copy news to
+      newsQmd <- readr::read_lines(
+        file = fs::path(repoPath, "NEWS.md")
+      )
+      writeFileAndNotify(
+        x = newsQmd,
+        repoPath = fs::path(repoPath, "dissemination/quarto"),
+        fileName = "news.qmd"
+      )
+
     }
   ),
   active = list(
@@ -233,18 +305,6 @@ UlyssesStudy <- R6::R6Class(
       .setCkass(private = private, key = ".execOptions", value = value, class = "ExecOptions")
       cli::cat_bullet(
         glue::glue("Replaced {crayon::cyan('execOptions')} with {crayon::green(value)}"),
-        bullet = "info",
-        bullet_col = "blue"
-      )
-    },
-    inputOptions = function(value) {
-      if(missing(value)) {
-        sm <- private$.inputOptions
-        return(sm)
-      }
-      .setCkass(private = private, key = ".inputOptions", value = value, class = "InputOptions")
-      cli::cat_bullet(
-        glue::glue("Replaced {crayon::cyan('inputOptions')} with {crayon::green(value)}"),
         bullet = "info",
         bullet_col = "blue"
       )
@@ -966,74 +1026,6 @@ CirceConceptSetsToLoad <- R6::R6Class(
 
       cli::cat_bullet(
         glue::glue("Replaced {crayon::cyan('conceptSetsToLoadTable')} with {crayon::green(value)}"),
-        bullet = "info",
-        bullet_col = "blue"
-      )
-    }
-  )
-)
-
-InputOptions <- R6::R6Class(
-  classname = "InputOptions",
-  public = list(
-    initialize = function(circeCohortsToLoad = NULL,
-                          circeConceptSetsToLoad = NULL,
-                          analysisTaskFilesToLoad = NULL,
-                          studyHubFilesToLoad = NULL) {
-
-      checkmate::assert_class(x = circeCohortsToLoad, classes = "CirceCohortsToLoad", null.ok = TRUE)
-      if (!is.null(circeCohortsToLoad)) {
-        private[[".circeCohortsToLoad"]] <- circeCohortsToLoad
-      }
-
-      checkmate::assert_class(x = circeConceptSetsToLoad, classes = "CirceConceptSetsToLoad", null.ok = TRUE)
-      if (!is.null(circeConceptSetsToLoad)) {
-        private[[".circeConceptSetsToLoad"]] <- circeConceptSetsToLoad
-      }
-
-      checkmate::assert_class(x = analysisTaskFilesToLoad, classes = "AnalysisTaskFilesToLoad", null.ok = TRUE)
-      if (!is.null(analysisTaskFilesToLoad)) {
-        private[[".analysisTaskFilesToLoad"]] <- analysisTaskFilesToLoad
-      }
-
-      checkmate::assert_class(x = studyHubFilesToLoad, classes = "StudyHubFilesToLoad", null.ok = TRUE)
-      if (!is.null(studyHubFilesToLoad)) {
-        private[[".studyHubFilesToLoad"]] <- studyHubFilesToLoad
-      }
-
-    }
-  ),
-  private = list(
-    .circeCohortsToLoad = NULL,
-    .circeConceptSetsToLoad = NULL,
-    .analysisTaskFilesToLoad = NULL,
-    .studyHubFilesToLoad = NULL
-  ),
-  active = list(
-    circeCohortsToLoad = function(value) {
-      if(missing(value)) {
-        res <- private$.circeCohortsToLoad
-        return(res)
-      }
-      checkmate::assert_class(x = value, classes = "CirceCohortsToLoad")
-      private[[".circeCohortsToLoad"]] <- value
-
-      cli::cat_bullet(
-        glue::glue("Replaced {crayon::cyan('circeCohortsToLoad')} with {crayon::green(value)}"),
-        bullet = "info",
-        bullet_col = "blue"
-      )
-    },
-    circeConceptSetsToLoad = function(value) {
-      if(missing(value)) {
-        res <- private$.circeConceptSetsToLoad
-        return(res)
-      }
-      checkmate::assert_class(x = value, classes = "CirceConceptSetsToLoad")
-      private[[".circeConceptSetsToLoad"]] <- value
-
-      cli::cat_bullet(
-        glue::glue("Replaced {crayon::cyan('circeConceptSetsToLoad')} with {crayon::green(value)}"),
         bullet = "info",
         bullet_col = "blue"
       )
