@@ -1,8 +1,8 @@
 listDefaultFolders <- function() {
   analysisFolders <- c("src", "tasks")
   execFolders <- c('logs', 'results')
-  inputFolders <- c("barista","cohorts/json", "cohorts/sql", "conceptSets/json")
-  disseminationFolders <- c("quarto", "export/excel", "export/merge", "documents")
+  inputFolders <- c("barista","cohorts/json", "cohorts/sql", "conceptSets")
+  disseminationFolders <- c("quarto", "export/pretty", "export/merge", "documents")
 
 
   folders <- c(

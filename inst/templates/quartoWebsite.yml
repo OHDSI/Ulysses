@@ -25,6 +25,7 @@ website:
 
 format:
   html:
+    df-print: paged
     theme: cosmo
     css: style.css
     toc: true
