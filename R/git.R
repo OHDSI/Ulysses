@@ -1,29 +1,3 @@
-setGitOptions <- function(repoUrl) {
-
-  ll <- list(
-    repoUrl = repoUrl
-  )
-  return(ll)
-
-}
-
-
-initGit <- function(gitRemoteUrl, repoPath) {
-
-  #Step1: initialize git
-  gert::git_init(repoPath)
-  # Step 2: add all files
-  stg <- gert::git_add(files = ".")
-  #step 3: commit all files
-  sha <- gert::git_commit_all(message = "Initialize Ulysses Repo for study")
-  #step 4: setup remote
-  gert::git_remote_add(url = gitRemoteUrl)
-  # Step 5: push
-  gert::git_push(remote = "origin")
-
-  invisible(TRUE)
-}
-
 
 checkCloneHasStandardFolders <- function(projectPath) {
 
@@ -38,6 +12,11 @@ checkCloneHasStandardFolders <- function(projectPath) {
   return(idx)
 }
 
+#' @title Function to clone a Ulysses Repo into local
+#' @param gitRemoteUrl the url of the git remote used to clone
+#' @param repoFolder the location where you wish to place the git repo
+#' @returns invisible return. Clones the git remote into local file structure and infuses default folders in clone
+#' @export
 cloneUlysses <- function(gitRemoteUrl, repoFolder) {
 
   repoName <- fs::path_file(gitRemoteUrl) |> fs::path_ext_remove()
@@ -67,3 +46,59 @@ cloneUlysses <- function(gitRemoteUrl, repoFolder) {
   invisible(pp)
 
 }
+
+#' @title Launch Ulysses Remote using Bitbucket Data Center
+#' @param repoName the name of the repository in project
+#' @param projectName the name of the project in Bitbucket Data Center storing the repo
+#' @param hostUrl the url hosting bitbucket data center
+#' @param httpToken the http access token configured to your bitbucket profile. To find the httpToken go to Manage Account > HTTP access tokens.
+#' It is recommended that you store the httpToken as an environment variable fo ease of use.
+#' @returns invisible return but initializes the remote on BitbucketDC
+#' @export
+launchUlyssesRemoteWithBitBucketDC <- function(repoName, hostUrl, httpToken, projectName) {
+
+  cli::cat_rule(glue::glue_col("{magenta Inititialize Bitbucket remote}"))
+
+  # create request
+  req <- httr2::request(glue::glue("{hostUrl}/rest/api/latest/projects/{projectName}/repos")) |>
+    httr2::req_headers("Accept" = "application/json", "charset" = "UTF-8") |>
+    httr2::req_auth_bearer_token(token = httpToken) |>
+    httr2::req_body_json(
+      type = "application/json",
+      data = list(
+        defaultBranch = "main",
+        name = repoName,
+        description = glue::glue("Ulysses repo for study {repoName}. Please update description!"),
+        project = list(
+          key = toupper(projectName)
+        ),
+        scmId = "git",
+        slug = repoName
+      )
+    )
+  # TODO add options in case resp is not 200
+  resp <- httr2::req_perform(req)
+
+  cli::cat_bullet(
+    glue::glue_col("Created {green {toupper(projectName)}} repo {green {repoName}} on {cyan {hostUrl}}"),
+    bullet = "pointer",
+    bullet_col = "yellow"
+  )
+
+  tt <- httr2::resp_body_json(resp) # get body contents
+
+  linkToRepo <- cli::style_hyperlink(
+    text = tt$links$self[[1]]$href,
+    url = tt$links$self[[1]]$href
+  )
+  cli::cat_line(
+    glue::glue_col("Review new {green {toupper(projectName)}} remote at: {cyan {linkToRepo}}")
+  )
+
+  cli::cat_line("To Clone Repo use:")
+  cli::cat_line(glue::glue_col("\t+ SSH: {cyan {tt$links$clone[[1]]$href}}"))
+  cli::cat_line(glue::glue_col("\t+ HTTP: {cyan {tt$links$clone[[2]]$href}}"))
+
+  invisible(tt)
+}
+

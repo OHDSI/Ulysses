@@ -79,9 +79,14 @@ UlyssesStudy <- R6::R6Class(
 
       private$.initReadMe() #init read me
       private$.initNews() # init news
-      private$.initExecConfigFile() # init exec config
-      private$.initSourceConfigFile() # init source config
+      private$.initConfigFile() # init config
+      #private$.initSourceConfigFile() # init source config
       private$.initQuarto()
+
+      if (!is.null(private$.gitRemote)) {
+        notification("Step 5 (Optional): Initialize git with Remote")
+        private$.initGit() #initialize git with remote
+      }
 
       if (openProject) {
         notification("Opening project in new session")
@@ -141,24 +146,36 @@ UlyssesStudy <- R6::R6Class(
       initNewsFn(repoName = repoName, repoPath = repoPath)
     },
 
-    .initExecConfigFile = function() {
+    .initConfigFile = function() {
       repoName <- private$.repoName
       repoFolder <- private$.repoFolder
       repoPath <- fs::path(repoFolder, repoName) |>
         fs::path_expand()
-      exOp <- private$.execOptions
 
-      initExecConfigFileFn(repoName = repoName, repoPath = repoPath, exOp = exOp)
+      private$.execOptions$makeConfigFile(repoName = repoName, repoPath = repoPath)
+
     },
 
-    .initSourceConfigFile = function() {
+    .initGit = function(gitRemoteUrl) {
+
+      gitRemoteUrl <- private$.gitRemote
       repoName <- private$.repoName
       repoFolder <- private$.repoFolder
       repoPath <- fs::path(repoFolder, repoName) |>
         fs::path_expand()
-      exOp <- private$.execOptions
 
-      initSourceConfigFileFn(repoName = repoName, repoPath = repoPath, exOp = exOp)
+      #Step1: initialize git
+      gert::git_init(repoPath)
+      # Step 2: add all files
+      stg <- gert::git_add(files = ".")
+      #step 3: commit all files
+      sha <- gert::git_commit_all(message = "Initialize Ulysses Repo for study")
+      #step 4: setup remote
+      gert::git_remote_add(url = gitRemoteUrl)
+      # Step 5: push
+      gert::git_push(remote = "origin")
+
+      invisible(TRUE)
     },
 
     .initQuarto = function() {
@@ -297,18 +314,6 @@ UlyssesStudy <- R6::R6Class(
         bullet_col = "blue"
       )
     },
-    execOptions = function(value) {
-      if(missing(value)) {
-        sm <- private$.execOptions
-        return(sm)
-      }
-      .setCkass(private = private, key = ".execOptions", value = value, class = "ExecOptions")
-      cli::cat_bullet(
-        glue::glue("Replaced {crayon::cyan('execOptions')} with {crayon::green(value)}"),
-        bullet = "info",
-        bullet_col = "blue"
-      )
-    },
     gitRemote = function(value) {
       if(missing(value)) {
         sm <- private$.gitRemote
@@ -339,6 +344,7 @@ UlyssesStudy <- R6::R6Class(
 # Sub options classes ------------
 
 # sub class for contributors in study meta
+# Contributor Line ---------------
 ContributorLine <- R6::R6Class(
   classname = "ContributorLine",
   public = list(
@@ -397,6 +403,7 @@ ContributorLine <- R6::R6Class(
   )
 )
 
+# Study Meta ---------------
 StudyMeta <- R6::R6Class(
   classname = "StudyMeta",
   public = list(
@@ -558,12 +565,15 @@ StudyMeta <- R6::R6Class(
   )
 )
 
-
+# Db Config Block -----------------------
 DbConfigBlock <- R6::R6Class(
   classname = "DbConfigBlock",
   public = list(
     initialize = function(configBlockName,
+                          #dbms,
                           cdmDatabaseSchema,
+                          #workDatabaseSchema,
+                          #tempEmulationSchema,
                           databaseName = NULL,
                           databaseLabel = NULL) {
 
@@ -588,16 +598,17 @@ DbConfigBlock <- R6::R6Class(
       }
     },
 
-    writeBlockSection = function(repoName) {
+    writeBlockSection = function(repoName, dbms, workSchema, tempSchema) {
 
       configBlockName <- private$.configBlockName
       databaseName <- private$.databaseName
       databaseLabel <- private$.databaseLabel
-      cdm <- private$.cdmDatabaseSchema
+      cdmSchema <- private$.cdmDatabaseSchema
 
       configBlock <- fs::path_package(package = "Ulysses", "templates/configBlock.txt") |>
         readr::read_file() |>
         glue::glue()
+
       return(configBlock)
     }
   ),
@@ -664,23 +675,17 @@ DbConfigBlock <- R6::R6Class(
   )
 )
 
+# Exec Options ---------------------
 ExecOptions <- R6::R6Class(
   classname = "ExecOptions",
   public = list(
     initialize = function(
     dbms,
-    connectionLoadScript,
-    resultsPath,
-    databaseRole,
     workDatabaseSchema,
     tempEmulationSchema,
     dbConnectionBlocks) {
 
       .setString(private = private, key = ".dbms", value = dbms)
-
-      .setString(private = private, key = ".connectionLoadScript", value = connectionLoadScript)
-
-      .setString(private = private, key = ".resultsPath", value = resultsPath)
 
       .setString(private = private, key = ".workDatabaseSchema", value = workDatabaseSchema)
 
@@ -692,18 +697,41 @@ ExecOptions <- R6::R6Class(
       checkmate::assert_list(x = dbConnectionBlocks, min.len = 1, types = "DbConfigBlock")
       private[[".dbConnectionBlocks"]] <- dbConnectionBlocks
 
-      checkmate::assert_string(x = databaseRole, min.chars = 1, null.ok = TRUE)
-      if (!is.null(databaseRole)) {
-        private[[".databaseRole"]] <- databaseRole
+    },
+
+    makeConfigFile = function(repoName, repoPath) {
+
+      dbBlocks <- vector('list', length = length(private$.dbConnectionBlocks))
+      for (i in seq_along(dbBlocks)) {
+        dbBlocks[[i]] <- private$.dbConnectionBlocks[[i]]$writeBlockSection(
+          repoName = repoName,
+          dbms = private$.dbms,
+          workSchema = private$.workDatabaseSchema,
+          tempSchema = private$.tempEmulationSchema
+        )
       }
+      dbBlocks <- do.call('c', dbBlocks) |>
+        glue::glue_collapse(sep = "\n\n")
+
+      header <- fs::path_package(package = "Ulysses", "templates/configHeader.txt") |>
+        readr::read_file() |>
+        glue::glue()
+
+      configFile <- c(header, dbBlocks) |>
+        glue::glue_collapse(sep = "\n\n")
+
+      readr::write_lines(
+        x = configFile,
+        file = fs::path(repoPath, "config.yml")
+      )
+
+      actionItem(glue::glue_col("Initialize Config: {green {fs::path(repoPath, repoName, 'config.yml')}}"))
+      invisible(configFile)
 
     }
   ),
   private = list(
     .dbms = NA_character_,
-    .connectionLoadScript = NA_character_,
-    .resultsPath = NULL,
-    .databaseRole = NA_character_,
     .workDatabaseSchema = NULL,
     .tempEmulationSchema = NULL,
     .dbConnectionBlocks = NULL
@@ -717,44 +745,6 @@ ExecOptions <- R6::R6Class(
       .setString(private = private, key = ".dbms", value = value)
       cli::cat_bullet(
         glue::glue("Replaced {crayon::cyan('dbms')} with {crayon::green(value)}"),
-        bullet = "info",
-        bullet_col = "blue"
-      )
-    },
-    connectionLoadScript = function(value) {
-      if(missing(value)) {
-        sm <- private$.connectionLoadScript
-        return(sm)
-      }
-      .setString(private = private, key = ".connectionLoadScript", value = value)
-      cli::cat_bullet(
-        glue::glue("Replaced {crayon::cyan('connectionLoadScript')} with {crayon::green(value)}"),
-        bullet = "info",
-        bullet_col = "blue"
-      )
-    },
-    resultsPath = function(value) {
-      if(missing(value)) {
-        sm <- private$.resultsPath
-        return(sm)
-      }
-      .setString(private = private, key = ".resultsPath", value = value)
-      cli::cat_bullet(
-        glue::glue("Replaced {crayon::cyan('resultsPath')} with {crayon::green(value)}"),
-        bullet = "info",
-        bullet_col = "blue"
-      )
-    },
-    databaseRole = function(value) {
-      if(missing(value)) {
-        sm <- private$.databaseRole
-        return(sm)
-      }
-      checkmate::assert_string(x = value, min.chars = 1, null.ok = TRUE)
-      private[[".databaseRole"]] <- value
-
-      cli::cat_bullet(
-        glue::glue("Replaced {crayon::cyan('databaseRole')} with {crayon::green(value)}"),
         bullet = "info",
         bullet_col = "blue"
       )
@@ -806,13 +796,14 @@ ExecOptions <- R6::R6Class(
   )
 )
 
-WebApiCreds <- R6::R6Class(
-  classname = "WebApiCreds",
+# WebApiConnection ---------------------
+WebApiConnection <- R6::R6Class(
+  classname = "WebApiConnection",
   public = list(
-    initialize = function(webApiUrl, authMethod, user, password) {
-      # check webApiUrl
-      checkmate::assert_string(x = webApiUrl, min.chars = 1)
-      private[[".webApiUrl"]] <- webApiUrl
+    initialize = function(baseUrl, authMethod, user, password) {
+      # check baseUrl
+      checkmate::assert_string(x = baseUrl, min.chars = 1)
+      private[[".baseUrl"]] <- baseUrl
       # check authMethod
       checkmate::assert_string(x = authMethod, min.chars = 1)
       private[[".authMethod"]] <- authMethod
@@ -826,42 +817,117 @@ WebApiCreds <- R6::R6Class(
 
     checkUser = function() {
       usr <- private$.user
-      cli::cat_line(glue::glue("Web Api User: {crayon::blurred(usr)}"))
+      cli::cat_line(glue::glue("- user: {crayon::green(usr)}"))
       invisible(usr)
     },
 
     checkPassword = function() {
       pwd <- private$.password
-      cli::cat_line(glue::glue("Web Api Password: {crayon::blurred(pwd)}"))
+      cli::cat_line(glue::glue("- password: {crayon::blurred(pwd)}"))
       invisible(pwd)
     },
 
-    checkWebApiUrl = function() {
-      baseUrl <- private$.webApiUrl
-      cli::cat_line(glue::glue("Web Api Url: {crayon::green(baseUrl)}"))
+    checkBaseUrl = function() {
+      baseUrl <- private$.baseUrl
+      cli::cat_line(glue::glue("- baseUrl: {crayon::green(baseUrl)}"))
       invisible(baseUrl)
     },
 
     checkAuthMethod = function() {
       am <- private$.authMethod
-      cli::cat_line(glue::glue("Web Api Auth Method: {crayon::green(am)}"))
+      cli::cat_line(glue::glue("- authMethod: {crayon::green(am)}"))
       invisible(am)
     },
 
     getWebApiUrl = function() {
-      baseUrl <- private$.webApiUrl
+      baseUrl <- private$.baseUrl
       return(baseUrl)
     },
 
-    checkAllCredentials = function() {
-      self$checkWebApiUrl()
+    checkAtlasCredentials = function() {
+
+      headerTxt <- glue::glue_col("Checking Atlas Credentials from {cyan .Renviron}")
+      cli::cat_rule(headerTxt)
+      cli::cat_line()
+
+      self$checkBaseUrl()
       self$checkAuthMethod()
       self$checkUser()
       self$checkPassword()
+
+      cli::cat_line()
+      messageTxt <- glue::glue_col("To modify credentials run function {magenta 'usethis::edit_r_environ()'} and change system variables for Atlas credentials")
+      cli::cat_bullet(messageTxt, bullet = "warning", bullet_col = "yellow")
+
     },
 
+    getCohortDefinition = function(cohortId) {
+
+      if (is.null(private$.bearerToken)) {
+        private$authorizeWebApi()
+      }
+      baseUrl <- private$.baseUrl
+      req <- glue::glue("{baseUrl}/cohortdefinition/{cohortId}") |>
+            httr2::request() |>
+            httr2::req_auth_bearer_token(token = private$.bearerToken)
+      resp <- httr2::req_perform(req = req)
+      cd <- httr2::resp_body_json(resp)
+      cdExp <- RJSONIO::fromJSON(cd$expression, nullValue = NA, digits = 23)
+
+      tb <- tibble::tibble(
+        id = cd$id,
+        name = cd$name,
+        expression = formatCohortExpression(cdExp),
+        saveName = glue::glue("{id}_{name}") |> snakecase::to_snake_case()
+      )
+
+      return(tb)
+    },
+
+    getConceptSetDefinition = function(conceptSetId) {
+
+      if (is.null(private$.bearerToken)) {
+        private$authorizeWebApi()
+      }
+      baseUrl <- private$.baseUrl
+      req <- glue::glue("{baseUrl}/conceptset/{conceptSetId}") |>
+        httr2::request() |>
+        httr2::req_auth_bearer_token(token = private$.bearerToken)
+      resp <- httr2::req_perform(req = req)
+      cs <- httr2::resp_body_json(resp)
+
+      # get the expression from the right spot
+      csExp <-pluckConceptSetExpression(
+        conceptSetId = conceptSetId,
+        baseUrl = baseUrl,
+        bearerToken = private$.bearerToken
+      )
+
+      tb <- tibble::tibble(
+        id = cs$id,
+        name = cs$name,
+        expression = csExp,
+        saveName = glue::glue("{id}_{name}") |> snakecase::to_snake_case()
+      )
+
+      return(tb)
+    }
+
+  ),
+  private = list(
+    .baseUrl = NULL,
+    .authMethod = NULL,
+    .user = NULL,
+    .password = NULL,
+    .bearerToken = NULL,
+
+    # functions
     authorizeWebApi = function() {
-      baseUrl <- private$.webApiUrl
+
+      baseUrl <- private$.baseUrl
+      authMethod <- private$.authMethod
+      user <- private$.user
+      password <- private$.password
 
       cli::cat_bullet(
         glue::glue("Authorizing Web Api connection for {crayon::cyan(baseUrl)}"),
@@ -869,21 +935,20 @@ WebApiCreds <- R6::R6Class(
         bullet_col = "yellow"
       )
 
-      ROhdsiWebApi::authorizeWebApi(
-        baseUrl = baseUrl,
-        authMethod = private$.authMethod,
-        webApiUsername = private$.user,
-        webApiPassword = private$.password
-      )
-      invisible(baseUrl)
-    }
+      authUrl <- paste0(baseUrl, glue::glue("/user/login/{authMethod}"))
 
-  ),
-  private = list(
-    .webApiUrl = NULL,
-    .authMethod = NULL,
-    .user = NULL,
-    .password = NULL
+      req <- httr2::request(authUrl) |>
+        httr2::req_body_form(
+          login = user,
+          password = password
+        )
+
+      bearerToken <- httr2::req_perform(req)$headers$Bearer
+
+      .setString(private = private, key = ".bearerToken", value = bearerToken)
+
+      invisible(bearerToken)
+    }
   )
 )
 

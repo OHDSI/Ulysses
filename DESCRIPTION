@@ -1,8 +1,8 @@
 Package: Ulysses
 Title: Automate OHDSI Study Setup
-Version: 0.0.7
+Version: 1.0.0
 Authors@R: 
-    person("Martin", "Lavallee", , "martin.lavallee@odysseusinc.com", role = c("aut", "cre"))
+    person("Martin", "Lavallee", , "martin.lavallee@boehringer-ingelheim.com", role = c("aut", "cre"))
 Description: Automates setup of OHDSI study and provides functions to assist on improving organization
     and communication of a study. 
 License: Apache License (>= 2)

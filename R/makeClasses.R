@@ -1,8 +1,22 @@
+#' @title Set Ulysses Contributor
+#' @param name the name of the contributor as a character string
+#' @param email the email of the contributor as a character string
+#' @param role the role of the contirbutor as a character string
+#' @returns A ContributorLine R6 class with the contributor info
+#' @export
 setContributor <- function(name, email, role) {
   contributorLine <- ContributorLine$new(name = name, email = email, role = role)
   return(contributorLine)
 }
 
+#' @title Make Study Meta for Ulysses
+#' @param studyTitle the title of the study as a character string
+#' @param therapeuticArea the TA as a character string
+#' @param studyType the study type (typically characterization)
+#' @param studyLinks a list of study links
+#' @param studyTags a list of study tags
+#' @returns A StudyMeta R6 class with the study meta
+#' @export
 makeStudyMeta <- function(studyTitle,
                           therapeuticArea,
                           studyType,
@@ -20,7 +34,13 @@ makeStudyMeta <- function(studyTitle,
 
   return(sm)
 }
-
+#' @title set the config block for a database
+#' @param configBlockName the name of the config block
+#' @param cdmDatabaseSchema the cdmDatabaseSchema specified as a character string
+#' @param databaseName the name of the database, typically uses the db name and id. For example optum_dod_202501
+#' @param databaseLabel the labelling name of the database, typically a common name for a db. For example Optum DOD
+#' @returns A StudyMeta R6 class with the study meta
+#' @export
 setDbConfigBlock <- function(configBlockName,
                              cdmDatabaseSchema,
                              databaseName = NULL,
@@ -32,32 +52,20 @@ setDbConfigBlock <- function(configBlockName,
   return(dbConfigBlock)
 }
 
-
-makeExecOptions <- function(connectionLoadScript,
-                            hideConnectionScriptPath = TRUE,
-                            dbms,
-                            resultsPath = "exec/results",
-                            databaseRole = NULL,
+#' @title Make ExecOptions for Ulysses
+#' @param dbms specify the dbms used in the exec options
+#' @param workDatabaseSchema the name of the workDatabaseSchema as a character string, location in DB where user has write access
+#' @param tempEmulationSchema he name of the tempEmulationSchema as a character strings
+#' @param dbConnectionBlocks a list of DbConfigBlock R6 classes specifying the dbs to connect
+#' @returns A ExecOptions R6 class with the execOptions
+#' @export
+makeExecOptions <- function(dbms,
                             workDatabaseSchema,
                             tempEmulationSchema = NULL,
                             dbConnectionBlocks) {
 
-  if (hideConnectionScriptPath) {
-    notification(
-      glue::glue_col("Run {magenta `usethis::edit_r_environ()`} to save system variable to {cyan .Renviron}!!!")
-    )
-    cli::cat_line(glue::glue_col("Copy to {cyan .Renviron}"))
-    cli::cat_line(glue::glue_col("{yellow connectionLoadScript}={green '{connectionLoadScript}'}"))
-    connectionLoadScript2 <- "!expr Sys.getenv('connectionLoadScript')"
-  } else {
-    connectionLoadScript2 <- connectionLoadScript
-  }
-
   execOptions <- ExecOptions$new(
-    connectionLoadScript = connectionLoadScript2,
     dbms = dbms,
-    resultsPath = resultsPath,
-    databaseRole = databaseRole,
     workDatabaseSchema = workDatabaseSchema,
     tempEmulationSchema = tempEmulationSchema,
     dbConnectionBlocks = dbConnectionBlocks
@@ -65,36 +73,16 @@ makeExecOptions <- function(connectionLoadScript,
   return(execOptions)
 }
 
-makeWebApiCredentials <- function(webApiUrl, authMethod, user, password, checkCreds = TRUE) {
-  wac <- WebApiCreds$new(
-    webApiUrl = webApiUrl,
-    authMethod = authMethod,
-    user = user,
-    password = password
-  )
-  if (checkCreds) {
-    wac$checkAllCredentials()
-  }
-  return(wac)
-}
 
-makeCirceCohortsToLoad <- function(cohortsToLoadTable, webApiCreds) {
-  tblObj <- CirceCohortsToLoad$new(
-    cohortsToLoadTable = cohortsToLoadTable,
-    webApiCreds = webApiCreds
-  )
-  return(tblObj)
-}
-
-makeCirceConceptSetsToLoad <- function(conceptSetsToLoadTable, webApiCreds) {
-  tblObj <- CirceConceptSetsToLoad$new(
-    conceptSetsToLoadTable = conceptSetsToLoadTable,
-    webApiCreds = webApiCreds
-  )
-  return(tblObj)
-}
-
-
+#' @title Make Ulysses Study Settings
+#' @param repoName the name of repo as a character string
+#' @param repoFolder the folder path where the repo is stored in local as a character string
+#' @param studyMeta a StudyMeta R6 class with the details describing the study
+#' @param execOptions a ExecOptions R6 class with the execution details needed for the study
+#' @param gitRemote a remote url used to clone and set remote git
+#' @param renvLock file path to a renvLock file
+#' @returns A UlyssesStudy R6 class with the ulysses study details to make
+#' @export
 makeUlyssesStudySettings <- function(repoName,
                                      repoFolder,
                                      studyMeta,
@@ -114,7 +102,12 @@ makeUlyssesStudySettings <- function(repoName,
 
 }
 
-
+#' @title Function to Launch new Ulysses Repo
+#' @param ulyssesStudySettings UlyssesStudy R6 class with the ulysses study details to make
+#' @param verbose a toggle whether to print details of launch in console
+#' @param openProject a toggle whether to open the repo as a new R project
+#' @returns invisible return. Creates the ulysses repo in the local file structure
+#' @export
 launchUlyssesRepo <- function(ulyssesStudySettings, verbose = TRUE, openProject = FALSE) {
   ulyssesStudySettings$initUlyssesRepo(verbose = verbose, openProject = openProject)
 }
