@@ -121,7 +121,11 @@ UlyssesStudy <- R6::R6Class(
         file = fs::path(projFile)
       )
       actionItem(glue::glue_col("Initializing {green {repoName}.Rproj}"))
-      usethis::use_git_ignore(".Rproj.user")
+      usethis::use_git_ignore(
+        c(".Rproj.user", ".Ruserdata",
+          ".Rhistory", ".RData",
+          ".Renviron", "exec/results")
+      )
       invisible(projFile)
 
     },

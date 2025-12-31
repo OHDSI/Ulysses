@@ -1,6 +1,6 @@
 # @file PackageMaintenance
 #
-# Copyright 2024 Observational Health Data Sciences and Informatics
+# Copyright 2025 Observational Health Data Sciences and Informatics
 #
 # This file is part of Capr
 #
@@ -36,29 +36,28 @@ dir.create(path = "./extras/pdf_vignette/", showWarnings = FALSE)
 # render markdown to pdf
 
 ### start study
-rmarkdown::render("vignettes/start_study.Rmd",
-                  output_file = "../extras/pdf_vignette/start_study.pdf",
-
+rmarkdown::render("vignettes/get_started.Rmd",
+                  output_file = "../extras/pdf_vignette/get_started.pdf",
   rmarkdown::pdf_document(latex_engine = "pdflatex", toc = TRUE, number_sections = TRUE))
-unlink("extras/pdf_vignette/start_study.tex")
+unlink("extras/pdf_vignette/get_started.tex")
 
 
-### credentials
-rmarkdown::render("vignettes/credentials.Rmd",
-                  output_file = "../extras/pdf_vignette/credentials.pdf",
+## ulysses structure
+rmarkdown::render("vignettes/ulysses_structure.Rmd",
+                  output_file = "../extras/pdf_vignette/ulysses_structure.pdf",
 
                   rmarkdown::pdf_document(latex_engine = "pdflatex", toc = TRUE, number_sections = TRUE))
-unlink("extras/pdf_vignette/credentials.tex")
+unlink("extras/pdf_vignette/ulysses_structure.tex")
 
 
 ### atlas
-rmarkdown::render("vignettes/atlas.Rmd",
-                  output_file = "../extras/pdf_vignette/atlas.pdf",
-
-                  rmarkdown::pdf_document(latex_engine = "pdflatex", toc = TRUE, number_sections = TRUE))
-unlink("extras/pdf_vignette/atlas.tex")
+# rmarkdown::render("vignettes/atlas.Rmd",
+#                   output_file = "../extras/pdf_vignette/atlas.pdf",
+#
+#                   rmarkdown::pdf_document(latex_engine = "pdflatex", toc = TRUE, number_sections = TRUE))
+# unlink("extras/pdf_vignette/atlas.tex")
 
 # 4) build site ------------------------
 pkgdown::build_site()
-OhdsiRTools::fixHadesLogo()
+#OhdsiRTools::fixHadesLogo()
 

@@ -1,9 +1,8 @@
-pandoc: 3.1.11
+pandoc: '3.2'
 pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
-  atlas: atlas.html
-  credentials: credentials.html
-  start_study: start_study.html
-last_built: 2024-05-16T17:56Z
+  get_started: get_started.html
+  ulysses_structure: ulysses_structure.html
+last_built: 2025-12-31T19:30Z
 

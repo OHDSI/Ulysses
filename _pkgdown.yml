@@ -5,12 +5,8 @@ template:
 home:
   links:
   - text: Ask a question
-    href: http://forums.ohdsi.org
-    
+    href: https://github.com/OHDSI/Ulysses/issues
+
 navbar:
   structure:
-    right: [hades, github]
-  components:
-    hades:
-      text: hadesLogo
-      href: https://ohdsi.github.io/Hades
+    right: [github]
