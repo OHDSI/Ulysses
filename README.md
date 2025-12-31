@@ -1,23 +1,32 @@
-# Ulysses <img src="man/figures/logo.png" align="right" height="75" />
+# Ulysses <img src="man/figures/ulyssesLogo.png" width=150 alt="logo" align="right"/>
 
 <!-- badges: start -->
 
-[![codecov.io](https://codecov.io/github/OHDSI/Ulysses/coverage.svg?branch=main)](https://app.codecov.io/gh/OHDSI/Ulysses?branch=main) [![Build Status](https://github.com/OHDSI/Ulysses/workflows/R-CMD-check/badge.svg)](https://github.com/OHDSI/Ulysses/actions?query=workflow%3AR-CMD-check)
-
 <!-- badges: end -->
-
-Ulysses is part of [HADES](https://ohdsi.github.io/Hades/)
 
 
 # Introduction
 
-Ulysses is an R package that automates setup of an OHDSI study and provides functions to assist with its maintenance and organization.
+Ulysses is an OHDSI R package serving as a workflow tool for the setup and organization of an RWE study. Ulysses draws inspiration from the R package [`usethis`](https://usethis.r-lib.org/), which is a workflow tool used for the development of R packages, providing functions to automate the initialization of an R package and helpers for its maintenance. Similarly, RWE studies have a lot of documentation, code and results that need to be maintained and versioned. Organization of these components can be complicated without a strict organizational standard. The Ulysses study workflow tool is not specific to OMOP/OHDSI and can be used for other setups; it does provide automation focused on OHDSI/OMOP application. 
 
-# System Requirements
+Part of the Ulysses philosophy is contextualizing an RWE study/pipeline as a unit of software. As observational studies have become more and more popular given the access to longitudinal observational databases (such as claims and EHR) there is a lack of consistent standards on how code is maintained and executed. RWE studies have become more like software projects requiring a encapsulated root project with standard folders to source elements of the RWE pipeline such as inputs, functions, output and documentation to support these elements. A standard directory structure makes things more organized allowing for collaborative development and consistent execution based on a known structure. 
 
-Requires R (version 4.1 or higher)
+The basic functions of Ulysses include:
 
-# Installation
+- Implementation of standard directory structure - see [Ulysses Stucture](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/pdf_vignette/ulysses_structure.pdf)
+- Launch of Ulysses style code repository - see [Get Started](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/pdf_vignette/get_started.pdf)
+- Input Manifest helper functions
+- Helpers to pull cohorts and concept sets from WebApi
+- Git Helpers to initialize and sync repo
+
+# Technical Setup
+
+## System Requirements
+
+- Requires R (version 4.1 or higher)
+- Quarto (version 1.6 or higher)
+
+## Installation
 
 1. See the instructions [here](https://ohdsi.github.io/Hades/rSetup.html) for configuring your R environment, including RTools and Java.
 
@@ -28,32 +37,3 @@ Requires R (version 4.1 or higher)
   remotes::install_github("ohdsi/Ulysses")
   ```
 3. Install [quarto](https://quarto.org/docs/get-started/index.html)
-
-# User Documentation
-
-Documentation can be found on the [package website](https://ohdsi.github.io/Ulysses/).
-
-PDF versions of the documentation are available:
-
-- Vignette: [Ulysses Intro](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/pdf_vignette/start_study.pdf)
-- Vignette: [Setup Credentials](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/pdf_vignette/credentials.pdf)
-- Vignette: [Import Atlas](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/pdf_vignette/atlas.pdf)
-- [Package manual](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/Ulysses.pdf)
-
-# Support
-
--   Developer questions/comments/feedback: <a href="http://forums.ohdsi.org/c/developers">OHDSI Forum</a>
--   We use the <a href="https://github.com/OHDSI/Capr/issues">GitHub issue tracker</a> for all bugs/issues/enhancements
-
-# Contributing
-
-Read [here](https://ohdsi.github.io/Hades/contribute.html) how you can contribute to this package.
-
-# License
-
-Ulysses is licensed under Apache License 2.0
-
-# Development
-
-Ulysses is being developed in R Studio.
-

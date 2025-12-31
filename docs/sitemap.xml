@@ -4,10 +4,22 @@
     <loc>/404.html</loc>
   </url>
   <url>
+    <loc>/articles/archive/atlas.html</loc>
+  </url>
+  <url>
+    <loc>/articles/archive/credentials.html</loc>
+  </url>
+  <url>
+    <loc>/articles/archive/start_study.html</loc>
+  </url>
+  <url>
     <loc>/articles/atlas.html</loc>
   </url>
   <url>
     <loc>/articles/credentials.html</loc>
+  </url>
+  <url>
+    <loc>/articles/get_started.html</loc>
   </url>
   <url>
     <loc>/articles/index.html</loc>
@@ -17,6 +29,9 @@
   </url>
   <url>
     <loc>/articles/ulysses_directory.html</loc>
+  </url>
+  <url>
+    <loc>/articles/ulysses_structure.html</loc>
   </url>
   <url>
     <loc>/authors.html</loc>
@@ -61,10 +76,19 @@
     <loc>/reference/checkDatabaseCredential.html</loc>
   </url>
   <url>
+    <loc>/reference/cloneUlysses.html</loc>
+  </url>
+  <url>
     <loc>/reference/cohortManifest.html</loc>
   </url>
   <url>
     <loc>/reference/defaultCredentials.html</loc>
+  </url>
+  <url>
+    <loc>/reference/defineLoadTable.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ExecutionSettings.html</loc>
   </url>
   <url>
     <loc>/reference/getHadesWideLock.html</loc>
@@ -73,7 +97,13 @@
     <loc>/reference/importAtlasCohorts.html</loc>
   </url>
   <url>
+    <loc>/reference/importAtlasCohortsFromManifest.html</loc>
+  </url>
+  <url>
     <loc>/reference/importAtlasConceptSets.html</loc>
+  </url>
+  <url>
+    <loc>/reference/importAtlasConceptSetsFromManifest.html</loc>
   </url>
   <url>
     <loc>/reference/importCredentialsToConfig.html</loc>
@@ -100,7 +130,16 @@
     <loc>/reference/initCredentialsTable.html</loc>
   </url>
   <url>
+    <loc>/reference/initializeManifest.html</loc>
+  </url>
+  <url>
     <loc>/reference/isOhdsiStudy.html</loc>
+  </url>
+  <url>
+    <loc>/reference/launchUlyssesRemoteWithBitBucketDC.html</loc>
+  </url>
+  <url>
+    <loc>/reference/launchUlyssesRepo.html</loc>
   </url>
   <url>
     <loc>/reference/makeAnalysisPlan.html</loc>
@@ -125,6 +164,9 @@
   </url>
   <url>
     <loc>/reference/makeExample.html</loc>
+  </url>
+  <url>
+    <loc>/reference/makeExecOptions.html</loc>
   </url>
   <url>
     <loc>/reference/makeHowToRun.html</loc>
@@ -160,7 +202,13 @@
     <loc>/reference/makeStrategusTask.html</loc>
   </url>
   <url>
+    <loc>/reference/makeStudyMeta.html</loc>
+  </url>
+  <url>
     <loc>/reference/makeStudySAP.html</loc>
+  </url>
+  <url>
+    <loc>/reference/makeUlyssesStudySettings.html</loc>
   </url>
   <url>
     <loc>/reference/makeWebApiScript.html</loc>
@@ -176,6 +224,9 @@
   </url>
   <url>
     <loc>/reference/pipe.html</loc>
+  </url>
+  <url>
+    <loc>/reference/populateManifest.html</loc>
   </url>
   <url>
     <loc>/reference/previewStudyHub.html</loc>
@@ -199,10 +250,19 @@
     <loc>/reference/runTaskInBackground.html</loc>
   </url>
   <url>
+    <loc>/reference/setAtlasConnection.html</loc>
+  </url>
+  <url>
     <loc>/reference/setAtlasCredentials.html</loc>
   </url>
   <url>
+    <loc>/reference/setContributor.html</loc>
+  </url>
+  <url>
     <loc>/reference/setCredential.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setDbConfigBlock.html</loc>
   </url>
   <url>
     <loc>/reference/setMultipleCredentials.html</loc>
@@ -230,6 +290,9 @@
   </url>
   <url>
     <loc>/reference/setStudyTimeline.html</loc>
+  </url>
+  <url>
+    <loc>/reference/templateAtlasCredentials.html</loc>
   </url>
   <url>
     <loc>/reference/Ulysses-package.html</loc>

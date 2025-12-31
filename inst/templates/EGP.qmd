@@ -1,16 +1,30 @@
 ---
-title: Evidence Generation Plan 
-subtitle: {{{ Title }}} 
-author: {{ Developer }}
-number-sections: true
+title: {studyTitle}
+subtitle: Evidence Generation Plan 
+draft: TRUE
+date: last-modified
+format:
+  html:
+    fontsize: 14pt
+    number-sections: true
+    number-depth: 3
+    toc: true
+    toc-location: left
+    toc-depth: 2
+    toc-title: Contents
+    theme: cosmo
+    grid:
+      body-width: 2200px
+      sidebar-width: 200px
+      margin-width: 200px
+      gutter-width: 50px
 ---
 
-```{r setup, include=FALSE}
+```{{r setup, include=FALSE}}
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
 # Guidance Text [DELETE ME]
-
 
 **PLEASE DELETE PRIOR TO PUBLISHING**
 
@@ -25,37 +39,28 @@ The purpose of the Evidence Generation Plan (EGP) is to lay out the assumptions 
 - **Analysis**: this section outlines the analytics that will be conducted in a study
 - **Vulnerabilities**: this section outlines limitations and obstacles that would hinder the execution of the study.
 
-# Background
+# Background {{#sec-background}}
 
-## Rationale
+## Rationale {{#sec-rationale}}
 
-The purpose of this study is to...
+**EXAMPLES PLEASE MODIFY**
 
-## Research Questions
+The purpose of this study is to characterize patients with disease x for an internal analysis.
 
+## Research Questions {{#sec-questions}}
 
-## Data Sources
+**EXAMPLES PLEASE MODIFY**
 
-# Cohort Definitions
+- How many people can we identify with cohort 1?
+- How do we characterize patients in cohort 1 at baseline (-365 days to -1 day before the index date)?
 
-## Cohort 1: Disease X
-
-### Cohort Entry
-
-### Inclusion/Exclusion Criteria
-
-### Cohort Exit
-
-# Feasibility Assessment
-
-## Cohort Counts
+## Data Sources {{#sec-data}}
 
 
-# Analysis
-
-## Characterization
-
-### Demographics
+# Cohort Definitions {{#sec-cohorts}}
 
 
-# Vulnerabilities
+# Analysis {{#sec-analysis}}
+
+
+

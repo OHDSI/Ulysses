@@ -1,0 +1,281 @@
+#' @title Define the load table
+#' @param atlas a vector of atlas Ids to load
+#' @param label a vector of naming labels to identify the atlas Ids, must be in order of atlas ids
+#' @param category a vector of categories to identify the atlas ids, must be in order of atlas ids
+#' @param subCategory a vector of sub-categories to identify the atlas ids, must be in order of atlas ids
+#' @return a tibble where each row is an atlas asset with meta data
+#' @export
+defineLoadTable <- function(atlasId, label, category, subCategory) {
+  tb <- tibble::tibble(
+    atlasId = atlasId,
+    label = label,
+    category = category,
+    subCategory = subCategory
+  )
+  return(tb)
+}
+
+#' @title Initialize Manifests
+#' @param manifestType the type of manifest to initialize, either conceptSet or cohort
+#' @param loadTable a tibble made using defineLoadTable which prespecifies atlas ids to initialize the manifest
+#' @param overwrite toggle whether to overwrite existing manifests. Default is FALSE
+#' @return invisible return but initializes the manifest in its appropriate folder location
+#' @export
+initializeManifest <- function(manifestType,
+                               loadTable = NULL,
+                               overwrite = FALSE) {
+
+  checkmate::assert_choice(x = manifestType, choices = c("conceptSet", "cohort"))
+
+  if (manifestType == "conceptSet") {
+    manifestFile <- here::here("inputs/conceptSets/conceptSetManifest.csv")
+    manifestLogFile <- here::here("inputs/conceptSets/conceptSetManifestLog.csv")
+  }
+
+  if (manifestType == "cohort") {
+    manifestFile <- here::here("inputs/cohorts/cohortManifest.csv")
+    manifestLogFile <- here::here("inputs/cohorts/cohortManifestLog.csv")
+  }
+
+  if (file.exists(manifestFile) & overwrite == FALSE) {
+    cli::cat_bullet("Manifest already exists!  Set overwrite to TRUE if you'd like to replace it.",
+                    bullet = "circle_cross", bullet_col = "red")
+    invisible()
+  } else if (!file.exists(manifestFile) & !is.null(loadTable)) {
+    man <- loadTable |>
+      dplyr::mutate(
+        id = NA_integer_,
+        name = NA_character_,
+        path = NA_character_
+      )
+  } else {
+    man <- data.frame(
+      atlasId = integer(),
+      label = character(),
+      category = character(),
+      subCategory = character(),
+      id = integer(),
+      name = character(),
+      path = character()
+    )
+  }
+
+    readr::write_csv(x = man, file = manifestFile)
+    cli::cat_bullet(glue::glue("Initializing {manifestType} Manifest to "), crayon::cyan(manifestFile),
+                    bullet = "tick", bullet_col = "green")
+
+    if (file.exists(manifestLogFile)) {
+      fs::file_delete(manifestLogFile)
+      cli::cat_bullet("Removed old log file at", crayon::cyan(manifestLogFile),
+                      bullet = "tick", bullet_col = "red")
+    }
+}
+
+#' @title Import Atlas Concept sets from the manifest
+#' @param conceptSetManifest the location of the concept set manifest
+#' @param atlasConnection an WebApiConnection R6 class that holds the creds to connect to webapi
+#' @param outputFolder the location where the concept sets should be written
+#' @return invisible return but stores the concept set files into Ulysses
+#' @export
+importAtlasConceptSetsFromManifest <- function(
+    conceptSetManifest,
+    atlasConnection,
+    outputFolder = here::here("inputs/conceptSets/json")
+) {
+
+  for (i in 1:nrow(conceptSetManifest)) {
+    if (is.na(conceptSetManifest$atlasId[i])) {
+      next
+    }
+    concept_set <- atlasConnection$getConceptSetDefinition(conceptSetId = conceptSetManifest$atlasId[i])
+    conceptSetManifest$name[i] <- concept_set$saveName[1]
+    conceptSetManifest$expression[i] <- concept_set$expression[1]
+  }
+
+  for (j in 1:nrow(conceptSetManifest)) {
+    if (is.na(conceptSetManifest$atlasId[i])) {
+      next
+    }
+    csCategory <- snakecase::to_snake_case(conceptSetManifest$category[j])
+    csSubCategory <- ifelse(is.na(conceptSetManifest$subCategory[j]), "", snakecase::to_snake_case(conceptSetManifest$subCategory[j]))
+    subDirs<- fs::path(csCategory, csSubCategory)
+    savePath <- outputFolder |>
+      fs::dir_create(subDirs)
+    savePathRel <- fs::path_rel(savePath)
+
+    # Save concept set expression to json folder
+    saveNameTmp <- conceptSetManifest$name[j]
+    fileNameTmp <- fs::path(savePath, saveNameTmp, ext = "json")
+    csExpTmp <- conceptSetManifest$expression[j]
+    readr::write_file(csExpTmp, file = fileNameTmp)
+      cli::cat_bullet(
+        glue::glue("Circe ConceptSet Json {crayon::magenta(saveNameTmp)} saved to: {crayon::cyan(savePath)}"),
+        bullet = "pointer",
+        bullet_col = "yellow"
+      )
+    conceptSetManifest$path[j] <- fs::path(savePathRel, saveNameTmp, ext = "json")
+  }
+
+  conceptSetManifest <- conceptSetManifest |>
+    dplyr::select(-expression)
+
+  invisible(conceptSetManifest)
+}
+
+#' @title Import Atlas Cohorts from the manifest
+#' @param conceptSetManifest the location of the cohort manifest
+#' @param atlasConnection an WebApiConnection R6 class that holds the creds to connect to webapi
+#' @param outputFolder the location where the cohorts should be written
+#' @return invisible return but stores the cohort files into Ulysses
+#' @export
+importAtlasCohortsFromManifest <- function(cohortManifest,
+                                           atlasConnection,
+                                           outputFolder = here::here("inputs/cohorts/json")) {
+
+  for (i in 1:nrow(cohortManifest)) {
+    if (is.na(cohortManifest$atlasId[i])) {
+      next
+    }
+    cohort_tb <- atlasConnection$getCohortDefinition(cohortId = cohortManifest$atlasId[i])
+    cohortManifest$name[i] <- cohort_tb$saveName[1]
+    cohortManifest$expression[i] <- cohort_tb$expression[1]
+  }
+
+  for (j in 1:nrow(cohortManifest)) {
+    if (is.na(cohortManifest$atlasId[j])) {
+      next
+    }
+    cohortCategory <- snakecase::to_snake_case(cohortManifest$category[j])
+    cohortSubCategory <- ifelse(is.na(cohortManifest$subCategory[j]), "", snakecase::to_snake_case(cohortManifest$subCategory[j]))
+    subDirs<- fs::path(cohortCategory, cohortSubCategory)
+    savePath <- outputFolder |>
+      fs::dir_create(subDirs)
+    savePathRel <- fs::path_rel(savePath)
+
+    # Save concept set expression to json folder
+    saveNameTmp <- cohortManifest$name[j]
+    fileNameTmp <- fs::path(savePath, saveNameTmp, ext = "json")
+    cdExpTmp <- cohortManifest$expression[j]
+    readr::write_file(cdExpTmp, file = fileNameTmp)
+    cli::cat_bullet(
+      glue::glue("Circe Cohort Json {crayon::magenta(saveNameTmp)} saved to: {crayon::cyan(savePath)}"),
+      bullet = "pointer",
+      bullet_col = "yellow"
+    )
+    cohortManifest$path[j] <- fs::path(savePathRel, saveNameTmp, ext = "json")
+  }
+
+  cohortManifest <- cohortManifest |>
+    dplyr::select(-expression)
+
+  invisible(cohortManifest)
+}
+
+#' @title Initialize Manifests
+#' @param manifestType the type of manifest to initialize, either conceptSet or cohort
+#' @param importFromAtlas toggle whether to import content from atlas. Default is TRUE
+#' @return invisible return but populates the manifest in its appropriate folder location
+#' @export
+populateManifest <- function(manifestType,
+                             importFromAtlas = TRUE) {
+
+  checkmate::assert_choice(x = manifestType, choices = c("conceptSet", "cohort"))
+
+  if (manifestType == "conceptSet") {
+    manifestFile <- here::here("inputs/conceptSets/conceptSetManifest.csv")
+    stopifnot(file.exists(manifestFile))
+    man <- readr::read_csv(manifestFile, show_col_types = FALSE)
+    manifestLogFile <- here::here("inputs/conceptSets/conceptSetManifestLog.csv")
+    jsonFolder <- here::here("inputs/conceptSets/json")
+    sqlFolder <- NA
+    if (importFromAtlas & nrow(man) != 0) {
+      man <- importAtlasConceptSetsFromManifest(conceptSetManifest = man, atlasConnection = setAtlasConnection())
+    }
+  }
+
+  if (manifestType == "cohort") {
+    manifestFile <- here::here("inputs/cohorts/cohortManifest.csv")
+    stopifnot(file.exists(manifestFile))
+    man <- readr::read_csv(manifestFile, show_col_types = FALSE)
+    manifestLogFile <- here::here("inputs/cohorts/cohortManifestLog.csv")
+    jsonFolder <- here::here("inputs/cohorts/json")
+    sqlFolder <- here::here("inputs/cohorts/sql")
+    if (importFromAtlas & nrow(man) != 0) {
+      man <- importAtlasCohortsFromManifest(cohortManifest = man, atlasConnection = setAtlasConnection())
+    }
+  }
+
+  filePaths <- fs::dir_ls(jsonFolder, type = "file", glob = "*.json", recurse = TRUE) |>
+    fs::path_rel()
+
+  if (length(filePaths) == 0 & nrow(man) == 0) {
+    cli::cat_bullet(glue::glue("No files found and {manifestType} manifest is empty."),
+                    bullet = "info", bullet_col = "yellow")
+    return()
+  }
+
+  fileNames <- fs::path_rel(filePaths, start = jsonFolder) |>
+    fs::path_ext_remove() |>
+    basename()
+
+  if (!file.exists(manifestLogFile)) {
+    if (all(is.na(man$id))) {
+      man <- man |>
+        dplyr::arrange(id,path) |>
+        dplyr::mutate(id = seq_along(id))
+    } else {
+      stop(glue::glue("No logfile exists to track {manifestType} IDs!  Manifest generation cannot proceed.  Please delete all concept set IDs from your Manifest and try again."))
+    }
+
+    manLog <- man |>
+      dplyr::mutate(isDeprecated = FALSE)
+    readr::write_csv(x = manLog, file = manifestLogFile)
+    cli::cat_bullet("Saving Manifest Log to ", crayon::cyan(manifestLogFile),
+                    bullet = "tick", bullet_col = "green")
+  }
+
+  if (!is.na(sqlFolder)) {
+    sqlFilePaths <- fs::dir_ls(sqlFolder, type = "file", glob = "*.sql", recurse = TRUE) |>
+      fs::path_rel()
+    sqlFileNames <- fs::path_rel(sqlFilePaths, start = sqlFolder) |>
+      fs::path_ext_remove() |>
+      basename()
+    filePaths <- c(filePaths, sqlFilePaths)
+    fileNames <- c(fileNames, sqlFileNames)
+  }
+
+  namesDf <- data.frame(name = fileNames,
+                        path = filePaths,
+                        inRepo = TRUE)
+
+  manLog <- readr::read_csv(manifestLogFile, show_col_types = FALSE) |>
+    dplyr::full_join(man, by = c("id")) |>
+    dplyr::mutate(atlasId = dplyr::coalesce(atlasId.y, atlasId.x),
+                  label = dplyr::coalesce(label.y, label.x),
+                  category = dplyr::coalesce(category.y, category.x),
+                  subCategory = dplyr::coalesce(subCategory.y, subCategory.x),
+                  name = dplyr::coalesce(name.y, name.x),
+                  path = dplyr::coalesce(path.y, path.x)) |>
+    dplyr::select(id, isDeprecated, atlasId, label, category, subCategory, name, path) |>
+    dplyr::full_join(namesDf, by = c("name","path")) |>
+    dplyr::arrange(id,path) |>
+    dplyr::mutate(id = dplyr::if_else(is.na(id),
+                                      dplyr::row_number(),
+                                      id),
+                  isDeprecated = dplyr::if_else(is.na(inRepo),TRUE,FALSE))
+
+  man <- manLog |>
+    dplyr::filter(inRepo == TRUE) |>
+    dplyr::select(-c(inRepo,isDeprecated))
+  readr::write_csv(x = man, file = manifestFile)
+  cli::cat_bullet("Saving Manifest to ", crayon::cyan(manifestFile),
+                  bullet = "tick", bullet_col = "green")
+
+  manLog <- manLog |>
+    dplyr::select(-inRepo)
+  readr::write_csv(x = manLog, file = manifestLogFile)
+  cli::cat_bullet("Saving Manifest Log to ", crayon::cyan(manifestLogFile),
+                  bullet = "tick", bullet_col = "green")
+
+  invisible(man)
+}
