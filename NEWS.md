@@ -1,3 +1,10 @@
+Ulysses 1.0.0
+=============
+
+* Refactor Ulysses to use R6 classes
+* Change standard structure (see vignette)
+* remove keyring fns for atlas
+
 Ulysses 0.0.7
 =============
 

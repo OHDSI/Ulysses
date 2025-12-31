@@ -1,0 +1,27 @@
+---
+title: {studyTitle} - Results Report
+draft: TRUE
+date: last-modified
+format:
+  html:
+    htmlwidgets: true
+    fontsize: 14pt
+    number-sections: true
+    number-depth: 2
+    toc: true
+    toc-location: left
+    toc-depth: 2
+    toc-title: Contents
+    theme: cosmo
+    grid:
+      body-width: 2200px
+      sidebar-width: 200px
+      margin-width: 200px
+      gutter-width: 50px
+---
+
+# Introduction
+
+This section of the results report covers....
+
+

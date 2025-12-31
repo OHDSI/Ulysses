@@ -2,24 +2,32 @@ project:
   type: website
 
 website:
-  title: '{{{ Title }}}'
+  title: '{studyTitle}'
   navbar:
-    background: '{{{ Color }}}'
-    logo: 'images/{{{ Logo }}}'
     left:
       - href: index.qmd
         text: Home
-      - text: Analysis Plan
-        href: AnalysisPlan.qmd
-      - text: Results Report
-        href: ResultsReport.qmd
+      - text: Resources
+        menu:
+         - text: Evidence Generation Plan
+           href: egp.qmd
+      - text: Results
+        menu:
+         - text: Results Guidance
+           href: results/results_guidance.qmd
+      - text: Report
+        menu:
+         - text: Report Guidance
+           href: report/report_guidance.qmd
       - href: news.qmd
         text: Changelog
-  page-footer: '{{{ Footer }}}'
+  page-footer: 'Generated Using Ulysses'
 
 format:
   html:
+    df-print: paged
     theme: cosmo
+    css: style.css
     toc: true
     fig-cap-location: "top"
     tbl-cap-location: "top"

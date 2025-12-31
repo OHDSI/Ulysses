@@ -1,0 +1,14 @@
+# Config block for {configBlockName}
+
+{configBlockName}:
+  dbms: {dbms}
+  user: !expr Sys.getenv('dbUser')
+  password: !expr Sys.getenv('dbPassword')
+  connectionString: !expr Sys.getenv('dbConnectionString')
+  databaseName: {databaseName}
+  databaseLabel: {databaseLabel}
+  cdmDatabaseSchema: {cdmSchema}
+  vocabDatabaseSchema: {cdmSchema}
+  workDatabaseSchema: {workSchema}
+  tempEmulationSchema: {tempSchema}
+  cohortTable: {repoName}_{configBlockName}

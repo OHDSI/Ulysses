@@ -1,0 +1,118 @@
+---
+title: "Get Started with Ulysses"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Get Started with Ulysses}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE,
+  eval = FALSE
+)
+```
+
+```{r setup}
+library(Ulysses)
+```
+
+
+# Introduction
+
+In this vignette we describe how to define and launch an RWE study with Ulysses. The key function in Ulysses is called `launchUlyssesRepo`, which creates the standard repository structure and initializes some key files. Prior to running this function, we need to define study settings to orient the launch function on how to fill out important files using the `makeUlyssesStudySettings` function. There are four required elements to the study settings:
+
+* repoName: the name of the repository which will serve as the root folder name. The repoName should be in lowerCamelCase, as best practice for repo naming conventions
+* repoFolder: the path to the folder where the Ulysses repo should be stored
+* studyMeta: a Ulysses class that specifies key study meta info. This info will automatically be placed into the auto-generated README markdown file.
+* execOptions: a Ulysses class that specifies the database and schema parameters needed to execute the RWE pipeline (series of analytical tasks that answer study questions). 
+
+In addition to these required elements there are two additional inputs:
+
+* renvLock: a path to a [renv](https://rstudio.github.io/renv/) lock file that maintains a snapshot of package dependencies required to execute the RWE pipeline.
+* gitRemote: a url to a git remote used to sync versions of the project code between local development and remote storage.
+
+# Walkthrough
+
+To make the Ulysses study settings we strt by making the study meta class, specifying the meta information about the study. Below we show how we can set contributors to the study.
+
+```{r setContributors}
+contribA <- setContributor(
+  name = "Mike Jones",
+  email = "mike.jones@company.com",
+  role = "developer"
+)
+
+contribB <- setContributor(
+  name = "Anne Smith",
+  email = "anne.smith@company.com",
+  role = "qc"
+)
+```
+
+
+Next we can make the full study meta class, adding in the contributors:
+
+```{r studyMeta}
+sm <- makeStudyMeta(
+  studyTitle = "T2D Study",
+  therapeuticArea = "Cardiovascular",
+  studyType = "Characterization",
+  contributors = list(contribA, contribB),
+  studyTags = c("OMOP", "OHDSI", "T2D")
+)
+```
+
+
+The next class to make is the ExecOptions specifing the parameters to execute the study. We begin by setting the Db config blocks of each database we want to use in the study. 
+
+
+```{r dbConfigBlock}
+
+db1 <- setDbConfigBlock(
+  configBlockName = "synpuf_110k",
+  cdmDatabaseSchema = "synpuf_110k_202701",
+  databaseName = "synpuf_110k_202701",
+  databaseLabel = "Synpuf 110K"
+)
+
+db2 <- setDbConfigBlock(
+  configBlockName = "synthea_2m",
+  cdmDatabaseSchema = "synthea_2m_202701",
+  databaseName = "synthea_2m_202701",
+  databaseLabel = "Synthea 2M"
+)
+
+```
+
+Now we can add this to the rest of the ExecOptions:
+
+```{r execOptions}
+eo <- makeExecOptions(
+  dbms = "snowflake",
+  workDatabaseSchema = "my_work",
+  tempEmulationSchema = "my_temp",
+  dbConnectionBlocks = list(db1, db2)
+)
+```
+
+
+Finally we can add all the settings into the Ulysses Repo object and launch the repo:
+
+```{r launch}
+
+ulySt <- makeUlyssesStudySettings(
+  repoName = "s1234",
+  repoFolder = "C:/R/rwestudies",
+  studyMeta = sm,
+  execOptions = eo
+)
+
+launchUlyssesRepo(ulySt)
+
+```
+
+Running the `launchUlyssesRepo` will print actions that have happened in the R console and create a new repo in the path: **C:/R/rwestudies/s1234** as specified in the example. When you navigate to this new folder you can see the standard Ulysses structure and begin adding contents to your study!!
