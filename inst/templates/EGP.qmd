@@ -1,7 +1,6 @@
 ---
 title: {studyTitle}
 subtitle: Evidence Generation Plan 
-draft: TRUE
 date: last-modified
 format:
   html:

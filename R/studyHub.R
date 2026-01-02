@@ -35,7 +35,7 @@ initStudyHubFiles <- function(repoName,
     fs::path_expand()
 
   ## Make folders for quarto
-  foldersToCreate <- c("R", "report", "results", "images")
+  foldersToCreate <- c("R", "results", "images")
   fs::dir_create(
     fs::path(repoPath, "dissemination/quarto", foldersToCreate)
   )
@@ -61,17 +61,6 @@ initStudyHubFiles <- function(repoName,
     repoPath = fs::path(repoPath, "dissemination/quarto"),
     fileName = "_quarto.yml"
   )
-  reportFile <- readr::read_file(
-    file = fs::path_package("Ulysses", "templates/reportFile.qmd")
-  ) |>
-    glue::glue()
-
-  writeFileAndNotify(
-    x = reportFile,
-    repoPath = fs::path(repoPath, "dissemination/quarto/report"),
-    fileName = "report_guidance.qmd"
-  )
-
 
   resultsFile <- readr::read_file(
     file = fs::path_package("Ulysses", "templates/resultsFile.qmd")
@@ -81,7 +70,7 @@ initStudyHubFiles <- function(repoName,
   writeFileAndNotify(
     x = resultsFile,
     repoPath = fs::path(repoPath, "dissemination/quarto/results"),
-    fileName = "results_guidance.qmd"
+    fileName = "results_init.qmd"
   )
 
   # setup quarto css file
@@ -120,7 +109,6 @@ buildStudyHub <- function(projectPath = here::here(), previewHub = TRUE) {
   cli::cat_bullet("Render Study Hub", bullet = "info", bullet_col = "blue")
   quarto::quarto_render(
     input = docsPath,
-    output_format = "html",
     as_job = FALSE
   )
 

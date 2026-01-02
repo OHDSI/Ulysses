@@ -5,22 +5,20 @@ website:
   title: '{studyTitle}'
   navbar:
     left:
-      - href: index.qmd
-        text: Home
-      - text: Resources
-        menu:
-         - text: Evidence Generation Plan
-           href: egp.qmd
+      - text: Home
+        href: index.qmd
+      - text: Evidence Generation Plan
+        href: egp.qmd
       - text: Results
         menu:
-         - text: Results Guidance
-           href: results/results_guidance.qmd
-      - text: Report
-        menu:
-         - text: Report Guidance
-           href: report/report_guidance.qmd
-      - href: news.qmd
-        text: Changelog
+         - text: Initial Results
+           href: results/results_init.qmd
+      - text: Changelog
+        href: news.qmd
+  drafts:
+      - egp.qmd
+      - results/results_init.qmd
+  draft-mode: visible
   page-footer: 'Generated Using Ulysses'
 
 format:
