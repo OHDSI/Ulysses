@@ -185,94 +185,12 @@ UlyssesStudy <- R6::R6Class(
     .initQuarto = function() {
       repoName <- private$.repoName
       repoFolder <- private$.repoFolder
-      repoPath <- fs::path(repoFolder, repoName) |>
-        fs::path_expand()
-
       studyTitle <- self$studyMeta$studyTitle
 
-      ## Make folders for quarto
-      foldersToCreate <- c("R", "report", "results", "images")
-      fs::dir_create(
-        fs::path(repoPath, "dissemination/quarto", foldersToCreate)
-      )
-      # add key files
-      egp <- readr::read_file(
-        file = fs::path_package("Ulysses", "templates/EGP.qmd")
-      ) |>
-        glue::glue()
-
-      writeFileAndNotify(
-        x = egp,
-        repoPath = fs::path(repoPath, "dissemination/quarto"),
-        fileName = "egp.qmd"
-      )
-
-      # set upd hub quarto
-      hubQuarto <- fs::path_package("Ulysses", "templates/quartoWebsite.yml") |>
-        readr::read_file() |>
-        glue::glue()
-
-      writeFileAndNotify(
-        x = hubQuarto,
-        repoPath = fs::path(repoPath, "dissemination/quarto"),
-        fileName = "_quarto.yml"
-      )
-      reportFile <- readr::read_file(
-        file = fs::path_package("Ulysses", "templates/reportFile.qmd")
-      ) |>
-        glue::glue()
-
-      writeFileAndNotify(
-        x = reportFile,
-        repoPath = fs::path(repoPath, "dissemination/quarto/report"),
-        fileName = "report_guidance.qmd"
-      )
-
-
-      resultsFile <- readr::read_file(
-        file = fs::path_package("Ulysses", "templates/resultsFile.qmd")
-      ) |>
-        glue::glue()
-
-      writeFileAndNotify(
-        x = resultsFile,
-        repoPath = fs::path(repoPath, "dissemination/quarto/results"),
-        fileName = "results_guidance.qmd"
-      )
-
-
-      # setup quarto css file
-      foregroundColor <- "#00E47C"
-      backgroundColor <- "#08312A"
-      cssFile <- fs::path_package("Ulysses", "templates/style.css") |>
-        readr::read_file() |>
-        glue::glue()
-
-      writeFileAndNotify(
-        x = cssFile,
-        repoPath = fs::path(repoPath, "dissemination/quarto"),
-        fileName = "style.css"
-      )
-
-      # copy readme to index file
-      readMeQmd <- readr::read_lines(
-        file = fs::path(repoPath, "README.md")
-      )
-
-      writeFileAndNotify(
-        x = readMeQmd,
-        repoPath = fs::path(repoPath, "dissemination/quarto"),
-        fileName = "index.qmd"
-      )
-
-      # copy news to
-      newsQmd <- readr::read_lines(
-        file = fs::path(repoPath, "NEWS.md")
-      )
-      writeFileAndNotify(
-        x = newsQmd,
-        repoPath = fs::path(repoPath, "dissemination/quarto"),
-        fileName = "news.qmd"
+      initStudyHubFiles(
+        repoName = repoName,
+        repoFolder = repoFolder,
+        studyTitle = self$studyMeta$studyTitle
       )
 
     }
