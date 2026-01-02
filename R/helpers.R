@@ -24,7 +24,7 @@ initReadMeFn <- function(sm, repoName, repoPath) {
     "<!-- badge: start -->
 
       ![Study Status: Started](https://img.shields.io/badge/Study%20Status-Started-blue.svg)
-      ![Version: v0.0.1](https://img.shields.io/badge/Version-v0.0.1-yellow.svg)
+      ![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-yellow.svg)
 
     <!-- badge: end -->"
   )
@@ -81,7 +81,7 @@ initReadMeFn <- function(sm, repoName, repoPath) {
 
 initNewsFn <- function(repoName, repoPath) {
 
-  header <- glue::glue("# {repoName} v0.0.1")
+  header <- glue::glue("# {repoName} 0.0.1")
   items <- c(
     glue::glue("  - Run Date: {lubridate::today()}"),
     "  - Initialize Ulysses Repo"

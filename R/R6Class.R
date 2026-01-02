@@ -80,8 +80,8 @@ UlyssesStudy <- R6::R6Class(
       private$.initReadMe() #init read me
       private$.initNews() # init news
       private$.initConfigFile() # init config
-      #private$.initSourceConfigFile() # init source config
       private$.initQuarto()
+      private$.initMainExec()
 
       if (!is.null(private$.gitRemote)) {
         notification("Step 5 (Optional): Initialize git with Remote")
@@ -193,6 +193,25 @@ UlyssesStudy <- R6::R6Class(
         studyTitle = self$studyMeta$studyTitle
       )
 
+    },
+
+    .initMainExec = function() {
+
+      # get elements
+      studyName <- private$.studyMeta$studyTitle
+      configBlocks <- purrr::map_chr(
+        private$.execOptions$dbConnectionBlocks,
+        ~.x$configBlockName
+      )
+      repoName <- private$.repoName
+      repoFolder <- private$.repoFolder
+
+      addMainFile(
+        repoName = repoName,
+        repoFolder = repoFolder,
+        configBlocks = configBlocks,
+        studyName = studyName
+      )
     }
   ),
   active = list(
