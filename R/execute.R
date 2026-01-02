@@ -1,3 +1,34 @@
+#' @title Function to update the study version
+#' @param versionNumber the semantive version number to set as the new project version: 1.0.0
+#' @param projectPath the path of the project, defaults to the directory of the active Ulysses project
+#' @export
+updateStudyVersion <- function(versionNumber, projectPath = here::here()) {
+
+  # read in yml file
+  configYml <- readr::read_lines(fs::path(here::here(), "config.yml"))
+  # find the line where the version is
+  versionLine <- which(grepl("  version: ", configYml))
+  # replace the line with the new version number
+  configYml[versionLine] <- glue::glue("  version: {versionNumber}")
+
+  cli::cat_bullet(
+    glue::glue_col("Update Study Version to: {yellow {versionNumber}}"),
+    bullet = "info",
+    bullet_col = "blue"
+  )
+  cli::cat_bullet(
+    glue::glue_col("Overwrite {cyan config.yml} with update!"),
+    bullet = "info",
+    bullet_col = "blue"
+  )
+
+  # update and overwrite the yml file with the new version
+  readr::write_lines(x = configYml, file = fs::path(here::here(), "config.yml"))
+  updateNews(versionNumber = versionNumber, projectPath = projectPath)
+  invisible(versionNumber)
+}
+
+
 #' @title Zip and Archive results from a study execution
 #' @param input the type of files to zip and archive. There are three options exportMerge, exportPretty and site. exportMerge is the merged results in long format. The exportPretty are xlsx files with formatted output from the study. The site is the html files of the studyHub
 #' @returns invisible return. Stores the input as a zip file in the exec/archive folder
