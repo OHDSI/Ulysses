@@ -107,11 +107,32 @@ check_git_status <- function() {
   return(check)
 }
 
+#' @title Function to sync local work in Ulysses to remote
+#' @param commitMessage the commit message describing the work done since the last commit
+#' @param branch the name of the branch you want to commit changes. Defaults to the active branch
+#' @param gitRemoteName the name of the remote. Defaults to origin.
+#' @export
+syncUlyssesWork <- function(commitMessage, branch = gert::git_branch(), gitRemoteName = "origin") {
 
-syncUlyssesWork <- function(commitMessage, gitRemoteName = "origin") {
+  # pull active branch. if it does not match to specified branch then checkout
+  activeBranch <- gert::git_branch()
+  if (!(activeBranch == branch)) {
+    branchExists <- gert::git_branch_exists(branch)
+    if (!branchExists) {
+      # if the branch does not exist...create it and checkout
+      notification(glue::glue_col("Git Create branch {blue {branch}}"))
+      notification(glue::glue_col("Git Checkout to {blue {branch}}"))
+      gert::git_branch_create(branch = branch, checkout = TRUE)
+    } else {
+      # if it does exist checkout before continuing
+      notification(glue::glue_col("Git Checkout to {blue {branch}}"))
+      gert::git_branch_checkout(branch = branch)
+    }
+  }
 
-  notification(glue::glue_col("Pull changes from {blue {gitRemoteName}}"))
-  gert::git_pull(remote = gitRemoteName)
+  # pull work from remote
+  notification(glue::glue_col("Pull changes from {blue {gitRemoteName}:{branch}}"))
+  gert::git_pull(remote = gitRemoteName, refspec = branch)
 
   # add all files
   notification("Adding all files touched since last commit!")
@@ -122,7 +143,10 @@ syncUlyssesWork <- function(commitMessage, gitRemoteName = "origin") {
   notification(glue::glue_col("Commit Work SHA: {green {sha}}"))
 
   # push to remote
-  gert::git_push(remote = gitRemoteName)
+  notification(glue::glue_col("Push changes to {blue {gitRemoteName}}"))
+  gert::git_push(remote = gitRemoteName, set_upstream = branch)
+
+  invisible(TRUE)
 }
 
 

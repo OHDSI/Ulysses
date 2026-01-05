@@ -1,3 +1,10 @@
+Ulysses 1.0.1
+=============
+
+* Add git utilities
+* Add helpers for execution and main.R
+* bug fixes to exisiting fn
+
 Ulysses 1.0.0
 =============
 

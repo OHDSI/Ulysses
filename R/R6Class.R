@@ -770,7 +770,7 @@ WebApiConnection <- R6::R6Class(
 
     checkPassword = function() {
       pwd <- private$.password
-      cli::cat_line(glue::glue("- password: {crayon::blurred(pwd)}"))
+      cli::cat_line(glue::glue("- password: {crayon::hidden(pwd)}"))
       invisible(pwd)
     },
 
