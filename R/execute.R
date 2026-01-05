@@ -4,6 +4,11 @@
 #' @export
 updateStudyVersion <- function(versionNumber, projectPath = here::here()) {
 
+  if (check_git_status()) {
+    msg <- "There are uncommited changes!!! Please add and commit changes prior to updatng the project version"
+    stop(msg)
+  }
+
   # read in yml file
   configYml <- readr::read_lines(fs::path(here::here(), "config.yml"))
   # find the line where the version is

@@ -77,16 +77,13 @@ UlyssesStudy <- R6::R6Class(
         notification("Step 3: Adding Standard Ulysses Files")
       }
 
-      private$.initReadMe() #init read me
-      private$.initNews() # init news
-      private$.initConfigFile() # init config
-      private$.initQuarto()
-      private$.initMainExec()
-
-      if (!is.null(private$.gitRemote)) {
-        notification("Step 5 (Optional): Initialize git with Remote")
-        private$.initGit() #initialize git with remote
-      }
+      private$.initReadMe() #1 init read me
+      private$.initNews() # 2 init news
+      private$.initConfigFile() # 3 init config
+      private$.initQuarto() # 4 add the study hub stuff
+      private$.initMainExec() # 5 add the main.R file
+      #private$.initRenv() # 6 add the renv
+      private$.initGit() #initialize git locally this is the last step
 
       if (openProject) {
         notification("Opening project in new session")
@@ -160,7 +157,7 @@ UlyssesStudy <- R6::R6Class(
 
     },
 
-    .initGit = function(gitRemoteUrl) {
+    .initGit = function() {
 
       gitRemoteUrl <- private$.gitRemote
       repoName <- private$.repoName
@@ -170,14 +167,23 @@ UlyssesStudy <- R6::R6Class(
 
       #Step1: initialize git
       gert::git_init(repoPath)
-      # Step 2: add all files
-      stg <- gert::git_add(files = ".")
-      #step 3: commit all files
-      sha <- gert::git_commit_all(message = "Initialize Ulysses Repo for study")
-      #step 4: setup remote
-      gert::git_remote_add(url = gitRemoteUrl)
-      # Step 5: push
-      gert::git_push(remote = "origin")
+
+      if (!is.null(gitRemoteUrl)) {
+
+        addGitRemoteToUlysses(
+          gitRemoteUrl = gitRemoteUrl,
+          gitRemoteName = "origin",
+          commitMessage = "Initialize Ulysses Repo for study"
+        )
+
+      } else {
+        # Step 2: add all files
+        stg <- gert::git_add(files = ".")
+        #step 3: commit all files
+        sha <- gert::git_commit_all(
+          message = "Initialize Ulysses Repo for study"
+        )
+      }
 
       invisible(TRUE)
     },
