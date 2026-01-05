@@ -1,7 +1,7 @@
 listDefaultFolders <- function() {
   analysisFolders <- c("src", "tasks")
   execFolders <- c('logs', 'results')
-  inputFolders <- c("cohorts/json", "cohorts/sql", "conceptSets")
+  inputFolders <- c("cohorts/json", "cohorts/sql", "conceptSets/json")
   disseminationFolders <- c("quarto", "export/pretty", "export/merge", "documents")
 
 
@@ -24,7 +24,7 @@ initReadMeFn <- function(sm, repoName, repoPath) {
     "<!-- badge: start -->
 
       ![Study Status: Started](https://img.shields.io/badge/Study%20Status-Started-blue.svg)
-      ![Version: v0.0.1](https://img.shields.io/badge/Version-v0.0.1-yellow.svg)
+      ![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-yellow.svg)
 
     <!-- badge: end -->"
   )
@@ -81,10 +81,10 @@ initReadMeFn <- function(sm, repoName, repoPath) {
 
 initNewsFn <- function(repoName, repoPath) {
 
-  header <- glue::glue("# {repoName} v0.0.1")
+  header <- glue::glue("# {repoName} 0.0.1")
   items <- c(
-    glue::glue("  - Run Date: {lubridate::today()}"),
-    "  - Initialize Ulysses Repo"
+    glue::glue("- Run Date: {lubridate::today()}"),
+    "- Initialize Ulysses Repo"
   ) |>
     glue::glue_collapse(sep = "\n")
 
@@ -102,6 +102,24 @@ initNewsFn <- function(repoName, repoPath) {
 }
 
 
+updateNews <- function(versionNumber, projectPath = here::here(), openFile = TRUE) {
 
+  repoName <- basename(projectPath)
+  newsFile <- readr::read_file(file = fs::path(projectPath, "NEWS.md"))
+  newsHeader <- glue::glue("# {repoName} {versionNumber}\n\t-Run Date: {lubridate::today()}")
+  updateNewsFile <- c(newsHeader, newsFile) |> glue::glue_collapse(sep = "\n\n")
+  readr::write_file(updateNewsFile, file = fs::path(projectPath, "NEWS.md"))
+  actionItem(glue::glue_col("Update NEWS: {green {fs::path(projectPath, 'NEWS.md')}}"))
+  cli::cat_bullet(
+    "Please add a bulleted description of changes to the new version!!!",
+    bullet = "warning",
+    bullet_col = "yellow"
+  )
+  if (openFile) {
+    rstudioapi::navigateToFile(file = fs::path(projectPath, "NEWS.md"))
+    actionItem("Opening NEWS.md for edits")
+  }
+  invisible(updateNewsFile)
+}
 
 

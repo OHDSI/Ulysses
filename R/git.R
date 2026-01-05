@@ -102,3 +102,84 @@ launchUlyssesRemoteWithBitBucketDC <- function(repoName, hostUrl, httpToken, pro
   invisible(tt)
 }
 
+check_git_status <- function() {
+  check <- nrow(gert::git_status(staged = FALSE)) > 0
+  return(check)
+}
+
+#' @title Function to sync local work in Ulysses to remote
+#' @param commitMessage the commit message describing the work done since the last commit
+#' @param branch the name of the branch you want to commit changes. Defaults to the active branch
+#' @param gitRemoteName the name of the remote. Defaults to origin.
+#' @export
+syncUlyssesWork <- function(commitMessage, branch = gert::git_branch(), gitRemoteName = "origin") {
+
+  # pull active branch. if it does not match to specified branch then checkout
+  activeBranch <- gert::git_branch()
+  if (!(activeBranch == branch)) {
+    branchExists <- gert::git_branch_exists(branch)
+    if (!branchExists) {
+      # if the branch does not exist...create it and checkout
+      notification(glue::glue_col("Git Create branch {blue {branch}}"))
+      notification(glue::glue_col("Git Checkout to {blue {branch}}"))
+      gert::git_branch_create(branch = branch, checkout = TRUE)
+    } else {
+      # if it does exist checkout before continuing
+      notification(glue::glue_col("Git Checkout to {blue {branch}}"))
+      gert::git_branch_checkout(branch = branch)
+    }
+  }
+
+  # pull work from remote
+  notification(glue::glue_col("Pull changes from {blue {gitRemoteName}:{branch}}"))
+  gert::git_pull(remote = gitRemoteName, refspec = branch)
+
+  # add all files
+  notification("Adding all files touched since last commit!")
+  stg <- gert::git_add(files = ".")
+
+  # commit all with sha
+  sha <- gert::git_commit_all(message = commitMessage)
+  notification(glue::glue_col("Commit Work SHA: {green {sha}}"))
+
+  # push to remote
+  notification(glue::glue_col("Push changes to {blue {gitRemoteName}}"))
+  gert::git_push(remote = gitRemoteName, set_upstream = branch)
+
+  invisible(TRUE)
+}
+
+
+#' @title Function to add a Remote to Ulysses directory
+#' @description
+#' This function adds a git remote to the Ulysses repo. If user adds a commit message
+#' it will add and commit files prior to adding and pushing to remote. This function
+#' will check to see if there are untracked files that need to be commited prior to adding remote.
+#'
+#' @param gitRemoteUrl a character string of a git remote url
+#' @param gitRemoteName The name of the remote, defaults to origin
+#' @param commitMessage a character string of a commit Message to use. if null then skips commit
+#' @export
+addGitRemoteToUlysses <- function(gitRemoteUrl, gitRemoteName = "origin", commitMessage = NULL) {
+
+  checkmate::assert_character(gitRemoteUrl)
+
+  if (!is.null(commitMessage)) {
+    # Step 2: add all files
+    stg <- gert::git_add(files = ".")
+    #step 3: commit all files
+    sha <- gert::git_commit_all(message = commitMessage)
+  } else {
+    if (check_git_status()) {
+      msg <- "There are uncommited changes!!! Rerun addGitRemoteToUlysses() with a commitMessage!"
+      stop(msg)
+    }
+  }
+
+  #step 4: setup remote
+  gert::git_remote_add(url = gitRemoteUrl)
+  # Step 5: push
+  gert::git_push(remote = gitRemoteName)
+
+  invisible(gitRemoteUrl)
+}

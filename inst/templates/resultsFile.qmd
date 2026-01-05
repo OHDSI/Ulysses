@@ -1,6 +1,5 @@
 ---
-title: {studyTitle} - Results Report
-draft: TRUE
+title: {studyTitle} - Initial Results
 date: last-modified
 format:
   html:
@@ -22,6 +21,6 @@ format:
 
 # Introduction
 
-This section of the results report covers....
+This section of the intitial results as a template
 
 

@@ -77,16 +77,13 @@ UlyssesStudy <- R6::R6Class(
         notification("Step 3: Adding Standard Ulysses Files")
       }
 
-      private$.initReadMe() #init read me
-      private$.initNews() # init news
-      private$.initConfigFile() # init config
-      #private$.initSourceConfigFile() # init source config
-      private$.initQuarto()
-
-      if (!is.null(private$.gitRemote)) {
-        notification("Step 5 (Optional): Initialize git with Remote")
-        private$.initGit() #initialize git with remote
-      }
+      private$.initReadMe() #1 init read me
+      private$.initNews() # 2 init news
+      private$.initConfigFile() # 3 init config
+      private$.initQuarto() # 4 add the study hub stuff
+      private$.initMainExec() # 5 add the main.R file
+      #private$.initRenv() # 6 add the renv
+      private$.initGit() #initialize git locally this is the last step
 
       if (openProject) {
         notification("Opening project in new session")
@@ -160,7 +157,7 @@ UlyssesStudy <- R6::R6Class(
 
     },
 
-    .initGit = function(gitRemoteUrl) {
+    .initGit = function() {
 
       gitRemoteUrl <- private$.gitRemote
       repoName <- private$.repoName
@@ -170,14 +167,23 @@ UlyssesStudy <- R6::R6Class(
 
       #Step1: initialize git
       gert::git_init(repoPath)
-      # Step 2: add all files
-      stg <- gert::git_add(files = ".")
-      #step 3: commit all files
-      sha <- gert::git_commit_all(message = "Initialize Ulysses Repo for study")
-      #step 4: setup remote
-      gert::git_remote_add(url = gitRemoteUrl)
-      # Step 5: push
-      gert::git_push(remote = "origin")
+
+      if (!is.null(gitRemoteUrl)) {
+
+        addGitRemoteToUlysses(
+          gitRemoteUrl = gitRemoteUrl,
+          gitRemoteName = "origin",
+          commitMessage = "Initialize Ulysses Repo for study"
+        )
+
+      } else {
+        # Step 2: add all files
+        stg <- gert::git_add(files = ".")
+        #step 3: commit all files
+        sha <- gert::git_commit_all(
+          message = "Initialize Ulysses Repo for study"
+        )
+      }
 
       invisible(TRUE)
     },
@@ -185,96 +191,33 @@ UlyssesStudy <- R6::R6Class(
     .initQuarto = function() {
       repoName <- private$.repoName
       repoFolder <- private$.repoFolder
-      repoPath <- fs::path(repoFolder, repoName) |>
-        fs::path_expand()
-
       studyTitle <- self$studyMeta$studyTitle
 
-      ## Make folders for quarto
-      foldersToCreate <- c("R", "report", "results", "images")
-      fs::dir_create(
-        fs::path(repoPath, "dissemination/quarto", foldersToCreate)
-      )
-      # add key files
-      egp <- readr::read_file(
-        file = fs::path_package("Ulysses", "templates/EGP.qmd")
-      ) |>
-        glue::glue()
-
-      writeFileAndNotify(
-        x = egp,
-        repoPath = fs::path(repoPath, "dissemination/quarto"),
-        fileName = "egp.qmd"
+      initStudyHubFiles(
+        repoName = repoName,
+        repoFolder = repoFolder,
+        studyTitle = self$studyMeta$studyTitle
       )
 
-      # set upd hub quarto
-      hubQuarto <- fs::path_package("Ulysses", "templates/quartoWebsite.yml") |>
-        readr::read_file() |>
-        glue::glue()
+    },
 
-      writeFileAndNotify(
-        x = hubQuarto,
-        repoPath = fs::path(repoPath, "dissemination/quarto"),
-        fileName = "_quarto.yml"
+    .initMainExec = function() {
+
+      # get elements
+      studyName <- private$.studyMeta$studyTitle
+      configBlocks <- purrr::map_chr(
+        private$.execOptions$dbConnectionBlocks,
+        ~.x$configBlockName
       )
-      reportFile <- readr::read_file(
-        file = fs::path_package("Ulysses", "templates/reportFile.qmd")
-      ) |>
-        glue::glue()
+      repoName <- private$.repoName
+      repoFolder <- private$.repoFolder
 
-      writeFileAndNotify(
-        x = reportFile,
-        repoPath = fs::path(repoPath, "dissemination/quarto/report"),
-        fileName = "report_guidance.qmd"
+      addMainFile(
+        repoName = repoName,
+        repoFolder = repoFolder,
+        configBlocks = configBlocks,
+        studyName = studyName
       )
-
-
-      resultsFile <- readr::read_file(
-        file = fs::path_package("Ulysses", "templates/resultsFile.qmd")
-      ) |>
-        glue::glue()
-
-      writeFileAndNotify(
-        x = resultsFile,
-        repoPath = fs::path(repoPath, "dissemination/quarto/results"),
-        fileName = "results_guidance.qmd"
-      )
-
-
-      # setup quarto css file
-      foregroundColor <- "#00E47C"
-      backgroundColor <- "#08312A"
-      cssFile <- fs::path_package("Ulysses", "templates/style.css") |>
-        readr::read_file() |>
-        glue::glue()
-
-      writeFileAndNotify(
-        x = cssFile,
-        repoPath = fs::path(repoPath, "dissemination/quarto"),
-        fileName = "style.css"
-      )
-
-      # copy readme to index file
-      readMeQmd <- readr::read_lines(
-        file = fs::path(repoPath, "README.md")
-      )
-
-      writeFileAndNotify(
-        x = readMeQmd,
-        repoPath = fs::path(repoPath, "dissemination/quarto"),
-        fileName = "index.qmd"
-      )
-
-      # copy news to
-      newsQmd <- readr::read_lines(
-        file = fs::path(repoPath, "NEWS.md")
-      )
-      writeFileAndNotify(
-        x = newsQmd,
-        repoPath = fs::path(repoPath, "dissemination/quarto"),
-        fileName = "news.qmd"
-      )
-
     }
   ),
   active = list(
@@ -827,7 +770,7 @@ WebApiConnection <- R6::R6Class(
 
     checkPassword = function() {
       pwd <- private$.password
-      cli::cat_line(glue::glue("- password: {crayon::blurred(pwd)}"))
+      cli::cat_line(glue::glue("- password: {crayon::hidden(pwd)}"))
       invisible(pwd)
     },
 
