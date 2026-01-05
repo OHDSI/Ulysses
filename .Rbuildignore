@@ -1,7 +1,7 @@
 ^Ulysses\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
-scratch/
+hidden/
 _pkgdown.ym
 compare_versions
 deploy.sh

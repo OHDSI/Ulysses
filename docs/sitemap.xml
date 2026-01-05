@@ -25,6 +25,9 @@
     <loc>/articles/index.html</loc>
   </url>
   <url>
+    <loc>/articles/manifest.html</loc>
+  </url>
+  <url>
     <loc>/articles/start_study.html</loc>
   </url>
   <url>
@@ -55,6 +58,9 @@
     <loc>/reference/addDataSources.html</loc>
   </url>
   <url>
+    <loc>/reference/addGitRemoteToUlysses.html</loc>
+  </url>
+  <url>
     <loc>/reference/addLinks.html</loc>
   </url>
   <url>
@@ -82,10 +88,19 @@
     <loc>/reference/cohortManifest.html</loc>
   </url>
   <url>
+    <loc>/reference/createExecutionSettings.html</loc>
+  </url>
+  <url>
     <loc>/reference/defaultCredentials.html</loc>
   </url>
   <url>
     <loc>/reference/defineLoadTable.html</loc>
+  </url>
+  <url>
+    <loc>/reference/execStudyPipeline.html</loc>
+  </url>
+  <url>
+    <loc>/reference/execStudyTask.html</loc>
   </url>
   <url>
     <loc>/reference/ExecutionSettings.html</loc>
@@ -208,6 +223,9 @@
     <loc>/reference/makeStudySAP.html</loc>
   </url>
   <url>
+    <loc>/reference/makeTaskFile.html</loc>
+  </url>
+  <url>
     <loc>/reference/makeUlyssesStudySettings.html</loc>
   </url>
   <url>
@@ -292,6 +310,9 @@
     <loc>/reference/setStudyTimeline.html</loc>
   </url>
   <url>
+    <loc>/reference/syncUlyssesWork.html</loc>
+  </url>
+  <url>
     <loc>/reference/templateAtlasCredentials.html</loc>
   </url>
   <url>
@@ -320,6 +341,9 @@
   </url>
   <url>
     <loc>/reference/updateTherapeuticArea.html</loc>
+  </url>
+  <url>
+    <loc>/reference/zipAndArchive.html</loc>
   </url>
   <url>
     <loc>/reference/zipResults.html</loc>
