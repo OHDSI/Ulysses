@@ -108,6 +108,24 @@ check_git_status <- function() {
 }
 
 
+syncUlyssesWork <- function(commitMessage, gitRemoteName = "origin") {
+
+  notification(glue::glue_col("Pull changes from {blue {gitRemoteName}}"))
+  gert::git_pull(remote = gitRemoteName)
+
+  # add all files
+  notification("Adding all files touched since last commit!")
+  stg <- gert::git_add(files = ".")
+
+  # commit all with sha
+  sha <- gert::git_commit_all(message = commitMessage)
+  notification(glue::glue_col("Commit Work SHA: {green {sha}}"))
+
+  # push to remote
+  gert::git_push(remote = gitRemoteName)
+}
+
+
 #' @title Function to add a Remote to Ulysses directory
 #' @description
 #' This function adds a git remote to the Ulysses repo. If user adds a commit message
