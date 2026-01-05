@@ -49,6 +49,13 @@ rmarkdown::render("vignettes/ulysses_structure.Rmd",
                   rmarkdown::pdf_document(latex_engine = "pdflatex", toc = TRUE, number_sections = TRUE))
 unlink("extras/pdf_vignette/ulysses_structure.tex")
 
+## ulysses structure
+rmarkdown::render("vignettes/manifest.Rmd",
+                  output_file = "../extras/pdf_vignette/manifest.pdf",
+
+                  rmarkdown::pdf_document(latex_engine = "pdflatex", toc = TRUE, number_sections = TRUE))
+unlink("extras/pdf_vignette/manifest.tex")
+
 
 ### atlas
 # rmarkdown::render("vignettes/atlas.Rmd",
