@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Ulysses</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.2</span>
       </span>
     </div>
 
@@ -57,6 +57,9 @@
   <ul class="dropdown-menu" role="menu">
 <li>
       <a href="../articles/get_started.html">Get Started with Ulysses</a>
+    </li>
+    <li>
+      <a href="../articles/git.html">Using Git in Ulysses</a>
     </li>
     <li>
       <a href="../articles/manifest.html">Using Input Manifests</a>
@@ -173,6 +176,13 @@ Ulysses to track cohorts and concept sets over the study life-cycle.</p>
 </h3>
 <p>To start we initialize the manifest, creating an empty table for each
 manifest type.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># initialize cohort manifest</span></span>
+<span><span class="fu"><a href="../reference/initializeManifest.html">initializeManifest</a></span><span class="op">(</span>manifestType <span class="op">=</span> <span class="st">"cohort"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># initialize concept set manifest</span></span>
+<span><span class="fu"><a href="../reference/initializeManifest.html">initializeManifest</a></span><span class="op">(</span>manifestType <span class="op">=</span> <span class="st">"conceptSet"</span><span class="op">)</span></span></code></pre></div>
 <p>Once the manifest is initialized for the first time, we can then
 manually added content into the file. Open the raw version of the file
 and add details. See example below:</p>
@@ -186,6 +196,20 @@ the grouping categories.</p>
 <p>It is also possible to load this information prior to initializing
 the manifest using the function <code><a href="../reference/defineLoadTable.html">defineLoadTable()</a></code>, see
 example below.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># set cohorts to use</span></span>
+<span><span class="va">tb</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defineLoadTable.html">defineLoadTable</a></span><span class="op">(</span></span>
+<span>  atlasId <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">123</span>,<span class="fl">456</span><span class="op">)</span>,</span>
+<span>  label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Type 2 Diabetes"</span>, <span class="st">"Heart Failure"</span><span class="op">)</span>,</span>
+<span>  category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"target"</span>, <span class="st">"outcome"</span><span class="op">)</span>,</span>
+<span>  subCategory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA_character_</span>, <span class="st">"condition"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># init cohort Manifest</span></span>
+<span><span class="fu"><a href="../reference/initializeManifest.html">initializeManifest</a></span><span class="op">(</span></span>
+<span>  manifestType <span class="op">=</span> <span class="st">"cohort"</span>,</span>
+<span>  loadTable <span class="op">=</span> <span class="va">tb</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>By importing the prespecified table, we do not need to manually add
 this to the manifest csv file.</p>
 <p>The <code>initializeManifest</code> function has one more option
@@ -199,8 +223,14 @@ initialized manifest.</p>
 information. The populate step takes cohorts or concept sets saved as
 files and stores them as entries in the manifest using the meta
 information applied, such as the label.</p>
-<p>In order to use the importFromAtlas feature, users need to configure
-a connection to WebApi. See that section for details.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/populateManifest.html">populateManifest</a></span><span class="op">(</span>manifestType <span class="op">=</span> <span class="st">"cohort"</span>, importFromAtlas <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>Populate manifest will only fill out information for files that exist
+in the cohorts or concept set folders. You can do this manually or use
+the importFromAtlas utility. This option uses your webApi credentials to
+connect and scrap circe json to place in Ulysses. In order to use the
+importFromAtlas feature, users need to configure a connection to WebApi.
+See that section for details.</p>
 </div>
 </div>
 <div class="section level2">
@@ -215,6 +245,8 @@ stores WebApi credentials in .Renviron file. To access the
 <code>.Renviron</code> file use the function:
 <code><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">usethis::edit_r_environ()</a></code>. Ulysses offers a template
 function to provide guidance of the proper credential set up:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/templateAtlasCredentials.html">templateAtlasCredentials</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>To find the baseUrl you can look in the configuration tab of Atlas.
 The user is usually an email address if the authentication method is ad
 and the password is the password to the corresponding user. Please
@@ -230,6 +262,10 @@ R6 class that manages credentials, authorization and scraping of assets.
 Note that this is all handled implicitly in the
 <code>populateManifest</code> function. This section only provides
 additional details.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">atlasCon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setAtlasConnection.html">setAtlasConnection</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># create object</span></span>
+<span><span class="va">atlasCon</span><span class="op">$</span><span class="fu">checkAtlasCredentials</span><span class="op">(</span><span class="op">)</span> <span class="co"># check credentials. note password is hidden</span></span>
+<span><span class="va">atlasCon</span><span class="op">$</span><span class="fu">getCohortDefinition</span><span class="op">(</span>cohortId <span class="op">=</span> <span class="fl">123</span><span class="op">)</span> <span class="co"># grab cohort def from WebApi</span></span></code></pre></div>
 </div>
 </div>
   </div>

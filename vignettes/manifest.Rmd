@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, echo=FALSE}
 library(Ulysses)
 ```
 
@@ -75,7 +75,7 @@ atlasId,label,category,subCategory,id,name,path
 456,Heart Failure,outcome,condition,,,
 ```
 
-Do not fill in the id, name and path columns. These are filled out by the populateManifest function. Notice we add in the labelling information that we know such as the atlasId, the label of the asset and the grouping categories. 
+Do not fill in the id, name and path columns. These are filled out by the populateManifest function. Notice we add in the labelling information that we know such as the atlasId, the label of the asset and the grouping categories.
 
 It is also possible to load this information prior to initializing the manifest using the function `defineLoadTable()`, see example below.
 
@@ -96,19 +96,19 @@ initializeManifest(
 
 ```
 
-By importing the prespecified table, we do not need to manually add this to the manifest csv file. 
+By importing the prespecified table, we do not need to manually add this to the manifest csv file.
 
-The `initializeManifest` function has one more option called overwrite. This will remove any existing manifest with a newly initialized manifest. 
+The `initializeManifest` function has one more option called overwrite. This will remove any existing manifest with a newly initialized manifest.
 
 ## Step 2: Populate the Manifest
 
-Once the manifest has been initialized, it is time to populate the information. The populate step takes cohorts or concept sets saved as files and stores them as entries in the manifest using the meta information applied, such as the label. 
+Once the manifest has been initialized, it is time to populate the information. The populate step takes cohorts or concept sets saved as files and stores them as entries in the manifest using the meta information applied, such as the label.
 
 ```{r populateManifest}
 populateManifest(manifestType = "cohort", importFromAtlas = TRUE)
 ```
 
-In order to use the importFromAtlas feature, users need to configure a connection to WebApi. See that section for details. 
+Populate manifest will only fill out information for files that exist in the cohorts or concept set folders. You can do this manually or use the importFromAtlas utility. This option uses your webApi credentials to connect and scrap circe json to place in Ulysses. In order to use the importFromAtlas feature, users need to configure a connection to WebApi. See that section for details.
 
 # Set up WebApi Connection
 
@@ -120,16 +120,14 @@ Before a use can import atlas assets, they need to set their WebApi credentials 
 templateAtlasCredentials()
 ```
 
-To find the baseUrl you can look in the configuration tab of Atlas. The user is usually an email address if the authentication method is ad and the password is the password to the corresponding user. Please contact someone in your organization for details. Input these items into the `.Renviron()` and restart the session to invoke the changes. 
+To find the baseUrl you can look in the configuration tab of Atlas. The user is usually an email address if the authentication method is ad and the password is the password to the corresponding user. Please contact someone in your organization for details. Input these items into the `.Renviron()` and restart the session to invoke the changes.
 
 ## Atlas Connection Object
 
-Once credentials have been set, users can create a WebApiConnection R6 class that manages credentials, authorization and scraping of assets. Note that this is all handled implicitly in the `populateManifest` function. This section only provides additional details. 
+Once credentials have been set, users can create a WebApiConnection R6 class that manages credentials, authorization and scraping of assets. Note that this is all handled implicitly in the `populateManifest` function. This section only provides additional details.
 
 ```{r atlasCon}
 atlasCon <- setAtlasConnection() # create object
 atlasCon$checkAtlasCredentials() # check credentials. note password is hidden
 atlasCon$getCohortDefinition(cohortId = 123) # grab cohort def from WebApi
 ```
-
-
