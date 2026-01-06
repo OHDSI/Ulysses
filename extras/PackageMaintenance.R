@@ -49,12 +49,20 @@ rmarkdown::render("vignettes/ulysses_structure.Rmd",
                   rmarkdown::pdf_document(latex_engine = "pdflatex", toc = TRUE, number_sections = TRUE))
 unlink("extras/pdf_vignette/ulysses_structure.tex")
 
-## ulysses structure
+## manifest
 rmarkdown::render("vignettes/manifest.Rmd",
                   output_file = "../extras/pdf_vignette/manifest.pdf",
 
                   rmarkdown::pdf_document(latex_engine = "pdflatex", toc = TRUE, number_sections = TRUE))
 unlink("extras/pdf_vignette/manifest.tex")
+
+
+## git
+rmarkdown::render("vignettes/git.Rmd",
+                  output_file = "../extras/pdf_vignette/git.pdf",
+
+                  rmarkdown::pdf_document(latex_engine = "pdflatex", toc = TRUE, number_sections = TRUE))
+unlink("extras/pdf_vignette/git.tex")
 
 
 ### atlas

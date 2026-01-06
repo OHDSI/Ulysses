@@ -15,8 +15,9 @@ The basic functions of Ulysses include:
 
 - Implementation of standard directory structure - see [Ulysses Stucture](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/pdf_vignette/ulysses_structure.pdf)
 - Launch of Ulysses style code repository - see [Get Started](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/pdf_vignette/get_started.pdf)
-- Input Manifest helper functions- see [Get Started](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/pdf_vignette/manifest.pdf)
-- Git Helpers to initialize and sync repo
+- Input Manifest helper functions - see [Manifest](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/pdf_vignette/manifest.pdf)
+- Git Helpers to initialize and sync repo - see [Git](https://raw.githubusercontent.com/OHDSI/Ulysses/main/extras/pdf_vignette/git.pdf)
+- Exec Helpers to execute the study pipeline
 
 # Technical Setup
 

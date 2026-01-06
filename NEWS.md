@@ -1,3 +1,9 @@
+Ulysses 1.0.2
+=============
+
+- Update documentation for manifest and git
+- Minor bug fixes
+
 Ulysses 1.0.1
 =============
 
