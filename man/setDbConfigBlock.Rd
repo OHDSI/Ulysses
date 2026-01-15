@@ -7,6 +7,7 @@
 setDbConfigBlock(
   configBlockName,
   cdmDatabaseSchema,
+  cohortTable,
   databaseName = NULL,
   databaseLabel = NULL
 )
@@ -15,6 +16,8 @@ setDbConfigBlock(
 \item{configBlockName}{the name of the config block}
 
 \item{cdmDatabaseSchema}{the cdmDatabaseSchema specified as a character string}
+
+\item{cohortTable}{a character string specifying the way you want to name your cohort table}
 
 \item{databaseName}{the name of the database, typically uses the db name and id. For example optum_dod_202501}
 

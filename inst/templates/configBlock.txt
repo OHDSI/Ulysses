@@ -11,4 +11,4 @@
   vocabDatabaseSchema: {cdmSchema}
   workDatabaseSchema: {workSchema}
   tempEmulationSchema: {tempSchema}
-  cohortTable: {repoName}_{configBlockName}
+  cohortTable: {cohortTable}
