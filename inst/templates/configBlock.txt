@@ -5,10 +5,10 @@
   user: !expr Sys.getenv('dbUser')
   password: !expr Sys.getenv('dbPassword')
   connectionString: !expr Sys.getenv('dbConnectionString')
-  databaseName: {databaseName}
+  cdmSourceName: {databaseName}
   databaseLabel: {databaseLabel}
   cdmDatabaseSchema: {cdmSchema}
   vocabDatabaseSchema: {cdmSchema}
   workDatabaseSchema: {workSchema}
   tempEmulationSchema: {tempSchema}
-  cohortTable: {repoName}_{configBlockName}
+  cohortTable: {cohortTable}

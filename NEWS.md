@@ -1,3 +1,9 @@
+Ulysses 1.0.3
+=============
+
+- align naming of task files to use cdmSourceName
+- require the naming convention of the cohortTable
+
 Ulysses 1.0.2
 =============
 

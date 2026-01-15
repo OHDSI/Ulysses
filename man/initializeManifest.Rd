@@ -4,7 +4,12 @@
 \alias{initializeManifest}
 \title{Initialize Manifests}
 \usage{
-initializeManifest(manifestType, loadTable = NULL, overwrite = FALSE)
+initializeManifest(
+  manifestType,
+  loadTable = NULL,
+  overwrite = FALSE,
+  repoPath = here::here("inputs")
+)
 }
 \arguments{
 \item{manifestType}{the type of manifest to initialize, either conceptSet or cohort}
@@ -12,6 +17,8 @@ initializeManifest(manifestType, loadTable = NULL, overwrite = FALSE)
 \item{loadTable}{a tibble made using defineLoadTable which prespecifies atlas ids to initialize the manifest}
 
 \item{overwrite}{toggle whether to overwrite existing manifests. Default is FALSE}
+
+\item{repoPath}{the location of the repo specifying where to save the manifest files}
 }
 \value{
 invisible return but initializes the manifest in its appropriate folder location

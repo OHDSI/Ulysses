@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Ulysses</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3</span>
       </span>
     </div>
 
@@ -69,6 +69,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">setDbConfigBlock</span><span class="op">(</span></span>
 <span>  <span class="va">configBlockName</span>,</span>
 <span>  <span class="va">cdmDatabaseSchema</span>,</span>
+<span>  <span class="va">cohortTable</span>,</span>
 <span>  databaseName <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  databaseLabel <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -82,6 +83,10 @@
 
 <dt>cdmDatabaseSchema</dt>
 <dd><p>the cdmDatabaseSchema specified as a character string</p></dd>
+
+
+<dt>cohortTable</dt>
+<dd><p>a character string specifying the way you want to name your cohort table</p></dd>
 
 
 <dt>databaseName</dt>

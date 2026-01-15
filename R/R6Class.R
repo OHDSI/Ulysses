@@ -517,15 +517,14 @@ DbConfigBlock <- R6::R6Class(
   classname = "DbConfigBlock",
   public = list(
     initialize = function(configBlockName,
-                          #dbms,
                           cdmDatabaseSchema,
-                          #workDatabaseSchema,
-                          #tempEmulationSchema,
+                          cohortTable,
                           databaseName = NULL,
                           databaseLabel = NULL) {
 
       .setString(private = private, key = ".configBlockName", value = configBlockName)
       .setString(private = private, key = ".cdmDatabaseSchema", value = cdmDatabaseSchema)
+      .setString(private = private, key = ".cohortTable", value = cohortTable)
 
       checkmate::assert_string(x = databaseName, min.chars = 1, null.ok = TRUE)
       if (is.null(databaseName)) {
@@ -551,6 +550,7 @@ DbConfigBlock <- R6::R6Class(
       databaseName <- private$.databaseName
       databaseLabel <- private$.databaseLabel
       cdmSchema <- private$.cdmDatabaseSchema
+      cohortTable <- private$.cohortTable
 
       configBlock <- fs::path_package(package = "Ulysses", "templates/configBlock.txt") |>
         readr::read_file() |>
@@ -562,6 +562,7 @@ DbConfigBlock <- R6::R6Class(
   private = list(
     .configBlockName = NULL,
     .cdmDatabaseSchema = NULL,
+    .cohortTable = NULL,
     .databaseName = NULL,
     .databaseLabel = NULL
   ),
@@ -589,6 +590,19 @@ DbConfigBlock <- R6::R6Class(
       .setString(private = private, key = ".cdmDatabaseSchema", value = value)
       cli::cat_bullet(
         glue::glue("Replaced {crayon::cyan('cdmDatabaseSchema')} with {crayon::green(value)}"),
+        bullet = "info",
+        bullet_col = "blue"
+      )
+    },
+    cohortTable = function(value) {
+      # return the value if nothing added
+      if(missing(value)) {
+        cds <- private$.cohortTable
+        return(cds)
+      }
+      .setString(private = private, key = ".cohortTable", value = value)
+      cli::cat_bullet(
+        glue::glue("Replaced {crayon::cyan('cohortTable')} with {crayon::green(value)}"),
         bullet = "info",
         bullet_col = "blue"
       )
