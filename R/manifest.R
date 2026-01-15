@@ -19,29 +19,35 @@ defineLoadTable <- function(atlasId, label, category, subCategory) {
 #' @param manifestType the type of manifest to initialize, either conceptSet or cohort
 #' @param loadTable a tibble made using defineLoadTable which prespecifies atlas ids to initialize the manifest
 #' @param overwrite toggle whether to overwrite existing manifests. Default is FALSE
+#' @param repoPath the location of the repo specifying where to save the manifest files
 #' @return invisible return but initializes the manifest in its appropriate folder location
 #' @export
 initializeManifest <- function(manifestType,
                                loadTable = NULL,
-                               overwrite = FALSE) {
+                               overwrite = FALSE,
+                               repoPath = here::here("inputs")) {
 
   checkmate::assert_choice(x = manifestType, choices = c("conceptSet", "cohort"))
 
+  # if manifesttype is concept set set route to csv files
   if (manifestType == "conceptSet") {
-    manifestFile <- here::here("inputs/conceptSets/conceptSetManifest.csv")
-    manifestLogFile <- here::here("inputs/conceptSets/conceptSetManifestLog.csv")
+    manifestFile <- fs::path(repoPath, "conceptSets/conceptSetManifest.csv")
+    manifestLogFile <- fs::path(repoPath, "conceptSets/conceptSetManifestLog.csv")
   }
 
+  # if manifesttype is cohort set route to csv files
   if (manifestType == "cohort") {
-    manifestFile <- here::here("inputs/cohorts/cohortManifest.csv")
-    manifestLogFile <- here::here("inputs/cohorts/cohortManifestLog.csv")
+    manifestFile <- fs::path(repoPath, "cohorts/cohortManifest.csv")
+    manifestLogFile <- fs::path(repoPath, "cohorts/cohortManifestLog.csv")
   }
 
+  # if manifest exists and overwrite is FALSE then stop function
   if (file.exists(manifestFile) & overwrite == FALSE) {
-    cli::cat_bullet("Manifest already exists!  Set overwrite to TRUE if you'd like to replace it.",
-                    bullet = "circle_cross", bullet_col = "red")
-    invisible()
-  } else if (!file.exists(manifestFile) & !is.null(loadTable)) {
+    stop("Manifest already exists!  Set overwrite to TRUE if you'd like to replace it.")
+  }
+
+  # if files doesnt exist and the load table is not null than make the loadTable the start of the manifest
+  if (!file.exists(manifestFile) & !is.null(loadTable)) {
     man <- loadTable |>
       dplyr::mutate(
         id = NA_integer_,
@@ -60,16 +66,26 @@ initializeManifest <- function(manifestType,
     )
   }
 
-    readr::write_csv(x = man, file = manifestFile)
-    cli::cat_bullet(glue::glue("Initializing {manifestType} Manifest to "), crayon::cyan(manifestFile),
-                    bullet = "tick", bullet_col = "green")
+  readr::write_csv(x = man, file = manifestFile)
+  cli::cat_bullet(
+    glue::glue_col("Initializing {manifestType} Manifest to {cyan {manifestFile}}"),
+    bullet = "tick",
+    bullet_col = "green"
+  )
 
-    if (file.exists(manifestLogFile)) {
-      fs::file_delete(manifestLogFile)
-      cli::cat_bullet("Removed old log file at", crayon::cyan(manifestLogFile),
-                      bullet = "tick", bullet_col = "red")
-    }
+  if (file.exists(manifestLogFile)) {
+    fs::file_delete(manifestLogFile)
+    cli::cat_bullet(
+      glue::glue_col("Removed old log file at {cyan {manifestLogFile}}"),
+      bullet = "tick",
+      bullet_col = "red"
+    )
+  }
+
+  invisible(man)
+
 }
+
 
 #' @title Import Atlas Concept sets from the manifest
 #' @param conceptSetManifest the location of the concept set manifest
@@ -174,34 +190,46 @@ importAtlasCohortsFromManifest <- function(cohortManifest,
 #' @title Initialize Manifests
 #' @param manifestType the type of manifest to initialize, either conceptSet or cohort
 #' @param importFromAtlas toggle whether to import content from atlas. Default is TRUE
+#' @param repoPath the location of the repo specifying where to save the manifest files
 #' @return invisible return but populates the manifest in its appropriate folder location
 #' @export
 populateManifest <- function(manifestType,
-                             importFromAtlas = TRUE) {
+                             importFromAtlas = TRUE,
+                             repoPath = here::here("inputs")) {
 
   checkmate::assert_choice(x = manifestType, choices = c("conceptSet", "cohort"))
 
   if (manifestType == "conceptSet") {
-    manifestFile <- here::here("inputs/conceptSets/conceptSetManifest.csv")
+    manifestFile <- fs::path(repoPath, "conceptSets/conceptSetManifest.csv")
+    #manifestFile <- here::here("inputs/conceptSets/conceptSetManifest.csv")
     stopifnot(file.exists(manifestFile))
     man <- readr::read_csv(manifestFile, show_col_types = FALSE)
-    manifestLogFile <- here::here("inputs/conceptSets/conceptSetManifestLog.csv")
+    manifestLogFile <- fs::path(repoPath, "conceptSets/conceptSetManifestLog.csv")
+    #manifestLogFile <- here::here("inputs/conceptSets/conceptSetManifestLog.csv")
     jsonFolder <- here::here("inputs/conceptSets/json")
     sqlFolder <- NA
     if (importFromAtlas & nrow(man) != 0) {
-      man <- importAtlasConceptSetsFromManifest(conceptSetManifest = man, atlasConnection = setAtlasConnection())
+      man <- importAtlasConceptSetsFromManifest(
+        conceptSetManifest = man,
+        atlasConnection = setAtlasConnection()
+      )
     }
   }
 
   if (manifestType == "cohort") {
-    manifestFile <- here::here("inputs/cohorts/cohortManifest.csv")
+    manifestFile <- fs::path(repoPath, "cohorts/cohortManifest.csv")
+    #manifestFile <- here::here("inputs/cohorts/cohortManifest.csv")
     stopifnot(file.exists(manifestFile))
     man <- readr::read_csv(manifestFile, show_col_types = FALSE)
-    manifestLogFile <- here::here("inputs/cohorts/cohortManifestLog.csv")
+    manifestLogFile <- fs::path(repoPath, "cohorts/conceptSetManifestLog.csv")
+    #manifestLogFile <- here::here("inputs/cohorts/cohortManifestLog.csv")
     jsonFolder <- here::here("inputs/cohorts/json")
     sqlFolder <- here::here("inputs/cohorts/sql")
     if (importFromAtlas & nrow(man) != 0) {
-      man <- importAtlasCohortsFromManifest(cohortManifest = man, atlasConnection = setAtlasConnection())
+      man <- importAtlasCohortsFromManifest(
+        cohortManifest = man,
+        atlasConnection = setAtlasConnection()
+        )
     }
   }
 
