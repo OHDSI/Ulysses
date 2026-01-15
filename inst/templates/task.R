@@ -33,7 +33,7 @@ executionSettings <- Ulysses::createExecutionSettings(
   workDatabaseSchema = config::get("workDatabaseSchema", config = configBlock),
   tempEmulationSchema = config::get("tempEmulationSchema", config = configBlock),
   cohortTable = config::get("cohortTable", config = configBlock),
-  cdmSourceName = config::get("databaseName", config = configBlock)
+  cdmSourceName = config::get("cdmSourceName", config = configBlock)
 )
 
 
@@ -41,7 +41,7 @@ executionSettings <- Ulysses::createExecutionSettings(
 
 # set output folder
 outputFolder <- here::here("exec/results") |>
-  fs::path(snakecase::to_snake_case(executionSettings$databaseName), "{taskName}") |>
+  fs::path(snakecase::to_snake_case(executionSettings$cdmSourceName), "{taskName}") |>
   fs::dir_create()
 
 ##### Note: Add code that identifies task settings like cohorts or time windows
