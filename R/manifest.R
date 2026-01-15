@@ -206,7 +206,7 @@ populateManifest <- function(manifestType,
     man <- readr::read_csv(manifestFile, show_col_types = FALSE)
     manifestLogFile <- fs::path(repoPath, "conceptSets/conceptSetManifestLog.csv")
     #manifestLogFile <- here::here("inputs/conceptSets/conceptSetManifestLog.csv")
-    jsonFolder <- here::here("inputs/conceptSets/json")
+    jsonFolder <- fs::path(repoPath, "conceptSets/json")
     sqlFolder <- NA
     if (importFromAtlas & nrow(man) != 0) {
       man <- importAtlasConceptSetsFromManifest(
@@ -223,8 +223,8 @@ populateManifest <- function(manifestType,
     man <- readr::read_csv(manifestFile, show_col_types = FALSE)
     manifestLogFile <- fs::path(repoPath, "cohorts/conceptSetManifestLog.csv")
     #manifestLogFile <- here::here("inputs/cohorts/cohortManifestLog.csv")
-    jsonFolder <- here::here("inputs/cohorts/json")
-    sqlFolder <- here::here("inputs/cohorts/sql")
+    jsonFolder <- fs::path(repoPath, "cohorts/json")
+    sqlFolder <- fs::path(repoPath, "cohorts/sql")
     if (importFromAtlas & nrow(man) != 0) {
       man <- importAtlasCohortsFromManifest(
         cohortManifest = man,

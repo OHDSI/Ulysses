@@ -4,12 +4,18 @@
 \alias{populateManifest}
 \title{Initialize Manifests}
 \usage{
-populateManifest(manifestType, importFromAtlas = TRUE)
+populateManifest(
+  manifestType,
+  importFromAtlas = TRUE,
+  repoPath = here::here("inputs")
+)
 }
 \arguments{
 \item{manifestType}{the type of manifest to initialize, either conceptSet or cohort}
 
 \item{importFromAtlas}{toggle whether to import content from atlas. Default is TRUE}
+
+\item{repoPath}{the location of the repo specifying where to save the manifest files}
 }
 \value{
 invisible return but populates the manifest in its appropriate folder location
