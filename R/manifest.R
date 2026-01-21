@@ -307,3 +307,32 @@ populateManifest <- function(manifestType,
 
   invisible(man)
 }
+
+#' @title function to subset the cohortManifest based on category and sub category
+#' @param cohortCategory the category label in the cohort manifest
+#' @param cohortSubCategory the subCategory label to filter the cohort manifest, default is null
+#' @param cohortManifestPath the path to the manifest. Defaults to the standard ulysses path
+#' @returns a tibble subsetting the cohort manifest by the id and label
+#' @export
+getAnalysisCohortsByCategory <- function(cohortCategory,
+                               cohortSubCategory = NULL,
+                               cohortManifestPath = here::here("inputs/cohorts/cohortManifest.csv")) {
+  if (is.null(cohortSubCategory)) {
+    #category <- rlang::enquo(category)
+    analysisCohorts <- readr::read_csv(cohortManifestPath, show_col_types = FALSE) |>
+      dplyr::filter(
+        category == cohortCategory
+      ) |>
+      dplyr::select(id, label)
+  } else {
+    analysisCohorts <- readr::read_csv(cohortManifestPath, show_col_types = FALSE) |>
+      dplyr::filter(
+        category == category,
+        subCategory %in% cohortSubCategory
+      ) |>
+      dplyr::select(id, label)
+
+  }
+
+  return(analysisCohorts)
+}
