@@ -55,15 +55,29 @@ initializeManifest <- function(manifestType,
         path = NA_character_
       )
   } else {
-    man <- data.frame(
-      atlasId = integer(),
-      label = character(),
-      category = character(),
-      subCategory = character(),
-      id = integer(),
-      name = character(),
-      path = character()
-    )
+    if (manifestType == "concept set") {
+      man <- data.frame(
+        atlasId = integer(),
+        label = character(),
+        category = character(),
+        subCategory = character(),
+        id = integer(),
+        name = character(),
+        path = character(),
+        sourceCs = boolean(),
+        domain = character()
+      )
+    } else {
+      man <- data.frame(
+        atlasId = integer(),
+        label = character(),
+        category = character(),
+        subCategory = character(),
+        id = integer(),
+        name = character(),
+        path = character()
+      )
+    }
   }
 
   readr::write_csv(x = man, file = manifestFile)
@@ -194,7 +208,8 @@ importAtlasCohortsFromManifest <- function(cohortManifest,
 #' @return invisible return but populates the manifest in its appropriate folder location
 #' @export
 populateManifest <- function(manifestType,
-                             importFromAtlas = TRUE,
+                             importFromAtlas = FALSE,
+                             atlasConnection = setAtlasConnection(),
                              repoPath = here::here("inputs")) {
 
   checkmate::assert_choice(x = manifestType, choices = c("conceptSet", "cohort"))
@@ -204,6 +219,17 @@ populateManifest <- function(manifestType,
     #manifestFile <- here::here("inputs/conceptSets/conceptSetManifest.csv")
     stopifnot(file.exists(manifestFile))
     man <- readr::read_csv(manifestFile, show_col_types = FALSE)
+
+    if (!"sourceCs" %in% names(df)) {
+      man <- man |>
+        dplyr::mutate(sourceCs = NA)
+    }
+
+    if (!"domain" %in% names(df)) {
+      man <- man |>
+        dplyr::mutate(domain = NA)
+    }
+
     manifestLogFile <- fs::path(repoPath, "conceptSets/conceptSetManifestLog.csv")
     #manifestLogFile <- here::here("inputs/conceptSets/conceptSetManifestLog.csv")
     jsonFolder <- fs::path(repoPath, "conceptSets/json")
@@ -211,7 +237,7 @@ populateManifest <- function(manifestType,
     if (importFromAtlas & nrow(man) != 0) {
       man <- importAtlasConceptSetsFromManifest(
         conceptSetManifest = man,
-        atlasConnection = setAtlasConnection()
+        atlasConnection = atlasConnection
       )
     }
   }
@@ -220,7 +246,8 @@ populateManifest <- function(manifestType,
     manifestFile <- fs::path(repoPath, "cohorts/cohortManifest.csv")
     #manifestFile <- here::here("inputs/cohorts/cohortManifest.csv")
     stopifnot(file.exists(manifestFile))
-    man <- readr::read_csv(manifestFile, show_col_types = FALSE)
+    man <- readr::read_csv(manifestFile, show_col_types = FALSE) |>
+      dplyr::mutate(sourceCs = NA, domain = NA)
     manifestLogFile <- fs::path(repoPath, "cohorts/conceptSetManifestLog.csv")
     #manifestLogFile <- here::here("inputs/cohorts/cohortManifestLog.csv")
     jsonFolder <- fs::path(repoPath, "cohorts/json")
@@ -228,7 +255,7 @@ populateManifest <- function(manifestType,
     if (importFromAtlas & nrow(man) != 0) {
       man <- importAtlasCohortsFromManifest(
         cohortManifest = man,
-        atlasConnection = setAtlasConnection()
+        atlasConnection = atlasConnection
         )
     }
   }
@@ -276,15 +303,24 @@ populateManifest <- function(manifestType,
                         path = filePaths,
                         inRepo = TRUE)
 
-  manLog <- readr::read_csv(manifestLogFile, show_col_types = FALSE) |>
+  manLog <- readr::read_csv(manifestLogFile, show_col_types = FALSE)
+
+  if (manifestType == "cohort") {
+    manLog <- manLog |>
+      dplyr::mutate(sourceCs = NA, domain = NA)
+  }
+
+  manLog <- manLog |>
     dplyr::full_join(man, by = c("id")) |>
     dplyr::mutate(atlasId = dplyr::coalesce(atlasId.y, atlasId.x),
                   label = dplyr::coalesce(label.y, label.x),
                   category = dplyr::coalesce(category.y, category.x),
                   subCategory = dplyr::coalesce(subCategory.y, subCategory.x),
                   name = dplyr::coalesce(name.y, name.x),
-                  path = dplyr::coalesce(path.y, path.x)) |>
-    dplyr::select(id, isDeprecated, atlasId, label, category, subCategory, name, path) |>
+                  path = dplyr::coalesce(path.y, path.x),
+                  sourceCs = dplyr::coalesce(sourceCs.y, sourceCs.x),
+                  domain = dplyr::coalesce(domain.y, domain.x)) |>
+    dplyr::select(id, isDeprecated, atlasId, label, category, subCategory, name, path, sourceCs, domain) |>
     dplyr::full_join(namesDf, by = c("name","path")) |>
     dplyr::arrange(id,path) |>
     dplyr::mutate(id = dplyr::if_else(is.na(id),
@@ -295,6 +331,15 @@ populateManifest <- function(manifestType,
   man <- manLog |>
     dplyr::filter(inRepo == TRUE) |>
     dplyr::select(-c(inRepo,isDeprecated))
+
+  if (manifestType == "cohort") {
+    man <- man |>
+      dplyr::select(-c(sourceCs, domain))
+
+    manLog <- manLog |>
+      dplyr::select(-c(sourceCs, domain))
+  }
+
   readr::write_csv(x = man, file = manifestFile)
   cli::cat_bullet("Saving Manifest to ", crayon::cyan(manifestFile),
                   bullet = "tick", bullet_col = "green")
