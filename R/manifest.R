@@ -64,7 +64,7 @@ initializeManifest <- function(manifestType,
         id = integer(),
         name = character(),
         path = character(),
-        sourceCs = boolean(),
+        sourceCs = logical(),
         domain = character()
       )
     } else {
