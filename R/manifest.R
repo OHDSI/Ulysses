@@ -55,7 +55,7 @@ initializeManifest <- function(manifestType,
         path = NA_character_
       )
   } else {
-    if (manifestType == "concept set") {
+    if (manifestType == "conceptSet") {
       man <- data.frame(
         atlasId = integer(),
         label = character(),
