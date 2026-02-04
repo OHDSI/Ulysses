@@ -1,3 +1,8 @@
+Ulysses 1.0.4
+=============
+
+- fix bugs in manifest
+
 Ulysses 1.0.3
 =============
 

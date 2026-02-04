@@ -6,7 +6,8 @@
 \usage{
 populateManifest(
   manifestType,
-  importFromAtlas = TRUE,
+  importFromAtlas = FALSE,
+  atlasConnection = setAtlasConnection(),
   repoPath = here::here("inputs")
 )
 }
