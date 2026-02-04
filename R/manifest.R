@@ -201,9 +201,10 @@ importAtlasCohortsFromManifest <- function(cohortManifest,
   invisible(cohortManifest)
 }
 
-#' @title Initialize Manifests
+#' @title Populate Manifests
 #' @param manifestType the type of manifest to initialize, either conceptSet or cohort
 #' @param importFromAtlas toggle whether to import content from atlas. Default is TRUE
+#' @param atlasConnection add atlasConnection object.
 #' @param repoPath the location of the repo specifying where to save the manifest files
 #' @return invisible return but populates the manifest in its appropriate folder location
 #' @export
