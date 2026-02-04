@@ -248,7 +248,7 @@ populateManifest <- function(manifestType,
     stopifnot(file.exists(manifestFile))
     man <- readr::read_csv(manifestFile, show_col_types = FALSE) |>
       dplyr::mutate(sourceCs = NA, domain = NA)
-    manifestLogFile <- fs::path(repoPath, "cohorts/conceptSetManifestLog.csv")
+    manifestLogFile <- fs::path(repoPath, "cohorts/cohortManifestLog.csv")
     #manifestLogFile <- here::here("inputs/cohorts/cohortManifestLog.csv")
     jsonFolder <- fs::path(repoPath, "cohorts/json")
     sqlFolder <- fs::path(repoPath, "cohorts/sql")
