@@ -220,12 +220,12 @@ populateManifest <- function(manifestType,
     stopifnot(file.exists(manifestFile))
     man <- readr::read_csv(manifestFile, show_col_types = FALSE)
 
-    if (!"sourceCs" %in% names(df)) {
+    if (!("sourceCs" %in% names(man))) {
       man <- man |>
         dplyr::mutate(sourceCs = NA)
     }
 
-    if (!"domain" %in% names(df)) {
+    if (!("domain" %in% names(man))) {
       man <- man |>
         dplyr::mutate(domain = NA)
     }
