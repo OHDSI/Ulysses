@@ -2,11 +2,12 @@
 % Please edit documentation in R/manifest.R
 \name{populateManifest}
 \alias{populateManifest}
-\title{Initialize Manifests}
+\title{Populate Manifests}
 \usage{
 populateManifest(
   manifestType,
-  importFromAtlas = TRUE,
+  importFromAtlas = FALSE,
+  atlasConnection = setAtlasConnection(),
   repoPath = here::here("inputs")
 )
 }
@@ -15,11 +16,13 @@ populateManifest(
 
 \item{importFromAtlas}{toggle whether to import content from atlas. Default is TRUE}
 
+\item{atlasConnection}{add atlasConnection object.}
+
 \item{repoPath}{the location of the repo specifying where to save the manifest files}
 }
 \value{
 invisible return but populates the manifest in its appropriate folder location
 }
 \description{
-Initialize Manifests
+Populate Manifests
 }
