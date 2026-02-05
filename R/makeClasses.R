@@ -125,7 +125,7 @@ launchUlyssesRepo <- function(ulyssesStudySettings, verbose = TRUE, openProject 
 #' @param workDatabaseSchema The schema to which results will be written
 #' @param tempEmulationSchema Some database platforms like Oracle and Snowflake do not truly support temp tables. To emulate temp tables, provide a schema with write privileges where temp tables can be created.
 #' @param cohortTable The name of the table where the cohort(s) are stored
-#' @param cdmSourceName A human-readable name for the OMOP CDM source
+#' @param databaseName A human-readable name for the OMOP CDM database
 #'
 #' @return An ExecutionSettings object
 #' @export
@@ -135,13 +135,13 @@ createExecutionSettings <- function(connectionDetails,
                                     workDatabaseSchema,
                                     tempEmulationSchema,
                                     cohortTable,
-                                    cdmSourceName) {
+                                    databaseName) {
   executionSettings <- ExecutionSettings$new(connectionDetails = connectionDetails,
                                              connection = connection,
                                              cdmDatabaseSchema = cdmDatabaseSchema,
                                              workDatabaseSchema = workDatabaseSchema,
                                              tempEmulationSchema = tempEmulationSchema,
                                              cohortTable = cohortTable,
-                                             cdmSourceName = cdmSourceName)
+                                             databaseName = databaseName)
   return(executionSettings)
 }

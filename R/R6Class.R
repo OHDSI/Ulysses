@@ -1076,14 +1076,14 @@ ExecutionSettings <- R6::R6Class(
     #' @param workDatabaseSchema The schema to which results will be written
     #' @param tempEmulationSchema Some database platforms like Oracle and Snowflake do not truly support temp tables. To emulate temp tables, provide a schema with write privileges where temp tables can be created.
     #' @param cohortTable The name of the table where the cohort(s) are stored
-    #' @param cdmSourceName A human-readable name for the OMOP CDM source
+    #' @param databaseName A human-readable name for the OMOP CDM database
     initialize = function(connectionDetails = NULL,
                           connection = NULL,
                           cdmDatabaseSchema = NULL,
                           workDatabaseSchema = NULL,
                           tempEmulationSchema = NULL,
                           cohortTable = NULL,
-                          cdmSourceName = NULL) {
+                          databaseName = NULL) {
       stopifnot(is.null(connectionDetails) || is.null(connection))
       .setClass(private = private, key = "connectionDetails", value = connectionDetails,
                 class = "ConnectionDetails", nullable = TRUE)
@@ -1093,7 +1093,7 @@ ExecutionSettings <- R6::R6Class(
       .setString(private = private, key = ".workDatabaseSchema", value = workDatabaseSchema)
       .setString(private = private, key = ".tempEmulationSchema", value = tempEmulationSchema)
       .setString(private = private, key = ".cohortTable", value = cohortTable)
-      .setString(private = private, key = ".cdmSourceName", value = cdmSourceName)
+      .setString(private = private, key = ".databaseName", value = databaseName)
     },
     #' @description extract the dbms dialect
     getDbms = function() {
@@ -1157,7 +1157,7 @@ ExecutionSettings <- R6::R6Class(
     .workDatabaseSchema = NULL,
     .tempEmulationSchema = NULL,
     .cohortTable = NULL,
-    .cdmSourceName = NULL
+    .databaseName = NULL
   ),
 
   active = list(
@@ -1223,17 +1223,17 @@ ExecutionSettings <- R6::R6Class(
         bullet_col = "blue"
       )
     },
-    #' @field cdmSourceName the name of the source data of the cdm
-    cdmSourceName = function(value) {
+    #' @field databaseName the name of the source data of the cdm
+    databaseName = function(value) {
       # return the value if nothing added
       if(missing(value)) {
-        csn <- private$.cdmSourceName
+        csn <- private$.databaseName
         return(csn)
       }
-      # replace the cdmSourceName
-      .setString(private = private, key = ".cdmSourceName", value = value)
+      # replace the databaseName
+      .setString(private = private, key = ".databaseName", value = value)
       cli::cat_bullet(
-        glue::glue("Replaced {crayon::cyan('cdmSourceName')} with {crayon::green(value)}"),
+        glue::glue("Replaced {crayon::cyan('databaseName')} with {crayon::green(value)}"),
         bullet = "info",
         bullet_col = "blue"
       )
