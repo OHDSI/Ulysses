@@ -75,6 +75,7 @@ The next class to make is the ExecOptions specifing the parameters to execute th
 db1 <- setDbConfigBlock(
   configBlockName = "synpuf_110k",
   cdmDatabaseSchema = "synpuf_110k_202701",
+  cohortTable = "cohort_synpuf",
   databaseName = "synpuf_110k_202701",
   databaseLabel = "Synpuf 110K"
 )
@@ -82,6 +83,7 @@ db1 <- setDbConfigBlock(
 db2 <- setDbConfigBlock(
   configBlockName = "synthea_2m",
   cdmDatabaseSchema = "synthea_2m_202701",
+  cohortTable = "cohort_synthea",
   databaseName = "synthea_2m_202701",
   databaseLabel = "Synthea 2M"
 )

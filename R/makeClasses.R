@@ -55,6 +55,16 @@ setDbConfigBlock <- function(configBlockName,
   return(dbConfigBlock)
 }
 
+#' @title set the execOptions as placeholder.
+#' @description use this function if there is not a dbms connection for the study such as using a proprietary tool for the analysis
+#' @returns A ExecOptions R6 class with the execOptions
+#' @export
+placeHolderExecOptions <- function() {
+  execOptions <- ExecOptions$new()
+  return(execOptions)
+}
+
+
 #' @title Make ExecOptions for Ulysses
 #' @param dbms specify the dbms used in the exec options
 #' @param workDatabaseSchema the name of the workDatabaseSchema as a character string, location in DB where user has write access
@@ -88,20 +98,22 @@ makeExecOptions <- function(dbms,
 #' @export
 makeUlyssesStudySettings <- function(repoName,
                                      repoFolder,
+                                     toolType = c("dbms", "external"),
                                      studyMeta,
                                      execOptions,
                                      gitRemote = NULL,
                                      renvLock = NULL) {
 
-  execOptions <- UlyssesStudy$new(
+  ulyStudy <- UlyssesStudy$new(
     repoName = repoName,
     repoFolder = repoFolder,
+    toolType = toolType,
     studyMeta = studyMeta,
     execOptions = execOptions,
     gitRemote = gitRemote,
     renvLock = renvLock
   )
-  return(execOptions)
+  return(ulyStudy)
 
 }
 

@@ -16,9 +16,9 @@ UlyssesStudy <- R6::R6Class(
   public = list(
     initialize = function(repoName,
                           repoFolder,
+                          toolType = c("dbms", "external"),
                           studyMeta,
                           execOptions,
-                          #inputOptions = NULL,
                           gitRemote = NULL,
                           renvLock = NULL
     ) {
@@ -29,10 +29,11 @@ UlyssesStudy <- R6::R6Class(
       checkmate::assert_string(x = repoFolder, min.chars = 1)
       private[[".repoFolder"]] <- repoFolder
 
+      checkmate::assert_string(x = toolType, min.chars = 1)
+      private[[".toolType"]] <- toolType
+
       .setClass(private = private, key = ".studyMeta", value = studyMeta, class = "StudyMeta")
       .setClass(private = private, key = ".execOptions", value = execOptions, class = "ExecOptions")
-      #.setClass(private = private, key = ".inputOptions", value = inputOptions, class = "InputOptions", nullable = TRUE)
-
 
       checkmate::assert_string(x = gitRemote, null.ok = TRUE)
       private[[".gitRemote"]] <- gitRemote
@@ -43,14 +44,11 @@ UlyssesStudy <- R6::R6Class(
 
     initUlyssesRepo = function(verbose, openProject) {
 
-      # get vars
-      repoName <- private$.repoName
-      repoFolder <- private$.repoFolder
-
       if (verbose) {
         notification("Step 1: Creating R Project")
       }
       # make a path to repo
+      toolType <- private$.toolType
       repoName <- private$.repoName
       repoFolder <- private$.repoFolder
 
@@ -79,9 +77,9 @@ UlyssesStudy <- R6::R6Class(
 
       private$.initReadMe() #1 init read me
       private$.initNews() # 2 init news
-      private$.initConfigFile() # 3 init config
+      private$.initConfigFile() # 3 init config, if external make basic
       private$.initQuarto() # 4 add the study hub stuff
-      private$.initMainExec() # 5 add the main.R file
+      private$.initMainExec() # 5 add the main.R file, if external make basic
       #private$.initRenv() # 6 add the renv
       private$.initGit() #initialize git locally this is the last step
 
@@ -96,6 +94,7 @@ UlyssesStudy <- R6::R6Class(
   private = list(
     .repoName = NULL,
     .repoFolder = NULL,
+    .toolType = NULL,
     .studyMeta = NULL,
     .execOptions = NULL,
     .gitRemote = NULL,
@@ -150,10 +149,12 @@ UlyssesStudy <- R6::R6Class(
     .initConfigFile = function() {
       repoName <- private$.repoName
       repoFolder <- private$.repoFolder
+      toolType <- private$.toolType # get tool type to differ build
       repoPath <- fs::path(repoFolder, repoName) |>
         fs::path_expand()
 
-      private$.execOptions$makeConfigFile(repoName = repoName, repoPath = repoPath)
+      private$.execOptions$makeConfigFile(repoName = repoName, repoPath = repoPath, toolType = toolType)
+      
 
     },
 
@@ -192,10 +193,12 @@ UlyssesStudy <- R6::R6Class(
       repoName <- private$.repoName
       repoFolder <- private$.repoFolder
       studyTitle <- self$studyMeta$studyTitle
+      toolType <- private$.toolType # get tool type to differ build
 
       initStudyHubFiles(
         repoName = repoName,
         repoFolder = repoFolder,
+        toolType = toolType,
         studyTitle = self$studyMeta$studyTitle
       )
 
@@ -203,18 +206,25 @@ UlyssesStudy <- R6::R6Class(
 
     .initMainExec = function() {
 
-      # get elements
-      studyName <- private$.studyMeta$studyTitle
-      configBlocks <- purrr::map_chr(
-        private$.execOptions$dbConnectionBlocks,
-        ~.x$configBlockName
-      )
       repoName <- private$.repoName
       repoFolder <- private$.repoFolder
+      toolType <- private$.toolType # get tool type to differ build
+
+      # get elements
+      studyName <- private$.studyMeta$studyTitle
+      if (toolType == "dbms") {
+        configBlocks <- purrr::map_chr(
+            private$.execOptions$dbConnectionBlocks,
+            ~.x$configBlockName
+        )
+      } else {
+        configBlocks <- ""
+      }
 
       addMainFile(
         repoName = repoName,
         repoFolder = repoFolder,
+        toolType = toolType,
         configBlocks = configBlocks,
         studyName = studyName
       )
@@ -249,6 +259,21 @@ UlyssesStudy <- R6::R6Class(
         bullet_col = "blue"
       )
     },
+
+    toolType = function(value) {
+      if(missing(value)) {
+        sm <- private$.toolType 
+        return(sm)
+      }
+      checkmate::assert_string(x = value, min.chars = 1)
+      private[[".toolType"]] <- value
+      cli::cat_bullet(
+        glue::glue("Replaced {crayon::cyan('toolType')} with {crayon::green(value)}"),
+        bullet = "info",
+        bullet_col = "blue"
+      )
+    },
+
     studyMeta = function(value) {
       if(missing(value)) {
         sm <- private$.studyMeta
@@ -641,14 +666,20 @@ ExecOptions <- R6::R6Class(
   classname = "ExecOptions",
   public = list(
     initialize = function(
-    dbms,
-    workDatabaseSchema,
-    tempEmulationSchema,
-    dbConnectionBlocks) {
+    dbms = NULL,
+    workDatabaseSchema = NULL,
+    tempEmulationSchema = NULL,
+    dbConnectionBlocks = NULL) {
 
-      .setString(private = private, key = ".dbms", value = dbms)
+      checkmate::assert_string(x = dbms, min.chars = 1, null.ok = TRUE)
+      if (!is.null(dbms)) {
+        private[[".dbms"]] <- dbms
+      }
 
-      .setString(private = private, key = ".workDatabaseSchema", value = workDatabaseSchema)
+      checkmate::assert_string(x = workDatabaseSchema, min.chars = 1, null.ok = TRUE)
+      if (!is.null(workDatabaseSchema)) {
+        private[[".workDatabaseSchema"]] <- workDatabaseSchema
+      }
 
       checkmate::assert_string(x = tempEmulationSchema, min.chars = 1, null.ok = TRUE)
       if (!is.null(tempEmulationSchema)) {
@@ -656,23 +687,28 @@ ExecOptions <- R6::R6Class(
       }
 
       checkmate::assert_list(x = dbConnectionBlocks, min.len = 1, types = "DbConfigBlock")
+      if (!is.null(dbConnectionBlocks)) {
       private[[".dbConnectionBlocks"]] <- dbConnectionBlocks
+      }
 
     },
 
-    makeConfigFile = function(repoName, repoPath) {
-
-      dbBlocks <- vector('list', length = length(private$.dbConnectionBlocks))
-      for (i in seq_along(dbBlocks)) {
-        dbBlocks[[i]] <- private$.dbConnectionBlocks[[i]]$writeBlockSection(
-          repoName = repoName,
-          dbms = private$.dbms,
-          workSchema = private$.workDatabaseSchema,
-          tempSchema = private$.tempEmulationSchema
-        )
+    makeConfigFile = function(repoName, repoPath, toolType) {
+      if(toolType == "dbms") {
+        dbBlocks <- vector('list', length = length(private$.dbConnectionBlocks))
+              for (i in seq_along(dbBlocks)) {
+                dbBlocks[[i]] <- private$.dbConnectionBlocks[[i]]$writeBlockSection(
+                  repoName = repoName,
+                  dbms = private$.dbms,
+                  workSchema = private$.workDatabaseSchema,
+                  tempSchema = private$.tempEmulationSchema
+                )
+              }
+              dbBlocks <- do.call('c', dbBlocks) |>
+                glue::glue_collapse(sep = "\n\n")
+      } else {
+        dbBlocks <- ""
       }
-      dbBlocks <- do.call('c', dbBlocks) |>
-        glue::glue_collapse(sep = "\n\n")
 
       header <- fs::path_package(package = "Ulysses", "templates/configHeader.txt") |>
         readr::read_file() |>
@@ -692,7 +728,7 @@ ExecOptions <- R6::R6Class(
     }
   ),
   private = list(
-    .dbms = NA_character_,
+    .dbms = NULL,
     .workDatabaseSchema = NULL,
     .tempEmulationSchema = NULL,
     .dbConnectionBlocks = NULL
