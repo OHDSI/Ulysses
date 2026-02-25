@@ -100,7 +100,7 @@ makeUlyssesStudySettings <- function(repoName,
                                      repoFolder,
                                      toolType = c("dbms", "external"),
                                      studyMeta,
-                                     execOptions,
+                                     execOptions = NULL,
                                      gitRemote = NULL,
                                      renvLock = NULL) {
 

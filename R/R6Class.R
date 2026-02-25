@@ -33,7 +33,8 @@ UlyssesStudy <- R6::R6Class(
       private[[".toolType"]] <- toolType
 
       .setClass(private = private, key = ".studyMeta", value = studyMeta, class = "StudyMeta")
-      .setClass(private = private, key = ".execOptions", value = execOptions, class = "ExecOptions")
+
+      .setClass(private = private,key = ".execOptions",value = execOptions,class = "ExecOptions")
 
       checkmate::assert_string(x = gitRemote, null.ok = TRUE)
       private[[".gitRemote"]] <- gitRemote
@@ -153,8 +154,12 @@ UlyssesStudy <- R6::R6Class(
       repoPath <- fs::path(repoFolder, repoName) |>
         fs::path_expand()
 
-      private$.execOptions$makeConfigFile(repoName = repoName, repoPath = repoPath, toolType = toolType)
-      
+      private$.execOptions$makeConfigFile(
+        repoName = repoName,
+        repoPath = repoPath,
+        toolType = toolType
+      )
+
 
     },
 
@@ -193,12 +198,10 @@ UlyssesStudy <- R6::R6Class(
       repoName <- private$.repoName
       repoFolder <- private$.repoFolder
       studyTitle <- self$studyMeta$studyTitle
-      toolType <- private$.toolType # get tool type to differ build
 
       initStudyHubFiles(
         repoName = repoName,
         repoFolder = repoFolder,
-        toolType = toolType,
         studyTitle = self$studyMeta$studyTitle
       )
 
@@ -262,7 +265,7 @@ UlyssesStudy <- R6::R6Class(
 
     toolType = function(value) {
       if(missing(value)) {
-        sm <- private$.toolType 
+        sm <- private$.toolType
         return(sm)
       }
       checkmate::assert_string(x = value, min.chars = 1)
@@ -686,9 +689,9 @@ ExecOptions <- R6::R6Class(
         private[[".tempEmulationSchema"]] <- tempEmulationSchema
       }
 
-      checkmate::assert_list(x = dbConnectionBlocks, min.len = 1, types = "DbConfigBlock")
+      checkmate::assert_list(x = dbConnectionBlocks, min.len = 1, types = "DbConfigBlock", null.ok = TRUE)
       if (!is.null(dbConnectionBlocks)) {
-      private[[".dbConnectionBlocks"]] <- dbConnectionBlocks
+        private[[".dbConnectionBlocks"]] <- dbConnectionBlocks
       }
 
     },
