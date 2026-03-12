@@ -35,7 +35,7 @@ initStudyHubFiles <- function(repoName,
     fs::path_expand()
 
   ## Make folders for quarto
-  foldersToCreate <- c("R", "results", "images")
+  foldersToCreate <- c("R", "images")
   fs::dir_create(
     fs::path(repoPath, "dissemination/quarto", foldersToCreate)
   )
@@ -69,8 +69,8 @@ initStudyHubFiles <- function(repoName,
 
   writeFileAndNotify(
     x = resultsFile,
-    repoPath = fs::path(repoPath, "dissemination/quarto/results"),
-    fileName = "results_init.qmd"
+    repoPath = fs::path(repoPath, "dissemination/quarto"),
+    fileName = "results.qmd"
   )
 
   # setup quarto css file

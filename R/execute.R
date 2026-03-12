@@ -57,19 +57,19 @@ zipAndArchive <- function(input) {
   # if input is exportMerge grab results and prep for archive
   if (input == "exportMerge") {
     files2zip <- fs::dir_ls("dissemination/export/merge", type = "file")
-    zipFileName <- glue::glue("exec/archive/export_merge_{version}_{timeStamp}")
+    zipFileName <- glue::glue("exec/archive/export_merge_{repoVersion}_{timeStamp}")
   }
 
   # if input is exportPretty grab results and prep for archive
   if (input == "exportPretty") {
     files2zip <- fs::dir_ls("dissemination/export/pretty", type = "file")
-    zipFileName <- glue::glue("exec/archive/export_pretty_{version}_{timeStamp}")
+    zipFileName <- glue::glue("exec/archive/export_pretty_{repoVersion}_{timeStamp}")
   }
 
   # if input is site grab files and prep for archive
   if (input == "exportMerge") {
     files2zip <- fs::dir_ls("dissemination/quarto/_site", type = "any")
-    zipFileName <- glue::glue("exec/archive/quarto_site_{version}_{timeStamp}")
+    zipFileName <- glue::glue("exec/archive/quarto_site_{repoVersion}_{timeStamp}")
   }
 
   # zip results and place in archive
@@ -138,16 +138,25 @@ execStudyPipeline <- function(configBlock, env = rlang::caller_env()) {
 }
 
 
-addMainFile <- function(repoName, repoFolder, configBlocks, studyName) {
+addMainFile <- function(repoName, repoFolder, toolType, configBlocks, studyName) {
   repoPath <- fs::path(repoFolder, repoName) |>
     fs::path_expand()
 
+  if (toolType == "dbms") {
   configBlocks <- paste0(configBlocks, collapse = "\", \"")
 
   mainR <- fs::path_package("Ulysses", "templates/main.R") |>
     readr::read_file() |>
     glue::glue()
 
+  }
+
+  if (toolType == "external") {
+    mainR <- fs::path_package("Ulysses", "templates/main_simple.R") |>
+    readr::read_file() |>
+    glue::glue()
+  }
+  
   actionItem(glue::glue_col("Initialize Main Exec File: {green {fs::path(repoPath, 'main.R')}}"))
   readr::write_file(
     x = mainR,

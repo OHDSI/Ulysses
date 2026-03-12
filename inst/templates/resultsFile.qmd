@@ -1,5 +1,6 @@
 ---
-title: {studyTitle} - Initial Results
+title: {studyTitle}
+subtitle: Initial Results
 date: last-modified
 format:
   html:
