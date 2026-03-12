@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Ulysses</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
@@ -293,15 +293,35 @@ example:
 line beneath <code>cohortTable</code>. Be sure to keep the indentation
 and add an extra space after.</p>
 </div>
+<div class="section level4">
+<h4 id="main-r">main.R<a class="anchor" aria-label="anchor" href="#main-r"></a>
+</h4>
+<p>The main.R file is the entry point for executing the RWE study
+pipeline. This file is initialized by Ulysses when launching a new
+repository using <code><a href="../reference/launchUlyssesRepo.html">launchUlyssesRepo()</a></code>. The main.R file
+coordinates the execution of all analytical tasks and follows a
+structured workflow: loading dependencies, initializing manifests for
+cohorts and concept sets, populating manifests from external sources
+(such as ATLAS), executing the pipeline on specified databases, and
+performing post-execution steps such as building the study hub and
+archiving results. The contents of main.R are generated based on the
+<code>toolType</code> parameter specified during study initialization.
+Studies using <code>toolType = "dbms"</code> receive a full pipeline
+template with database execution steps, while studies using
+<code>toolType = "external"</code> receive a simplified template for
+studies using external analytical tools or pre-computed data.</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="analysis-folder">Analysis Folder<a class="anchor" aria-label="anchor" href="#analysis-folder"></a>
 </h3>
 <p>The analysis folder contains all R code that executes the RWE study.
-There are two sub-sections: tasks and src (pronounced source). Tasks are
-files that implement the RWE pipeline when we call an execute command.
-<strong>src</strong> internal files maintain code that helps run these
-functions.</p>
+There are three sub-sections: tasks, src (pronounced source), and
+migrations. Tasks are files that implement the RWE pipeline when we call
+an execute command. <strong>src</strong> internal files maintain code
+that helps run these functions. <strong>migrations</strong> contains
+database migration scripts used to manage schema changes and data
+transformations across study versions.</p>
 <p>The task folder maintains a numbered list of files that run an
 element of the pipeline. Task files follow this general cadence: a) list
 parameters and assumptions b) connect to the database, c) extract
@@ -311,6 +331,15 @@ folder. In each task file we specify a configBlock. As stated in the
 config.yml section, the config block specifies the block header of the
 data we want to use in the connection. This allows us to reuse the same
 task code to run on multiple databases.</p>
+<p>The migrations folder is used to store R scripts that serve as
+post-processing steps to prepare results from execution for
+dissemination. For example, we may have a migration script that takes
+the raw csv outputs from execution and pivots them into a
+stakeholder-friendly format. This is a crucial step in the RWE pipeline,
+as raw outputs are often not in a format that can be easily digested by
+stakeholders. By maintaining migration scripts in a dedicated folder, we
+can ensure that all transformations applied to the data are
+well-documented and reproducible.</p>
 </div>
 <div class="section level3">
 <h3 id="inputs-folder">Inputs Folder<a class="anchor" aria-label="anchor" href="#inputs-folder"></a>
