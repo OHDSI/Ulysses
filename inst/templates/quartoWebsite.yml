@@ -10,14 +10,12 @@ website:
       - text: Evidence Generation Plan
         href: egp.qmd
       - text: Results
-        menu:
-         - text: Initial Results
-           href: results/results_init.qmd
+        href: results.qmd
       - text: Changelog
         href: news.qmd
   drafts:
       - egp.qmd
-      - results/results_init.qmd
+      - results.qmd
   draft-mode: visible
   page-footer: 'Generated Using Ulysses'
 

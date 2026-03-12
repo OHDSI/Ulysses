@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Ulysses</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
@@ -122,9 +122,14 @@ markdown file.</li>
 parameters needed to execute the RWE pipeline (series of analytical
 tasks that answer study questions).</li>
 </ul>
-<p>In addition to these required elements there are two additional
+<p>In addition to these required elements there are three additional
 inputs:</p>
 <ul>
+<li>toolType: specifies the type of tool being used for the study.
+Options are <code>"dbms"</code> (default) for studies that execute
+directly against a database, or <code>"external"</code> for studies
+using external analytical tools or pre-computed data. This determines
+which main.R template is used to initialize the execution pipeline.</li>
 <li>renvLock: a path to a <a href="https://rstudio.github.io/renv/" class="external-link">renv</a> lock file that maintains
 a snapshot of package dependencies required to execute the RWE
 pipeline.</li>
@@ -168,6 +173,7 @@ database we want to use in the study.</p>
 <span><span class="va">db1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setDbConfigBlock.html">setDbConfigBlock</a></span><span class="op">(</span></span>
 <span>  configBlockName <span class="op">=</span> <span class="st">"synpuf_110k"</span>,</span>
 <span>  cdmDatabaseSchema <span class="op">=</span> <span class="st">"synpuf_110k_202701"</span>,</span>
+<span>  cohortTable <span class="op">=</span> <span class="st">"cohort_synpuf"</span>,</span>
 <span>  databaseName <span class="op">=</span> <span class="st">"synpuf_110k_202701"</span>,</span>
 <span>  databaseLabel <span class="op">=</span> <span class="st">"Synpuf 110K"</span></span>
 <span><span class="op">)</span></span>
@@ -175,6 +181,7 @@ database we want to use in the study.</p>
 <span><span class="va">db2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setDbConfigBlock.html">setDbConfigBlock</a></span><span class="op">(</span></span>
 <span>  configBlockName <span class="op">=</span> <span class="st">"synthea_2m"</span>,</span>
 <span>  cdmDatabaseSchema <span class="op">=</span> <span class="st">"synthea_2m_202701"</span>,</span>
+<span>  cohortTable <span class="op">=</span> <span class="st">"cohort_synthea"</span>,</span>
 <span>  databaseName <span class="op">=</span> <span class="st">"synthea_2m_202701"</span>,</span>
 <span>  databaseLabel <span class="op">=</span> <span class="st">"Synthea 2M"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -193,6 +200,7 @@ launch the repo:</p>
 <span><span class="va">ulySt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/makeUlyssesStudySettings.html">makeUlyssesStudySettings</a></span><span class="op">(</span></span>
 <span>  repoName <span class="op">=</span> <span class="st">"s1234"</span>,</span>
 <span>  repoFolder <span class="op">=</span> <span class="st">"C:/R/rwestudies"</span>,</span>
+<span>  toolType <span class="op">=</span> <span class="st">"dbms"</span>,</span>
 <span>  studyMeta <span class="op">=</span> <span class="va">sm</span>,</span>
 <span>  execOptions <span class="op">=</span> <span class="va">eo</span></span>
 <span><span class="op">)</span></span>
@@ -203,6 +211,26 @@ have happened in the R console and create a new repo in the path:
 <strong>C:/R/rwestudies/s1234</strong> as specified in the example. When
 you navigate to this new folder you can see the standard Ulysses
 structure and begin adding contents to your study!!</p>
+<p>For studies not using an internal database for execution, the
+toolType can be set to “external”. This will change the template for the
+main.R file to be more general and not include code specific to database
+execution. This is ideal for studies using external tools or
+pre-computed data. Below is an example of how to set up the study
+settings for an external tool study:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># use this when there are no execution parameters to specify, but you still want to launch the repo and fill out the README with the study meta info</span></span>
+<span><span class="va">eo</span> <span class="op">&lt;-</span> <span class="fu">placeHolderExecOptions</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ulySt2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/makeUlyssesStudySettings.html">makeUlyssesStudySettings</a></span><span class="op">(</span></span>
+<span>  repoName <span class="op">=</span> <span class="st">"s1234"</span>,</span>
+<span>  repoFolder <span class="op">=</span> <span class="st">"C:/R/rwestudies"</span>,</span>
+<span>  toolType <span class="op">=</span> <span class="st">"external"</span>,</span>
+<span>  studyMeta <span class="op">=</span> <span class="va">sm</span>,</span>
+<span>  execOptions <span class="op">=</span> <span class="va">eo</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/launchUlyssesRepo.html">launchUlyssesRepo</a></span><span class="op">(</span><span class="va">ulySt2</span><span class="op">)</span></span></code></pre></div>
 </div>
   </div>
 

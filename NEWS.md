@@ -1,3 +1,8 @@
+Ulysses 1.1.0
+=============
+
+- add external mode
+
 Ulysses 1.0.4
 =============
 

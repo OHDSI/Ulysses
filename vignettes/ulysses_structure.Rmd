@@ -100,11 +100,17 @@ example:
 
 If we wanted to add another credential in this block we can add new line beneath `cohortTable`. Be sure to keep the indentation and add an extra space after. 
 
+### main.R
+
+The main.R file is the entry point for executing the RWE study pipeline. This file is initialized by Ulysses when launching a new repository using `launchUlyssesRepo()`. The main.R file coordinates the execution of all analytical tasks and follows a structured workflow: loading dependencies, initializing manifests for cohorts and concept sets, populating manifests from external sources (such as ATLAS), executing the pipeline on specified databases, and performing post-execution steps such as building the study hub and archiving results. The contents of main.R are generated based on the `toolType` parameter specified during study initialization. Studies using `toolType = "dbms"` receive a full pipeline template with database execution steps, while studies using `toolType = "external"` receive a simplified template for studies using external analytical tools or pre-computed data.
+
 ## Analysis Folder
 
-The analysis folder contains all R code that executes the RWE study. There are two sub-sections: tasks and src (pronounced source). Tasks are files that implement the RWE pipeline when we call an execute command. **src** internal files maintain code that helps run these functions. 
+The analysis folder contains all R code that executes the RWE study. There are three sub-sections: tasks, src (pronounced source), and migrations. Tasks are files that implement the RWE pipeline when we call an execute command. **src** internal files maintain code that helps run these functions. **migrations** contains database migration scripts used to manage schema changes and data transformations across study versions.
 
-The task folder maintains a numbered list of files that run an element of the pipeline. Task files follow this general cadence: a) list parameters and assumptions b) connect to the database, c) extract aggregations from database based on specifications [this may include additional steps using R], and d) store output to the correct results folder. In each task file we specify a configBlock. As stated in the config.yml section, the config block specifies the block header of the data we want to use in the connection. This allows us to reuse the same task code to run on multiple databases. 
+The task folder maintains a numbered list of files that run an element of the pipeline. Task files follow this general cadence: a) list parameters and assumptions b) connect to the database, c) extract aggregations from database based on specifications [this may include additional steps using R], and d) store output to the correct results folder. In each task file we specify a configBlock. As stated in the config.yml section, the config block specifies the block header of the data we want to use in the connection. This allows us to reuse the same task code to run on multiple databases.
+
+The migrations folder is used to store R scripts that serve as post-processing steps to prepare results from execution for dissemination. For example, we may have a migration script that takes the raw csv outputs from execution and pivots them into a stakeholder-friendly format. This is a crucial step in the RWE pipeline, as raw outputs are often not in a format that can be easily digested by stakeholders. By maintaining migration scripts in a dedicated folder, we can ensure that all transformations applied to the data are well-documented and reproducible.
 
 ## Inputs Folder
 

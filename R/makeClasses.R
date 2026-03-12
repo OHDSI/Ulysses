@@ -55,6 +55,16 @@ setDbConfigBlock <- function(configBlockName,
   return(dbConfigBlock)
 }
 
+#' @title set the execOptions as placeholder.
+#' @description use this function if there is not a dbms connection for the study such as using a proprietary tool for the analysis
+#' @returns A ExecOptions R6 class with the execOptions
+#' @export
+placeHolderExecOptions <- function() {
+  execOptions <- ExecOptions$new()
+  return(execOptions)
+}
+
+
 #' @title Make ExecOptions for Ulysses
 #' @param dbms specify the dbms used in the exec options
 #' @param workDatabaseSchema the name of the workDatabaseSchema as a character string, location in DB where user has write access
@@ -88,20 +98,22 @@ makeExecOptions <- function(dbms,
 #' @export
 makeUlyssesStudySettings <- function(repoName,
                                      repoFolder,
+                                     toolType = c("dbms", "external"),
                                      studyMeta,
-                                     execOptions,
+                                     execOptions = NULL,
                                      gitRemote = NULL,
                                      renvLock = NULL) {
 
-  execOptions <- UlyssesStudy$new(
+  ulyStudy <- UlyssesStudy$new(
     repoName = repoName,
     repoFolder = repoFolder,
+    toolType = toolType,
     studyMeta = studyMeta,
     execOptions = execOptions,
     gitRemote = gitRemote,
     renvLock = renvLock
   )
-  return(execOptions)
+  return(ulyStudy)
 
 }
 
@@ -125,7 +137,7 @@ launchUlyssesRepo <- function(ulyssesStudySettings, verbose = TRUE, openProject 
 #' @param workDatabaseSchema The schema to which results will be written
 #' @param tempEmulationSchema Some database platforms like Oracle and Snowflake do not truly support temp tables. To emulate temp tables, provide a schema with write privileges where temp tables can be created.
 #' @param cohortTable The name of the table where the cohort(s) are stored
-#' @param cdmSourceName A human-readable name for the OMOP CDM source
+#' @param databaseName A human-readable name for the OMOP CDM database
 #'
 #' @return An ExecutionSettings object
 #' @export
@@ -135,13 +147,13 @@ createExecutionSettings <- function(connectionDetails,
                                     workDatabaseSchema,
                                     tempEmulationSchema,
                                     cohortTable,
-                                    cdmSourceName) {
+                                    databaseName) {
   executionSettings <- ExecutionSettings$new(connectionDetails = connectionDetails,
                                              connection = connection,
                                              cdmDatabaseSchema = cdmDatabaseSchema,
                                              workDatabaseSchema = workDatabaseSchema,
                                              tempEmulationSchema = tempEmulationSchema,
                                              cohortTable = cohortTable,
-                                             cdmSourceName = cdmSourceName)
+                                             databaseName = databaseName)
   return(executionSettings)
 }

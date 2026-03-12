@@ -30,8 +30,9 @@ In this vignette we describe how to define and launch an RWE study with Ulysses.
 * studyMeta: a Ulysses class that specifies key study meta info. This info will automatically be placed into the auto-generated README markdown file.
 * execOptions: a Ulysses class that specifies the database and schema parameters needed to execute the RWE pipeline (series of analytical tasks that answer study questions). 
 
-In addition to these required elements there are two additional inputs:
+In addition to these required elements there are three additional inputs:
 
+* toolType: specifies the type of tool being used for the study. Options are `"dbms"` (default) for studies that execute directly against a database, or `"external"` for studies using external analytical tools or pre-computed data. This determines which main.R template is used to initialize the execution pipeline.
 * renvLock: a path to a [renv](https://rstudio.github.io/renv/) lock file that maintains a snapshot of package dependencies required to execute the RWE pipeline.
 * gitRemote: a url to a git remote used to sync versions of the project code between local development and remote storage.
 
@@ -75,6 +76,7 @@ The next class to make is the ExecOptions specifing the parameters to execute th
 db1 <- setDbConfigBlock(
   configBlockName = "synpuf_110k",
   cdmDatabaseSchema = "synpuf_110k_202701",
+  cohortTable = "cohort_synpuf",
   databaseName = "synpuf_110k_202701",
   databaseLabel = "Synpuf 110K"
 )
@@ -82,6 +84,7 @@ db1 <- setDbConfigBlock(
 db2 <- setDbConfigBlock(
   configBlockName = "synthea_2m",
   cdmDatabaseSchema = "synthea_2m_202701",
+  cohortTable = "cohort_synthea",
   databaseName = "synthea_2m_202701",
   databaseLabel = "Synthea 2M"
 )
@@ -107,6 +110,7 @@ Finally we can add all the settings into the Ulysses Repo object and launch the 
 ulySt <- makeUlyssesStudySettings(
   repoName = "s1234",
   repoFolder = "C:/R/rwestudies",
+  toolType = "dbms",
   studyMeta = sm,
   execOptions = eo
 )
@@ -116,3 +120,23 @@ launchUlyssesRepo(ulySt)
 ```
 
 Running the `launchUlyssesRepo` will print actions that have happened in the R console and create a new repo in the path: **C:/R/rwestudies/s1234** as specified in the example. When you navigate to this new folder you can see the standard Ulysses structure and begin adding contents to your study!!
+
+
+For studies not using an internal database for execution, the toolType can be set to "external". This will change the template for the main.R file to be more general and not include code specific to database execution. This is ideal for studies using external tools or pre-computed data. Below is an example of how to set up the study settings for an external tool study:
+
+```{r external}
+
+# use this when there are no execution parameters to specify, but you still want to launch the repo and fill out the README with the study meta info
+eo <- placeHolderExecOptions()
+
+ulySt2 <- makeUlyssesStudySettings(
+  repoName = "s1234",
+  repoFolder = "C:/R/rwestudies",
+  toolType = "external",
+  studyMeta = sm,
+  execOptions = eo
+)
+
+launchUlyssesRepo(ulySt2)
+
+```
