@@ -17,7 +17,7 @@ An R6 class to define an ExecutionSettings object
 
 \item{\code{cohortTable}}{the table containing the cohorts}
 
-\item{\code{cdmSourceName}}{the name of the source data of the cdm}
+\item{\code{databaseName}}{the name of the source data of the cdm}
 }
 \if{html}{\out{</div>}}
 }
@@ -44,7 +44,7 @@ An R6 class to define an ExecutionSettings object
   workDatabaseSchema = NULL,
   tempEmulationSchema = NULL,
   cohortTable = NULL,
-  cdmSourceName = NULL
+  databaseName = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -63,7 +63,7 @@ An R6 class to define an ExecutionSettings object
 
 \item{\code{cohortTable}}{The name of the table where the cohort(s) are stored}
 
-\item{\code{cdmSourceName}}{A human-readable name for the OMOP CDM source}
+\item{\code{databaseName}}{A human-readable name for the OMOP CDM database}
 }
 \if{html}{\out{</div>}}
 }

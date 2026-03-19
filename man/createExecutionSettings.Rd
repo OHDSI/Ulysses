@@ -11,7 +11,7 @@ createExecutionSettings(
   workDatabaseSchema,
   tempEmulationSchema,
   cohortTable,
-  cdmSourceName
+  databaseName
 )
 }
 \arguments{
@@ -27,7 +27,7 @@ createExecutionSettings(
 
 \item{cohortTable}{The name of the table where the cohort(s) are stored}
 
-\item{cdmSourceName}{A human-readable name for the OMOP CDM source}
+\item{databaseName}{A human-readable name for the OMOP CDM database}
 }
 \value{
 An ExecutionSettings object
