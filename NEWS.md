@@ -1,3 +1,9 @@
+Ulysses 1.1.1
+=============
+
+- export fix for external mode
+- minor bug fix in quarto
+
 Ulysses 1.1.0
 =============
 

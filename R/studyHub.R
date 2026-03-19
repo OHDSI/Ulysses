@@ -123,3 +123,39 @@ buildStudyHub <- function(projectPath = here::here(), previewHub = TRUE) {
   invisible(docsPath)
 
 }
+
+#' Function to publish study hub via rsConnect
+#' @param inputPath path to the quarto folder to publish defaults to dissemination/quarto
+#' @param server the server url
+#' @param account the account affiliated with the server
+#' @param appName the name of the app
+#' @param appTitle the title for the app
+#' @export
+rsConnectStudyHub <- function(
+    inputPath = here::here("dissemination/quarto"),
+    server,
+    account,
+    appName,
+    appTitle) {
+
+  inspect <- quarto:::quarto_inspect(input)
+  config <- inspect[["config"]]
+  output_dir <- config$project[["output-dir"]]
+
+  destination <- quarto:::resolve_destination(server, account = NULL, FALSE)
+
+
+  rsconnect::deployApp(
+    appDir = fs::path(input, "_site"),
+    recordDir = input,
+    appName = appName,
+    appTitle = appTitle,
+    account = destination$account,
+    server = destination$server,
+    metadata = list(),
+    contentCategory = "site"
+  )
+
+  invisible(destination)
+
+}

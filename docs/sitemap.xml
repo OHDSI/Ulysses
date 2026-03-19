@@ -250,6 +250,9 @@
     <loc>/reference/pipe.html</loc>
   </url>
   <url>
+    <loc>/reference/placeHolderExecOptions.html</loc>
+  </url>
+  <url>
     <loc>/reference/populateManifest.html</loc>
   </url>
   <url>
@@ -269,6 +272,9 @@
   </url>
   <url>
     <loc>/reference/retrieveStudySettings.html</loc>
+  </url>
+  <url>
+    <loc>/reference/rsConnectStudyHub.html</loc>
   </url>
   <url>
     <loc>/reference/runTaskInBackground.html</loc>
